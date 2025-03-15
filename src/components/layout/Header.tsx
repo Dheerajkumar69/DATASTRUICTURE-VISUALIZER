@@ -28,6 +28,22 @@ const Logo = styled(Link)`
   }
 `;
 
+const LogoText = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const LogoTitle = styled.span`
+  font-size: 1.5rem;
+  font-weight: 700;
+`;
+
+const LogoCredit = styled.span`
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: ${({ theme }) => theme.colors.gray600};
+`;
+
 const LogoIcon = styled.div`
   display: flex;
   align-items: center;
@@ -71,7 +87,10 @@ const Header: React.FC = () => {
     <HeaderContainer>
       <Logo to="/">
         <LogoIcon>DS</LogoIcon>
-        <span>Data Structure Visualizer</span>
+        <LogoText>
+          <LogoTitle>Data Structure Visualizer</LogoTitle>
+          <LogoCredit>by Dheeraj Kumar</LogoCredit>
+        </LogoText>
       </Logo>
       <HeaderActions>
         <IconButton onClick={toggleTheme} aria-label={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}>
