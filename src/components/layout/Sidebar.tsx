@@ -14,7 +14,9 @@ import {
   FiSearch,
   FiMenu,
   FiX,
-  FiGitBranch
+  FiGitBranch,
+  FiServer,
+  FiAlignLeft
 } from 'react-icons/fi';
 
 const SidebarContainer = styled.aside<{ isOpen: boolean }>`
@@ -198,6 +200,10 @@ const Sidebar: React.FC = () => {
                 <FiList size={16} />
                 Queue
               </NavItem>
+              <NavItem to="/data-structures/priority-queue">
+                <FiServer size={16} />
+                Priority Queue
+              </NavItem>
               <NavItem to="/data-structures/tree">
                 <FiGitBranch size={16} />
                 Tree
@@ -213,6 +219,10 @@ const Sidebar: React.FC = () => {
               <NavItem to="/data-structures/heap">
                 <FiBarChart2 size={16} />
                 Heap
+              </NavItem>
+              <NavItem to="/data-structures/trie">
+                <FiAlignLeft size={16} />
+                Trie
               </NavItem>
             </SectionItems>
           </SidebarSection>

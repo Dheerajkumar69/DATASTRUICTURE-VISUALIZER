@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { FiSun, FiMoon, FiGithub } from 'react-icons/fi';
+import { useTheme } from '../../themes/ThemeContext';
 
 const HeaderContainer = styled.header`
   display: flex;
@@ -64,12 +65,7 @@ const IconButton = styled.button`
 `;
 
 const Header: React.FC = () => {
-  const [isDarkMode, setIsDarkMode] = useState(false);
-
-  const toggleTheme = () => {
-    setIsDarkMode(!isDarkMode);
-    // Theme switching logic would go here
-  };
+  const { isDarkMode, toggleTheme } = useTheme();
 
   return (
     <HeaderContainer>

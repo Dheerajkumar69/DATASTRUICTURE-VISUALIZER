@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import { FiArrowRight, FiDatabase, FiBarChart2, FiCode, FiLayers, FiGrid, FiLink, FiGitBranch, FiServer, FiList, FiHash, FiPieChart, FiSearch } from 'react-icons/fi';
+import { FiArrowRight, FiDatabase, FiBarChart2, FiCode, FiLayers, FiGrid, FiLink, FiGitBranch, FiServer, FiList, FiHash, FiPieChart, FiSearch, FiAlignLeft } from 'react-icons/fi';
 
 const HomeContainer = styled.div`
   display: flex;
@@ -280,6 +280,16 @@ const HomePage: React.FC = () => {
             </DataStructureDescription>
           </DataStructureCard>
           
+          <DataStructureCard to="/data-structures/priority-queue">
+            <DataStructureIcon>
+              <FiServer size={24} />
+            </DataStructureIcon>
+            <DataStructureName>Priority Queue</DataStructureName>
+            <DataStructureDescription>
+              Explore priority-based queues implemented with binary heaps.
+            </DataStructureDescription>
+          </DataStructureCard>
+          
           <DataStructureCard to="/data-structures/tree">
             <DataStructureIcon>
               <FiGitBranch size={24} />
@@ -319,6 +329,16 @@ const HomePage: React.FC = () => {
               Explore min-heaps, max-heaps, and priority queue implementations.
             </DataStructureDescription>
           </DataStructureCard>
+          
+          <DataStructureCard to="/data-structures/trie">
+            <DataStructureIcon>
+              <FiAlignLeft size={24} />
+            </DataStructureIcon>
+            <DataStructureName>Trie</DataStructureName>
+            <DataStructureDescription>
+              Visualize prefix trees for efficient string operations and autocomplete.
+            </DataStructureDescription>
+          </DataStructureCard>
         </DataStructureGrid>
       </DataStructuresSection>
       
@@ -326,7 +346,6 @@ const HomePage: React.FC = () => {
         <SectionTitle>Explore Algorithms</SectionTitle>
         <DataStructureGrid>
           <DataStructureCard to="/algorithms/sorting">
-            <ComingSoonBadge>Coming Soon</ComingSoonBadge>
             <DataStructureIcon>
               <FiBarChart2 size={24} />
             </DataStructureIcon>
@@ -337,7 +356,6 @@ const HomePage: React.FC = () => {
           </DataStructureCard>
           
           <DataStructureCard to="/algorithms/searching">
-            <ComingSoonBadge>Coming Soon</ComingSoonBadge>
             <DataStructureIcon>
               <FiSearch size={24} />
             </DataStructureIcon>
