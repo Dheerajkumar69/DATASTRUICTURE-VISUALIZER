@@ -16,7 +16,19 @@ import {
   FiX,
   FiGitBranch,
   FiServer,
-  FiAlignLeft
+  FiAlignLeft,
+  FiShuffle,
+  FiFilter,
+  FiArrowUp,
+  FiArrowDown,
+  FiArrowUpCircle,
+  FiArrowDownCircle,
+  FiArrowUpRight,
+  FiArrowDownRight,
+  FiArrowUpLeft,
+  FiArrowDownLeft,
+  FiArrowRightCircle,
+  FiArrowLeftCircle
 } from 'react-icons/fi';
 
 const SidebarContainer = styled.aside<{ isOpen: boolean }>`
@@ -153,10 +165,62 @@ const MobileMenuButton = styled.button`
   }
 `;
 
+const NestedSectionItems = styled.div<{ isOpen: boolean }>`
+  margin-top: 0.5rem;
+  padding-left: 1rem;
+  display: ${({ isOpen }) => (isOpen ? 'block' : 'none')};
+`;
+
+const NestedNavItem = styled(NavLink)`
+  display: flex;
+  align-items: center;
+  padding: 0.5rem;
+  border-radius: ${({ theme }) => theme.borderRadius};
+  color: ${({ theme }) => theme.colors.gray600};
+  transition: ${({ theme }) => theme.transitions.default};
+  font-size: 0.9rem;
+  
+  svg {
+    margin-right: 0.5rem;
+  }
+  
+  &:hover {
+    background-color: ${({ theme }) => theme.colors.gray100};
+    color: ${({ theme }) => theme.colors.gray900};
+  }
+  
+  &.active {
+    background-color: ${({ theme }) => theme.colors.primaryLight};
+    color: white;
+    
+    &:hover {
+      background-color: ${({ theme }) => theme.colors.primary};
+      color: white;
+    }
+  }
+`;
+
+const SubSectionHeader = styled.div<{ isOpen: boolean }>`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem;
+  border-radius: ${({ theme }) => theme.borderRadius};
+  cursor: pointer;
+  transition: ${({ theme }) => theme.transitions.default};
+  font-size: 0.95rem;
+  color: ${({ theme }) => theme.colors.gray700};
+  
+  &:hover {
+    background-color: ${({ theme }) => theme.colors.gray100};
+  }
+`;
+
 const Sidebar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(true);
   const [dataStructuresOpen, setDataStructuresOpen] = useState(true);
   const [algorithmsOpen, setAlgorithmsOpen] = useState(true);
+  const [sortingAlgorithmsOpen, setSortingAlgorithmsOpen] = useState(false);
   
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
@@ -239,10 +303,64 @@ const Sidebar: React.FC = () => {
               {algorithmsOpen ? <FiChevronDown size={18} /> : <FiChevronRight size={18} />}
             </SectionHeader>
             <SectionItems isOpen={algorithmsOpen}>
-              <NavItem to="/algorithms/sorting">
-                <FiBarChart2 size={16} />
-                Sorting
-              </NavItem>
+              <div>
+                <SubSectionHeader 
+                  isOpen={sortingAlgorithmsOpen}
+                  onClick={() => setSortingAlgorithmsOpen(!sortingAlgorithmsOpen)}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <FiBarChart2 size={16} style={{ marginRight: '0.5rem' }} />
+                    Sorting
+                  </div>
+                  {sortingAlgorithmsOpen ? <FiChevronDown size={16} /> : <FiChevronRight size={16} />}
+                </SubSectionHeader>
+                <NestedSectionItems isOpen={sortingAlgorithmsOpen}>
+                  <NestedNavItem to="/algorithms/sorting">
+                    <FiShuffle size={14} />
+                    All Sorting Algorithms
+                  </NestedNavItem>
+                  <NestedNavItem to="/algorithms/sorting/bubble-sort">
+                    <FiArrowUpCircle size={14} />
+                    Bubble Sort
+                  </NestedNavItem>
+                  <NestedNavItem to="/algorithms/sorting/selection-sort">
+                    <FiArrowDownCircle size={14} />
+                    Selection Sort
+                  </NestedNavItem>
+                  <NestedNavItem to="/algorithms/sorting/insertion-sort">
+                    <FiArrowRightCircle size={14} />
+                    Insertion Sort
+                  </NestedNavItem>
+                  <NestedNavItem to="/algorithms/sorting/merge-sort">
+                    <FiArrowLeftCircle size={14} />
+                    Merge Sort
+                  </NestedNavItem>
+                  <NestedNavItem to="/algorithms/sorting/quick-sort">
+                    <FiArrowUpRight size={14} />
+                    Quick Sort
+                  </NestedNavItem>
+                  <NestedNavItem to="/algorithms/sorting/counting-sort">
+                    <FiArrowDownRight size={14} />
+                    Counting Sort
+                  </NestedNavItem>
+                  <NestedNavItem to="/algorithms/sorting/radix-sort">
+                    <FiArrowUpLeft size={14} />
+                    Radix Sort
+                  </NestedNavItem>
+                  <NestedNavItem to="/algorithms/sorting/bucket-sort">
+                    <FiArrowDownLeft size={14} />
+                    Bucket Sort
+                  </NestedNavItem>
+                  <NestedNavItem to="/algorithms/sorting/heap-sort">
+                    <FiArrowUp size={14} />
+                    Heap Sort
+                  </NestedNavItem>
+                  <NestedNavItem to="/algorithms/sorting/shell-sort">
+                    <FiArrowDown size={14} />
+                    Shell Sort
+                  </NestedNavItem>
+                </NestedSectionItems>
+              </div>
               <NavItem to="/algorithms/searching">
                 <FiSearch size={16} />
                 Searching

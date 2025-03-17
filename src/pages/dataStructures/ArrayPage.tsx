@@ -181,6 +181,11 @@ const InfoContent = styled.div`
   
   li {
     margin-bottom: 0.25rem;
+    color: black;
+  }
+  
+  strong {
+    color: black;
   }
 `;
 

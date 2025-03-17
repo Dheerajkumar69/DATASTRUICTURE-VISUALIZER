@@ -4,6 +4,9 @@ import { BrowserRouter } from 'react-router-dom';
 import App from './App';
 import './index.css';
 
+// Set default theme to light mode
+localStorage.setItem('theme', 'light');
+
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
@@ -14,4 +17,4 @@ root.render(
       <App />
     </BrowserRouter>
   </React.StrictMode>
-); 
+);

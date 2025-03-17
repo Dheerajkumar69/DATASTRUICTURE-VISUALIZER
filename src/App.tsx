@@ -20,6 +20,21 @@ import TriePage from './pages/dataStructures/TriePage';
 import SortingPage from './pages/algorithms/SortingPage';
 import SearchingPage from './pages/algorithms/SearchingPage';
 
+// Import sorting algorithm pages
+import BubbleSortPage from './pages/algorithms/sorting/BubbleSortPage';
+import SelectionSortPage from './pages/algorithms/sorting/SelectionSortPage';
+import InsertionSortPage from './pages/algorithms/sorting/InsertionSortPage';
+import MergeSortPage from './pages/algorithms/sorting/MergeSortPage';
+import QuickSortPage from './pages/algorithms/sorting/QuickSortPage';
+import HeapSortPage from './pages/algorithms/sorting/HeapSortPage';
+import ShellSortPage from './pages/algorithms/sorting/ShellSortPage';
+import CountingSortPage from './pages/algorithms/sorting/CountingSortPage';
+import RadixSortPage from './pages/algorithms/sorting/RadixSortPage';
+import BucketSortPage from './pages/algorithms/sorting/BucketSortPage';
+
+// Import placeholder component for unimplemented algorithms
+import ComingSoonPage from './pages/ComingSoonPage';
+
 const AppContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -62,6 +77,18 @@ const App: React.FC = () => {
               <Route path="/data-structures/trie" element={<TriePage />} />
               <Route path="/algorithms/sorting" element={<SortingPage />} />
               <Route path="/algorithms/searching" element={<SearchingPage />} />
+              
+              {/* Sorting Algorithm Routes */}
+              <Route path="/algorithms/sorting/bubble-sort" element={<BubbleSortPage />} />
+              <Route path="/algorithms/sorting/selection-sort" element={<SelectionSortPage />} />
+              <Route path="/algorithms/sorting/insertion-sort" element={<InsertionSortPage />} />
+              <Route path="/algorithms/sorting/merge-sort" element={<MergeSortPage />} />
+              <Route path="/algorithms/sorting/quick-sort" element={<QuickSortPage />} />
+              <Route path="/algorithms/sorting/heap-sort" element={<HeapSortPage />} />
+              <Route path="/algorithms/sorting/shell-sort" element={<ShellSortPage />} />
+              <Route path="/algorithms/sorting/counting-sort" element={<CountingSortPage />} />
+              <Route path="/algorithms/sorting/radix-sort" element={<RadixSortPage />} />
+              <Route path="/algorithms/sorting/bucket-sort" element={<BucketSortPage />} />
             </Routes>
           </ContentArea>
         </MainContent>

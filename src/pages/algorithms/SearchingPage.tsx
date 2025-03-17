@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiSearch, FiRefreshCw, FiPlay, FiPause, FiSkipForward } from 'react-icons/fi';
+import { FiSearch, FiRefreshCw, FiPlay, FiPause, FiSkipForward, FiClock } from 'react-icons/fi';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { vs2015 } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 
@@ -226,6 +226,15 @@ const InfoContent = styled.div`
   }
 `;
 
+const Select = styled.select`
+  padding: 0.5rem;
+  border: 1px solid ${({ theme }) => theme.colors.gray300};
+  border-radius: ${({ theme }) => theme.borderRadius};
+  background-color: white;
+  font-family: ${({ theme }) => theme.fonts.sans};
+  cursor: pointer;
+`;
+
 // Types
 interface ArrayItemState {
   value: number;
@@ -319,20 +328,29 @@ const SearchingPage: React.FC = () => {
     }, 100);
   };
   
+  // Handle speed change
+  const handleSpeedChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSearchSpeed(parseInt(e.target.value));
+  };
+  
   // Start search animation
   const startSearch = () => {
+    console.log("Starting search...");
     const target = parseInt(targetValue);
     
     if (isNaN(target)) {
       setMessage('Please enter a valid number to search for');
+      console.log("Invalid target value");
       return;
     }
     
     // Reset any previous search
     if (searchTimeoutRef.current) {
       clearTimeout(searchTimeoutRef.current);
+      searchTimeoutRef.current = null;
     }
     
+    // Set searching state to true
     setIsSearching(true);
     
     // Generate search steps
@@ -340,11 +358,26 @@ const SearchingPage: React.FC = () => {
       ? generateLinearSearchSteps(target) 
       : generateBinarySearchSteps(target);
     
+    console.log(`Generated ${steps.length} steps for ${algorithm} search of target ${target}`);
+    
+    // Update state with the steps
     setSearchSteps(steps);
     setCurrentStep(0);
     
-    // Start animation
-    animateSearch(steps, 0);
+    // Force update the array with the first step
+    setArray(steps[0]);
+    
+    // Start animation with a slight delay to ensure state updates
+    console.log("Starting animation sequence...");
+    setTimeout(() => {
+      // Double-check that we're still in searching state
+      if (steps.length > 1) {
+        console.log("Beginning animation from step 0");
+        animateSearch(steps, 0);
+      } else {
+        console.log("No steps to animate");
+      }
+    }, 100);
   };
   
   // Pause search animation
@@ -401,10 +434,16 @@ const SearchingPage: React.FC = () => {
   
   // Animate search steps
   const animateSearch = (steps: ArrayItemState[][], startStep: number) => {
+    // Log for debugging
+    console.log(`Animating step ${startStep} of ${steps.length}`, { isSearching });
+    
+    // If not searching or beyond the last step, stop animation
     if (!isSearching || startStep >= steps.length) {
+      console.log("Animation stopped: not searching or beyond last step");
       return;
     }
     
+    // Update the array with the current step
     setArray(steps[startStep]);
     setCurrentStep(startStep);
     
@@ -413,9 +452,22 @@ const SearchingPage: React.FC = () => {
     
     // Schedule next step
     if (startStep < steps.length - 1) {
+      console.log(`Scheduling next step (${startStep + 1}) in ${searchSpeed}ms`);
+      
+      // Clear any existing timeout to prevent multiple timers
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current);
+      }
+      
+      // Set new timeout for next step
       searchTimeoutRef.current = setTimeout(() => {
+        console.log(`Executing scheduled step ${startStep + 1}`);
         animateSearch(steps, startStep + 1);
       }, searchSpeed);
+    } else {
+      // Last step reached
+      console.log("Animation complete - reached last step");
+      setIsSearching(false);
     }
   };
   
@@ -618,8 +670,24 @@ function binarySearch(arr, target) {
               />
             </InputGroup>
             
+            <InputGroup>
+              <FiClock size={16} style={{ marginRight: '4px' }} />
+              <Select value={searchSpeed} onChange={handleSpeedChange}>
+                <option value="1000">Slow</option>
+                <option value="500">Medium</option>
+                <option value="250">Fast</option>
+                <option value="100">Very Fast</option>
+              </Select>
+            </InputGroup>
+            
             {!isSearching ? (
-              <Button variant="primary" onClick={startSearch}>
+              <Button 
+                variant="primary" 
+                onClick={() => {
+                  console.log("Search button clicked");
+                  startSearch();
+                }}
+              >
                 <FiSearch size={16} /> Search
               </Button>
             ) : (

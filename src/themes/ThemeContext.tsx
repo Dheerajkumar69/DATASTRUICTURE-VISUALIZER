@@ -23,7 +23,8 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
   // Check if user has a theme preference in localStorage
   const [isDarkMode, setIsDarkMode] = useState(() => {
     const savedTheme = localStorage.getItem('theme');
-    return savedTheme === 'dark';
+    // Default to light mode if no preference is saved
+    return savedTheme === 'dark' ? true : false;
   });
 
   // Toggle theme function
