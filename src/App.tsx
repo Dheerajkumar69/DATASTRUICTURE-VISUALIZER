@@ -6,6 +6,7 @@ import GlobalStyle from './themes/GlobalStyle';
 import Sidebar from './components/layout/Sidebar';
 import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
+import ScrollToTop from './components/utils/ScrollToTop';
 import HomePage from './pages/HomePage';
 import ArrayPage from './pages/dataStructures/ArrayPage';
 import LinkedListPage from './pages/dataStructures/LinkedListPage';
@@ -59,6 +60,7 @@ const App: React.FC = () => {
     <ThemeProvider>
       <GlobalStyle />
       <AppContainer>
+        <ScrollToTop />
         <Header />
         <MainContent>
           <Sidebar />
