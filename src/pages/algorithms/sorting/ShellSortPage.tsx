@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import { FiPlay, FiPause, FiRefreshCw, FiChevronsLeft, FiChevronsRight } from 'react-icons/fi';
@@ -126,23 +126,20 @@ interface BarProps {
   isActive: boolean;
   isComparing: boolean;
   isSorted: boolean;
-  isCurrent?: boolean;
   gapIndex: number | null;
 }
 
 const Bar = styled(motion.div)<BarProps>`
   width: 30px;
   height: ${({ height }) => `${height}%`};
-  background-color: ${({ isActive, isComparing, isSorted, isCurrent, theme }) => 
-    isCurrent
+  background-color: ${({ isActive, isComparing, isSorted, theme }) => 
+    isActive 
       ? theme.colors.warning
-      : isActive 
+      : isComparing
         ? theme.colors.highlight
-        : isComparing
-          ? theme.colors.primary
-          : isSorted
-            ? theme.colors.success
-            : theme.colors.gray400};
+        : isSorted
+          ? theme.colors.success
+          : theme.colors.primary};
   border-radius: 4px 4px 0 0;
   position: relative;
   
@@ -176,12 +173,6 @@ const StepInfo = styled.div`
   background-color: ${({ theme }) => theme.colors.gray50};
   border: 1px solid ${({ theme }) => theme.colors.gray200};
   border-radius: ${({ theme }) => theme.borderRadius};
-`;
-
-const StepDescription = styled.p`
-  font-size: 1rem;
-  color: ${({ theme }) => theme.colors.gray700};
-  margin: 0;
 `;
 
 const GapInfo = styled.div`
@@ -260,33 +251,18 @@ const CodeTitle = styled.div`
   font-size: 0.875rem;
 `;
 
-// Types for animation steps
-interface AnimationStep {
-  type: 'compare' | 'shift' | 'insert' | 'sorted' | 'gap-change' | 'gap-mark';
-  indices: number[];
-  gapValue?: number;
-  currentValue?: number;
-  description: string;
-}
-
 const ShellSortPage: React.FC = () => {
   const [array, setArray] = useState<number[]>([]);
+  const [steps, setSteps] = useState<number[][]>([]);
+  const [currentStep, setCurrentStep] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [speed, setSpeed] = useState(500);
   const [currentIndices, setCurrentIndices] = useState<number[]>([]);
   const [comparingIndices, setComparingIndices] = useState<number[]>([]);
   const [sortedIndices, setSortedIndices] = useState<number[]>([]);
   const [gapSequence, setGapSequence] = useState<number[]>([]);
   const [currentGap, setCurrentGap] = useState<number | null>(null);
   const [gapIndices, setGapIndices] = useState<(number | null)[]>([]);
-  const [currentIndex, setCurrentIndex] = useState<number | null>(null);
-  const [isSorting, setIsSorting] = useState(false);
-  const [isPaused, setIsPaused] = useState(false);
-  const [currentStep, setCurrentStep] = useState(0);
-  const [animationSteps, setAnimationSteps] = useState<AnimationStep[]>([]);
-  const [speed, setSpeed] = useState<number>(500); // milliseconds
-  const [arraySize, setArraySize] = useState<number>(10);
-  const [stepDescription, setStepDescription] = useState<string>('');
-  
-  const sortTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Sorting algorithms data for dropdown
   const algorithmOptions = [
@@ -304,23 +280,17 @@ const ShellSortPage: React.FC = () => {
 
   useEffect(() => {
     generateRandomArray();
-    return () => {
-      if (sortTimeoutRef.current) {
-        clearTimeout(sortTimeoutRef.current);
-      }
-    };
   }, []);
 
   const generateRandomArray = () => {
-    const newArray = Array.from({ length: arraySize }, () => Math.floor(Math.random() * 90) + 10);
+    const newArray = Array.from({ length: 10 }, () => Math.floor(Math.random() * 90) + 10);
     setArray(newArray);
+    setSteps([newArray]);
+    setCurrentStep(0);
+    setIsPlaying(false);
     setCurrentIndices([]);
     setComparingIndices([]);
     setSortedIndices([]);
-    setCurrentIndex(null);
-    setCurrentStep(0);
-    setAnimationSteps([]);
-    setStepDescription('');
     
     // Calculate gap sequence for Shell sort
     // Using the sequence: N/2, N/4, ..., 1
@@ -331,344 +301,152 @@ const ShellSortPage: React.FC = () => {
     setGapSequence(gaps);
     setCurrentGap(null);
     setGapIndices(Array(newArray.length).fill(null));
-    
-    // Reset animation
-    if (sortTimeoutRef.current) {
-      clearTimeout(sortTimeoutRef.current);
-    }
-    setIsSorting(false);
-    setIsPaused(false);
   };
 
-  const generateShellSortSteps = (arr: number[]): AnimationStep[] => {
-    const steps: AnimationStep[] = [];
-    const arrayCopy = [...arr];
-    const n = arrayCopy.length;
+  const shellSort = () => {
+    const arr = [...array];
+    const n = arr.length;
+    const steps: number[][] = [[...arr]];
+    const gapIndicesTrack = Array(n).fill(null);
     
-    // Calculate gap sequence
-    const gapSeq = [];
-    for (let gap = Math.floor(n / 2); gap > 0; gap = Math.floor(gap / 2)) {
-      gapSeq.push(gap);
-    }
-    
-    // Process each gap
-    for (let g = 0; g < gapSeq.length; g++) {
-      const gap = gapSeq[g];
+    // Use our gap sequence
+    for (let g = 0; g < gapSequence.length; g++) {
+      const gap = gapSequence[g];
+      setCurrentGap(gap);
       
-      // Record gap change
-      steps.push({
-        type: 'gap-change',
-        indices: [],
-        gapValue: gap,
-        description: `Setting gap size to ${gap}`
-      });
-      
-      // Mark elements that belong to current gap sequence
-      const gapIndices = [];
-      for (let i = 0; i < n; i += gap) {
-        gapIndices.push(i);
+      // Mark elements that are part of the current gap sequence
+      for (let i = 0; i < n; i++) {
+        if (i % gap === 0) {
+          gapIndicesTrack[i] = gap;
+        }
       }
+      setGapIndices([...gapIndicesTrack]);
       
-      steps.push({
-        type: 'gap-mark',
-        indices: gapIndices,
-        gapValue: gap,
-        description: `Marking elements at positions divisible by ${gap}`
-      });
+      // Record this state
+      steps.push([...arr]);
       
-      // Do a gapped insertion sort
+      // Do a gapped insertion sort for this gap size
       for (let i = gap; i < n; i++) {
-        const current = arrayCopy[i];
+        // Save arr[i] in temp and make a hole at position i
+        const temp = arr[i];
         
-        // Current element to be inserted
-        steps.push({
-          type: 'compare',
-          indices: [i],
-          currentValue: current,
-          description: `Processing element at index ${i} with value ${current}`
-        });
+        // Mark current element being sorted
+        setCurrentIndices([i]);
         
-        // Shift sorted elements that are greater than current
-        let j = i;
-        while (j >= gap && arrayCopy[j - gap] > current) {
-          steps.push({
-            type: 'compare',
-            indices: [j, j - gap],
-            currentValue: current,
-            description: `Comparing elements at indices ${j - gap} and ${j}: ${arrayCopy[j - gap]} > ${current}?`
-          });
+        // Shift earlier gap-sorted elements up until the correct location for arr[i] is found
+        let j;
+        for (j = i; j >= gap && arr[j - gap] > temp; j -= gap) {
+          // Compare elements
+          setComparingIndices([j, j - gap]);
           
-          steps.push({
-            type: 'shift',
-            indices: [j - gap, j],
-            currentValue: current,
-            description: `Shifting ${arrayCopy[j - gap]} to position ${j}`
-          });
+          // Shift element
+          arr[j] = arr[j - gap];
           
-          arrayCopy[j] = arrayCopy[j - gap];
-          j -= gap;
+          // Record this state
+          steps.push([...arr]);
         }
         
-        // Insert current element at the correct position
-        if (j !== i) {
-          steps.push({
-            type: 'insert',
-            indices: [j],
-            currentValue: current,
-            description: `Inserting ${current} at position ${j}`
-          });
-          
-          arrayCopy[j] = current;
-        } else {
-          steps.push({
-            type: 'insert',
-            indices: [j],
-            currentValue: current,
-            description: `${current} is already in the correct position`
-          });
+        // Put temp in its correct location
+        arr[j] = temp;
+        
+        // Record this state
+        steps.push([...arr]);
+      }
+      
+      // Clear gap indices for this gap
+      for (let i = 0; i < n; i++) {
+        if (gapIndicesTrack[i] === gap) {
+          gapIndicesTrack[i] = null;
         }
       }
-      
-      // If this is the last gap (gap = 1), mark all elements as sorted
-      if (gap === 1) {
-        const sortedIndices = Array.from({ length: n }, (_, i) => i);
-        steps.push({
-          type: 'sorted',
-          indices: sortedIndices,
-          description: 'All elements are now sorted'
-        });
-      }
+      setGapIndices([...gapIndicesTrack]);
     }
     
-    return steps;
+    // Mark all elements as sorted
+    for (let i = 0; i < n; i++) {
+      setSortedIndices(prev => [...prev, i]);
+    }
+    
+    // Final state with sorted array
+    steps.push([...arr]);
+    
+    // Store all steps for visualization
+    setSteps(steps);
+    
+    return arr;
   };
 
-  const startShellSort = () => {
-    if (isSorting && !isPaused) return;
+  const runShellSort = () => {
+    setIsPlaying(true);
     
-    if (!animationSteps.length) {
-      // Generate all the steps first
-      const steps = generateShellSortSteps([...array]);
-      setAnimationSteps(steps);
-    }
-    
-    setIsSorting(true);
-    setIsPaused(false);
-    
-    // If we're resuming from a pause, continue from current step
-    animateStep(currentStep);
-  };
-
-  const animateStep = (step: number) => {
-    if (step >= animationSteps.length) {
-      // Animation complete
-      setIsSorting(false);
-      return;
-    }
-    
-    const currentAnimation = animationSteps[step];
-    setStepDescription(currentAnimation.description);
-    
-    // Reset previous state
-    setCurrentIndices([]);
-    setComparingIndices([]);
-    setCurrentIndex(null);
-    
-    // Update state based on the current animation step
-    if (currentAnimation.type === 'compare') {
-      setComparingIndices(currentAnimation.indices);
-      if (currentAnimation.indices.length === 1 && currentAnimation.currentValue !== undefined) {
-        setCurrentIndex(currentAnimation.indices[0]);
-      }
-    } else if (currentAnimation.type === 'shift') {
-      setCurrentIndices(currentAnimation.indices);
-      
-      // Perform the actual shift in the array
-      const newArray = [...array];
-      const [from, to] = currentAnimation.indices;
-      newArray[to] = newArray[from];
-      setArray(newArray);
-    } else if (currentAnimation.type === 'insert') {
-      setCurrentIndices(currentAnimation.indices);
-      
-      // Insert the current value
-      if (currentAnimation.currentValue !== undefined) {
-        const newArray = [...array];
-        const [position] = currentAnimation.indices;
-        newArray[position] = currentAnimation.currentValue;
-        setArray(newArray);
-      }
-    } else if (currentAnimation.type === 'sorted') {
-      setSortedIndices(prev => {
-        // Ensure we don't add duplicates
-        const newIndices = [...prev];
-        currentAnimation.indices.forEach(index => {
-          if (!newIndices.includes(index)) {
-            newIndices.push(index);
-          }
-        });
-        return newIndices;
-      });
-    } else if (currentAnimation.type === 'gap-change') {
-      if (currentAnimation.gapValue !== undefined) {
-        setCurrentGap(currentAnimation.gapValue);
-      }
-    } else if (currentAnimation.type === 'gap-mark') {
-      const newGapIndices = Array(array.length).fill(null);
-      currentAnimation.indices.forEach(index => {
-        newGapIndices[index] = currentAnimation.gapValue || null;
-      });
-      setGapIndices(newGapIndices);
-    }
-    
-    // Schedule the next step
-    setCurrentStep(step + 1);
-    
-    if (!isPaused) {
-      sortTimeoutRef.current = setTimeout(() => {
-        animateStep(step + 1);
-      }, speed);
-    }
-  };
-
-  const pauseAnimation = () => {
-    setIsPaused(true);
-    if (sortTimeoutRef.current) {
-      clearTimeout(sortTimeoutRef.current);
-    }
-  };
-
-  const resetAnimation = () => {
-    if (sortTimeoutRef.current) {
-      clearTimeout(sortTimeoutRef.current);
-    }
-    generateRandomArray();
-  };
-
-  const stepForward = () => {
-    if (currentStep >= animationSteps.length) return;
-    
-    // If not started or paused, generate steps first
-    if (!isSorting || isPaused) {
-      if (!animationSteps.length) {
-        const steps = generateShellSortSteps([...array]);
-        setAnimationSteps(steps);
-      }
-      setIsSorting(true);
-      setIsPaused(true);
-    } else {
-      pauseAnimation();
-    }
-    
-    // Step forward
-    animateStep(currentStep);
-  };
-
-  const stepBackward = () => {
-    if (currentStep <= 1) return;
-    
-    const newStep = currentStep - 2; // Go back 2 steps (current-1 and then animate)
-    
-    if (!isSorting || isPaused) {
-      if (!animationSteps.length) {
-        const steps = generateShellSortSteps([...array]);
-        setAnimationSteps(steps);
-      }
-      setIsSorting(true);
-      setIsPaused(true);
-    } else {
-      pauseAnimation();
-    }
-    
-    // Reset to initial state and replay up to the previous step
-    const initialArray = [...animationSteps[0].indices.length > 0 
-      ? array.map((_, i) => animationSteps[0].indices.includes(i) ? array[i] : 0) 
-      : array];
-    setArray(initialArray);
+    // Reset visualization state
+    setCurrentStep(0);
     setCurrentIndices([]);
     setComparingIndices([]);
     setSortedIndices([]);
-    setCurrentIndex(null);
-    setGapIndices(Array(array.length).fill(null));
     setCurrentGap(null);
+    setGapIndices(Array(array.length).fill(null));
     
-    // Replay all steps up to the new step
-    const tempArray = [...initialArray];
-    const newSortedIndices: number[] = [];
-    const newGapIndices = Array(array.length).fill(null);
-    
-    for (let i = 0; i <= newStep; i++) {
-      const step = animationSteps[i];
+    try {
+      // Run the shell sort algorithm
+      shellSort();
       
-      if (step.type === 'shift') {
-        const [from, to] = step.indices;
-        tempArray[to] = tempArray[from];
-      } else if (step.type === 'insert' && step.currentValue !== undefined) {
-        const [position] = step.indices;
-        tempArray[position] = step.currentValue;
-      } else if (step.type === 'sorted') {
-        step.indices.forEach(index => {
-          if (!newSortedIndices.includes(index)) {
-            newSortedIndices.push(index);
-          }
-        });
-      } else if (step.type === 'gap-change' && step.gapValue !== undefined) {
-        setCurrentGap(step.gapValue);
-      } else if (step.type === 'gap-mark') {
-        step.indices.forEach(index => {
-          newGapIndices[index] = step.gapValue || null;
-        });
-      }
+      // Mark sorting as complete
+      setTimeout(() => {
+        setIsPlaying(false);
+      }, 100);
+    } catch (error) {
+      console.error("Error during shell sort:", error);
+      setIsPlaying(false);
     }
-    
-    setArray(tempArray);
-    setSortedIndices(newSortedIndices);
-    setGapIndices(newGapIndices);
-    setCurrentStep(newStep + 1);
-    
-    // Set the description and visual state for the current step
-    const currentAnimation = animationSteps[newStep];
-    setStepDescription(currentAnimation.description);
-    
-    if (currentAnimation.type === 'compare') {
-      setComparingIndices(currentAnimation.indices);
-      setCurrentIndices([]);
-      if (currentAnimation.indices.length === 1 && currentAnimation.currentValue !== undefined) {
-        setCurrentIndex(currentAnimation.indices[0]);
-      }
-    } else if (currentAnimation.type === 'shift' || currentAnimation.type === 'insert') {
-      setCurrentIndices(currentAnimation.indices);
-      setComparingIndices([]);
-    } else {
-      setCurrentIndices([]);
-      setComparingIndices([]);
-    }
-  };
-
-  const handleSpeedChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSpeed(Number(e.target.value));
-  };
-
-  const handleSizeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setArraySize(Number(e.target.value));
-    generateRandomArray();
   };
 
   const handlePlayPause = () => {
-    if (isSorting) {
-      if (isPaused) {
-        // Resume
-        setIsPaused(false);
-        animateStep(currentStep);
-      } else {
-        // Pause
-        pauseAnimation();
-      }
+    if (isPlaying) {
+      setIsPlaying(false);
     } else {
-      // Start
-      startShellSort();
+      if (currentStep === 0 && steps.length <= 1) {
+        // If we're at the beginning and don't have steps yet, generate them
+        runShellSort();
+      } else {
+        // Otherwise just play existing steps
+        setIsPlaying(true);
+      }
     }
   };
+
+  const handleReset = () => {
+    generateRandomArray();
+  };
+
+  const handleStepForward = () => {
+    if (currentStep < steps.length - 1) {
+      setCurrentStep(prev => prev + 1);
+    }
+  };
+
+  const handleStepBackward = () => {
+    if (currentStep > 0) {
+      setCurrentStep(prev => prev - 1);
+    }
+  };
+
+  useEffect(() => {
+    let timeoutId: NodeJS.Timeout;
+    if (isPlaying && currentStep < steps.length - 1) {
+      timeoutId = setTimeout(() => {
+        setCurrentStep(prev => prev + 1);
+      }, speed);
+    }
+    return () => clearTimeout(timeoutId);
+  }, [isPlaying, currentStep, steps, speed]);
+
+  // Update array when currentStep changes
+  useEffect(() => {
+    if (steps.length > 0 && currentStep < steps.length) {
+      setArray(steps[currentStep]);
+    }
+  }, [currentStep, steps]);
 
   // Shell Sort implementation code
   const shellSortCode = `
@@ -714,37 +492,28 @@ function shellSort(arr) {
 
       <VisualizationContainer>
         <ControlsContainer>
-          <Button onClick={handlePlayPause}>
-            {isSorting && !isPaused ? <FiPause /> : <FiPlay />}
-            {isSorting && !isPaused ? 'Pause' : 'Play'}
+          <Button onClick={handlePlayPause} disabled={currentStep >= steps.length - 1 && steps.length > 1}>
+            {isPlaying ? <FiPause /> : <FiPlay />}
+            {isPlaying ? 'Pause' : 'Play'}
           </Button>
-          <Button onClick={resetAnimation}>
+          <Button onClick={handleReset}>
             <FiRefreshCw />
             Reset
           </Button>
-          <Button onClick={stepBackward} disabled={currentStep <= 1}>
+          <Button onClick={handleStepBackward} disabled={currentStep === 0}>
             <FiChevronsLeft />
             Step Back
           </Button>
-          <Button onClick={stepForward} disabled={currentStep >= animationSteps.length}>
+          <Button onClick={handleStepForward} disabled={currentStep >= steps.length - 1}>
             <FiChevronsRight />
             Step Forward
           </Button>
           <SpeedControl>
             <SpeedLabel>Speed:</SpeedLabel>
-            <SpeedSelect value={speed} onChange={handleSpeedChange}>
+            <SpeedSelect value={speed} onChange={(e) => setSpeed(Number(e.target.value))}>
               <option value={1000}>Slow</option>
               <option value={500}>Medium</option>
               <option value={250}>Fast</option>
-            </SpeedSelect>
-          </SpeedControl>
-          <SpeedControl>
-            <SpeedLabel>Array Size:</SpeedLabel>
-            <SpeedSelect value={arraySize} onChange={handleSizeChange}>
-              <option value={5}>5</option>
-              <option value={10}>10</option>
-              <option value={15}>15</option>
-              <option value={20}>20</option>
             </SpeedSelect>
           </SpeedControl>
         </ControlsContainer>
@@ -757,7 +526,6 @@ function shellSort(arr) {
               isActive={currentIndices.includes(index)}
               isComparing={comparingIndices.includes(index)}
               isSorted={sortedIndices.includes(index)}
-              isCurrent={currentIndex === index}
               gapIndex={gapIndices[index]}
               initial={{ scale: 1 }}
               animate={{ scale: currentIndices.includes(index) ? 1.1 : 1 }}
@@ -780,45 +548,56 @@ function shellSort(arr) {
           ))}
         </GapSequenceContainer>
 
-        {stepDescription && (
-          <StepInfo>
-            <StepDescription>
-              {stepDescription}
-            </StepDescription>
-          </StepInfo>
-        )}
-
-        <SectionTitle>Complexity Analysis</SectionTitle>
-        <ComplexityInfo>
-          <ComplexityItem>
-            <ComplexityLabel>Time Complexity (Best):</ComplexityLabel>
-            <ComplexityValue>O(n log n)</ComplexityValue>
-          </ComplexityItem>
-          <ComplexityItem>
-            <ComplexityLabel>Time Complexity (Average):</ComplexityLabel>
-            <ComplexityValue>O(n log² n)</ComplexityValue>
-          </ComplexityItem>
-          <ComplexityItem>
-            <ComplexityLabel>Time Complexity (Worst):</ComplexityLabel>
-            <ComplexityValue>O(n²)</ComplexityValue>
-          </ComplexityItem>
-          <ComplexityItem>
-            <ComplexityLabel>Space Complexity:</ComplexityLabel>
-            <ComplexityValue>O(1)</ComplexityValue>
-          </ComplexityItem>
-          <ComplexityItem>
-            <ComplexityLabel>Stability:</ComplexityLabel>
-            <ComplexityValue>Not Stable</ComplexityValue>
-          </ComplexityItem>
-        </ComplexityInfo>
-      
-        <CodeBlock>
-          <CodeTitle>Shell Sort Implementation</CodeTitle>
-          <SyntaxHighlighter language="javascript" style={vs2015} showLineNumbers>
-            {shellSortCode}
-          </SyntaxHighlighter>
-        </CodeBlock>
+        <StepInfo>
+          <div>Current Step: {currentStep + 1} / {steps.length}</div>
+          {currentIndices.length > 0 && (
+            <div>Active element: {array[currentIndices[0]]}</div>
+          )}
+          {comparingIndices.length === 2 && (
+            <div>Comparing: {array[comparingIndices[0]]} and {array[comparingIndices[1]]}</div>
+          )}
+          {currentGap !== null && (
+            <div>Processing elements with gap: {currentGap}</div>
+          )}
+          {sortedIndices.length > 0 && (
+            <div>Sorted elements: {sortedIndices.length} of {array.length}</div>
+          )}
+          {currentStep > 0 && steps.length > 1 && (
+            <div>Progress: {Math.round((currentStep / (steps.length - 1)) * 100)}%</div>
+          )}
+        </StepInfo>
       </VisualizationContainer>
+
+      <SectionTitle>Complexity Analysis</SectionTitle>
+      <ComplexityInfo>
+        <ComplexityItem>
+          <ComplexityLabel>Time Complexity (Best):</ComplexityLabel>
+          <ComplexityValue>O(n log n)</ComplexityValue>
+        </ComplexityItem>
+        <ComplexityItem>
+          <ComplexityLabel>Time Complexity (Average):</ComplexityLabel>
+          <ComplexityValue>O(n log² n)</ComplexityValue>
+        </ComplexityItem>
+        <ComplexityItem>
+          <ComplexityLabel>Time Complexity (Worst):</ComplexityLabel>
+          <ComplexityValue>O(n²)</ComplexityValue>
+        </ComplexityItem>
+        <ComplexityItem>
+          <ComplexityLabel>Space Complexity:</ComplexityLabel>
+          <ComplexityValue>O(1)</ComplexityValue>
+        </ComplexityItem>
+        <ComplexityItem>
+          <ComplexityLabel>Stability:</ComplexityLabel>
+          <ComplexityValue>Not Stable</ComplexityValue>
+        </ComplexityItem>
+      </ComplexityInfo>
+      
+      <CodeBlock>
+        <CodeTitle>Shell Sort Implementation</CodeTitle>
+        <SyntaxHighlighter language="javascript" style={vs2015} showLineNumbers>
+          {shellSortCode}
+        </SyntaxHighlighter>
+      </CodeBlock>
     </PageContainer>
   );
 };
