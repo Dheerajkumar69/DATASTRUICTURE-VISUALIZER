@@ -5,6 +5,7 @@ import { FiPlay, FiPause, FiRefreshCw, FiChevronsLeft, FiChevronsRight } from 'r
 import { Link } from 'react-router-dom';
 import { FaArrowLeft } from 'react-icons/fa';
 import AlgorithmDropdown from '../../../components/algorithms/AlgorithmDropdown';
+import ArrayControls from '../../../components/algorithms/ArrayControls';
 // Lazy load only the syntax highlighter component
 const SyntaxHighlighter = lazy(() => import('react-syntax-highlighter'));
 // Import the style directly, as it's small
@@ -443,6 +444,14 @@ const QuickSortPage: React.FC = () => {
   
   const generateRandomArray = (size = arraySize) => {
     const newArray = Array.from({ length: size }, () => Math.floor(Math.random() * 90) + 10);
+    resetArrayState(newArray);
+  };
+
+  const handleCustomArray = (customArray: number[]) => {
+    resetArrayState(customArray);
+  };
+
+  const resetArrayState = (newArray: number[]) => {
     setArray(newArray);
     setSteps([newArray]);
     setCurrentStep(0);
@@ -778,13 +787,24 @@ function partition(arr, low, high) {
         </NavigationRow>
         <PageTitle>Quick Sort Visualization</PageTitle>
         <PageDescription>
-          Quick Sort is a highly efficient sorting algorithm that uses a divide-and-conquer strategy. It selects a 'pivot' element and partitions the array around the pivot, putting elements smaller than the pivot to its left and larger elements to its right.
+          Quick Sort is a divide-and-conquer sorting algorithm that selects a 'pivot' element and 
+          partitions the array around the pivot. It has an average case time complexity of O(n log n), 
+          making it efficient for large datasets. However, its worst-case time complexity is O(n²).
         </PageDescription>
       </PageHeader>
 
       <VisualizationContainer>
+        <ArrayControls
+          onGenerateRandom={generateRandomArray}
+          onCustomArray={handleCustomArray}
+          arraySize={arraySize}
+          onSizeChange={setArraySize}
+          disabled={isPlaying}
+          maxValue={100}
+        />
+        
         <ControlsContainer>
-          <Button onClick={handlePlayPause} disabled={currentStep >= steps.length - 1 && steps.length > 1}>
+          <Button onClick={handlePlayPause} disabled={currentStep >= steps.length - 1}>
             {isPlaying ? <FiPause /> : <FiPlay />}
             {isPlaying ? 'Pause' : 'Play'}
           </Button>
@@ -794,11 +814,11 @@ function partition(arr, low, high) {
           </Button>
           <Button onClick={handleStepBackward} disabled={currentStep === 0}>
             <FiChevronsLeft />
-            Back
+            Step Back
           </Button>
           <Button onClick={handleStepForward} disabled={currentStep >= steps.length - 1}>
             <FiChevronsRight />
-            Forward
+            Step Forward
           </Button>
           <SpeedControl>
             <SpeedLabel>Speed:</SpeedLabel>
@@ -806,15 +826,6 @@ function partition(arr, low, high) {
               <option value={1000}>Slow</option>
               <option value={500}>Medium</option>
               <option value={250}>Fast</option>
-            </SpeedSelect>
-          </SpeedControl>
-          <SpeedControl>
-            <SpeedLabel>Size:</SpeedLabel>
-            <SpeedSelect value={arraySize} onChange={handleArraySizeChange}>
-              <option value={5}>5</option>
-              <option value={10}>10</option>
-              <option value={15}>15</option>
-              <option value={20}>20</option>
             </SpeedSelect>
           </SpeedControl>
         </ControlsContainer>

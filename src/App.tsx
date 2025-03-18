@@ -36,6 +36,12 @@ import BucketSortPage from './pages/algorithms/sorting/BucketSortPage';
 // Import placeholder component for unimplemented algorithms
 import ComingSoonPage from './pages/ComingSoonPage';
 
+// Import graph algorithm pages
+import GraphAlgorithmsPage from './pages/algorithms/GraphAlgorithmsPage';
+import AStarPage from './pages/algorithms/graph/AStarPage';
+import KruskalPage from './pages/algorithms/graph/KruskalPage';
+import PrimPage from './pages/algorithms/graph/PrimPage';
+
 const AppContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -79,6 +85,7 @@ const App: React.FC = () => {
               <Route path="/data-structures/trie" element={<TriePage />} />
               <Route path="/algorithms/sorting" element={<SortingPage />} />
               <Route path="/algorithms/searching" element={<SearchingPage />} />
+              <Route path="/algorithms/graph" element={<GraphAlgorithmsPage />} />
               
               {/* Sorting Algorithm Routes */}
               <Route path="/algorithms/sorting/bubble-sort" element={<BubbleSortPage />} />
@@ -91,6 +98,11 @@ const App: React.FC = () => {
               <Route path="/algorithms/sorting/counting-sort" element={<CountingSortPage />} />
               <Route path="/algorithms/sorting/radix-sort" element={<RadixSortPage />} />
               <Route path="/algorithms/sorting/bucket-sort" element={<BucketSortPage />} />
+              
+              {/* Graph Algorithm Routes */}
+              <Route path="/algorithms/graph/astar" element={<AStarPage />} />
+              <Route path="/algorithms/graph/kruskal" element={<KruskalPage />} />
+              <Route path="/algorithms/graph/prim" element={<PrimPage />} />
             </Routes>
           </ContentArea>
         </MainContent>

@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { vs2015 } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import AlgorithmDropdown from '../../../components/algorithms/AlgorithmDropdown';
+import ArrayControls from '../../../components/algorithms/ArrayControls';
 
 // Styled Components
 const PageContainer = styled.div`
@@ -254,13 +255,21 @@ const SelectionSortPage: React.FC = () => {
     };
   }, []);
   
-  const generateRandomArray = () => {
-    const newArray = Array.from({ length: arraySize }, () => Math.floor(Math.random() * 90) + 10);
+  const generateRandomArray = (size: number = arraySize) => {
+    const newArray = Array.from({ length: size }, () => Math.floor(Math.random() * 90) + 10);
+    resetArrayState(newArray);
+  };
+  
+  const handleCustomArray = (customArray: number[]) => {
+    resetArrayState(customArray);
+  };
+  
+  const resetArrayState = (newArray: number[]) => {
     setArray(newArray);
     setActiveIndices([]);
     setComparingIndices([]);
-    setSortedIndices([]);
     setMinIndex(undefined);
+    setSortedIndices([]);
     setCurrentStep(0);
     setAnimationSteps([]);
     setStepDescription('');
@@ -554,15 +563,16 @@ function selectionSort(arr) {
       </PageHeader>
       
       <VisualizationContainer>
+        <ArrayControls
+          onGenerateRandom={generateRandomArray}
+          onCustomArray={handleCustomArray}
+          arraySize={arraySize}
+          onSizeChange={setArraySize}
+          disabled={isSorting && !isPaused}
+          maxValue={100}
+        />
+        
         <ControlsContainer>
-          <ControlButton 
-            onClick={generateRandomArray} 
-            disabled={isSorting && !isPaused}
-          >
-            <FiRefreshCw size={16} />
-            New Array
-          </ControlButton>
-          
           {!isSorting || isPaused ? (
             <ControlButton 
               onClick={startSelectionSort} 
@@ -604,16 +614,6 @@ function selectionSort(arr) {
               <option value="500">Medium</option>
               <option value="200">Fast</option>
               <option value="50">Very Fast</option>
-            </SpeedSelect>
-          </SpeedControl>
-          
-          <SpeedControl>
-            <SpeedLabel>Array Size:</SpeedLabel>
-            <SpeedSelect value={arraySize} onChange={handleSizeChange}>
-              <option value="5">5</option>
-              <option value="10">10</option>
-              <option value="15">15</option>
-              <option value="20">20</option>
             </SpeedSelect>
           </SpeedControl>
         </ControlsContainer>

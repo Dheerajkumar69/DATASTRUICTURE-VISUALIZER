@@ -5,6 +5,7 @@ import { FiPlay, FiPause, FiRefreshCw, FiChevronsLeft, FiChevronsRight } from 'r
 import { Link } from 'react-router-dom';
 import { FaArrowLeft } from 'react-icons/fa';
 import AlgorithmDropdown from '../../../components/algorithms/AlgorithmDropdown';
+import ArrayControls from '../../../components/algorithms/ArrayControls';
 // Lazy load only the syntax highlighter component
 const SyntaxHighlighter = lazy(() => import('react-syntax-highlighter'));
 // Import the style directly, as it's small
@@ -420,6 +421,14 @@ const MergeSortPage: React.FC = () => {
   
   const generateRandomArray = (size = arraySize) => {
     const newArray = Array.from({ length: size }, () => Math.floor(Math.random() * 90) + 10);
+    resetArrayState(newArray);
+  };
+
+  const handleCustomArray = (customArray: number[]) => {
+    resetArrayState(customArray);
+  };
+
+  const resetArrayState = (newArray: number[]) => {
     setArray(newArray);
     setSteps([newArray]);
     setCurrentStep(0);
@@ -787,13 +796,24 @@ function merge(arr, low, mid, high) {
         </NavigationRow>
         <PageTitle>Merge Sort Visualization</PageTitle>
         <PageDescription>
-          Merge Sort is an efficient, stable, comparison-based, divide and conquer sorting algorithm. It divides the input array into two halves, recursively sorts them, and then merges the sorted halves to produce the sorted output.
+          Merge Sort is a divide-and-conquer sorting algorithm that divides the input array into two halves, 
+          recursively sorts them, and then merges the sorted halves to produce a sorted output. 
+          It has a time complexity of O(n log n) for all cases, making it efficient for large data sets.
         </PageDescription>
       </PageHeader>
 
       <VisualizationContainer>
+        <ArrayControls
+          onGenerateRandom={generateRandomArray}
+          onCustomArray={handleCustomArray}
+          arraySize={arraySize}
+          onSizeChange={setArraySize}
+          disabled={isPlaying}
+          maxValue={100}
+        />
+        
         <ControlsContainer>
-          <Button onClick={handlePlayPause} disabled={currentStep >= steps.length - 1 && steps.length > 1}>
+          <Button onClick={handlePlayPause} disabled={currentStep >= steps.length - 1}>
             {isPlaying ? <FiPause /> : <FiPlay />}
             {isPlaying ? 'Pause' : 'Play'}
           </Button>
@@ -803,11 +823,11 @@ function merge(arr, low, mid, high) {
           </Button>
           <Button onClick={handleStepBackward} disabled={currentStep === 0}>
             <FiChevronsLeft />
-            Back
+            Step Back
           </Button>
           <Button onClick={handleStepForward} disabled={currentStep >= steps.length - 1}>
             <FiChevronsRight />
-            Forward
+            Step Forward
           </Button>
           <SpeedControl>
             <SpeedLabel>Speed:</SpeedLabel>
@@ -815,15 +835,6 @@ function merge(arr, low, mid, high) {
               <option value={1000}>Slow</option>
               <option value={500}>Medium</option>
               <option value={250}>Fast</option>
-            </SpeedSelect>
-          </SpeedControl>
-          <SpeedControl>
-            <SpeedLabel>Size:</SpeedLabel>
-            <SpeedSelect value={arraySize} onChange={handleArraySizeChange}>
-              <option value={5}>5</option>
-              <option value={10}>10</option>
-              <option value={15}>15</option>
-              <option value={20}>20</option>
             </SpeedSelect>
           </SpeedControl>
         </ControlsContainer>

@@ -28,7 +28,11 @@ import {
   FiArrowUpLeft,
   FiArrowDownLeft,
   FiArrowRightCircle,
-  FiArrowLeftCircle
+  FiArrowLeftCircle,
+  FiGitMerge,
+  FiCompass,
+  FiGitCommit,
+  FiHome
 } from 'react-icons/fi';
 
 const SidebarContainer = styled.aside<{ isOpen: boolean }>`
@@ -221,6 +225,7 @@ const Sidebar: React.FC = () => {
   const [dataStructuresOpen, setDataStructuresOpen] = useState(true);
   const [algorithmsOpen, setAlgorithmsOpen] = useState(true);
   const [sortingAlgorithmsOpen, setSortingAlgorithmsOpen] = useState(false);
+  const [graphAlgorithmsOpen, setGraphAlgorithmsOpen] = useState(false);
   
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
@@ -303,68 +308,82 @@ const Sidebar: React.FC = () => {
               {algorithmsOpen ? <FiChevronDown size={18} /> : <FiChevronRight size={18} />}
             </SectionHeader>
             <SectionItems isOpen={algorithmsOpen}>
-              <div>
-                <SubSectionHeader 
-                  isOpen={sortingAlgorithmsOpen}
-                  onClick={() => setSortingAlgorithmsOpen(!sortingAlgorithmsOpen)}
-                >
-                  <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <FiBarChart2 size={16} style={{ marginRight: '0.5rem' }} />
-                    Sorting
-                  </div>
-                  {sortingAlgorithmsOpen ? <FiChevronDown size={16} /> : <FiChevronRight size={16} />}
-                </SubSectionHeader>
-                <NestedSectionItems isOpen={sortingAlgorithmsOpen}>
-                  <NestedNavItem to="/algorithms/sorting">
-                    <FiShuffle size={14} />
-                    All Sorting Algorithms
-                  </NestedNavItem>
-                  <NestedNavItem to="/algorithms/sorting/bubble-sort">
-                    <FiArrowUpCircle size={14} />
-                    Bubble Sort
-                  </NestedNavItem>
-                  <NestedNavItem to="/algorithms/sorting/selection-sort">
-                    <FiArrowDownCircle size={14} />
-                    Selection Sort
-                  </NestedNavItem>
-                  <NestedNavItem to="/algorithms/sorting/insertion-sort">
-                    <FiArrowRightCircle size={14} />
-                    Insertion Sort
-                  </NestedNavItem>
-                  <NestedNavItem to="/algorithms/sorting/merge-sort">
-                    <FiArrowLeftCircle size={14} />
-                    Merge Sort
-                  </NestedNavItem>
-                  <NestedNavItem to="/algorithms/sorting/quick-sort">
-                    <FiArrowUpRight size={14} />
-                    Quick Sort
-                  </NestedNavItem>
-                  <NestedNavItem to="/algorithms/sorting/counting-sort">
-                    <FiArrowDownRight size={14} />
-                    Counting Sort
-                  </NestedNavItem>
-                  <NestedNavItem to="/algorithms/sorting/radix-sort">
-                    <FiArrowUpLeft size={14} />
-                    Radix Sort
-                  </NestedNavItem>
-                  <NestedNavItem to="/algorithms/sorting/bucket-sort">
-                    <FiArrowDownLeft size={14} />
-                    Bucket Sort
-                  </NestedNavItem>
-                  <NestedNavItem to="/algorithms/sorting/heap-sort">
-                    <FiArrowUp size={14} />
-                    Heap Sort
-                  </NestedNavItem>
-                  <NestedNavItem to="/algorithms/sorting/shell-sort">
-                    <FiArrowDown size={14} />
-                    Shell Sort
-                  </NestedNavItem>
-                </NestedSectionItems>
-              </div>
+              <SubSectionHeader 
+                isOpen={sortingAlgorithmsOpen}
+                onClick={() => setSortingAlgorithmsOpen(!sortingAlgorithmsOpen)}
+              >
+                <span>Sorting</span>
+                {sortingAlgorithmsOpen ? <FiChevronDown size={16} /> : <FiChevronRight size={16} />}
+              </SubSectionHeader>
+              <NestedSectionItems isOpen={sortingAlgorithmsOpen}>
+                <NestedNavItem to="/algorithms/sorting/bubble-sort">
+                  <FiArrowUpRight size={14} />
+                  Bubble Sort
+                </NestedNavItem>
+                <NestedNavItem to="/algorithms/sorting/selection-sort">
+                  <FiArrowUpCircle size={14} />
+                  Selection Sort
+                </NestedNavItem>
+                <NestedNavItem to="/algorithms/sorting/insertion-sort">
+                  <FiArrowRightCircle size={14} />
+                  Insertion Sort
+                </NestedNavItem>
+                <NestedNavItem to="/algorithms/sorting/merge-sort">
+                  <FiGitMerge size={14} />
+                  Merge Sort
+                </NestedNavItem>
+                <NestedNavItem to="/algorithms/sorting/quick-sort">
+                  <FiArrowUpRight size={14} />
+                  Quick Sort
+                </NestedNavItem>
+                <NestedNavItem to="/algorithms/sorting/heap-sort">
+                  <FiArrowDownCircle size={14} />
+                  Heap Sort
+                </NestedNavItem>
+                <NestedNavItem to="/algorithms/sorting/shell-sort">
+                  <FiArrowLeftCircle size={14} />
+                  Shell Sort
+                </NestedNavItem>
+                <NestedNavItem to="/algorithms/sorting/counting-sort">
+                  <FiHash size={14} />
+                  Counting Sort
+                </NestedNavItem>
+                <NestedNavItem to="/algorithms/sorting/radix-sort">
+                  <FiFilter size={14} />
+                  Radix Sort
+                </NestedNavItem>
+                <NestedNavItem to="/algorithms/sorting/bucket-sort">
+                  <FiLayers size={14} />
+                  Bucket Sort
+                </NestedNavItem>
+              </NestedSectionItems>
+              
               <NavItem to="/algorithms/searching">
                 <FiSearch size={16} />
                 Searching
               </NavItem>
+              
+              <SubSectionHeader 
+                isOpen={graphAlgorithmsOpen}
+                onClick={() => setGraphAlgorithmsOpen(!graphAlgorithmsOpen)}
+              >
+                <span>Graph Algorithms</span>
+                {graphAlgorithmsOpen ? <FiChevronDown size={16} /> : <FiChevronRight size={16} />}
+              </SubSectionHeader>
+              <NestedSectionItems isOpen={graphAlgorithmsOpen}>
+                <NestedNavItem to="/algorithms/graph/astar">
+                  <FiCompass size={14} />
+                  A* Search
+                </NestedNavItem>
+                <NestedNavItem to="/algorithms/graph/kruskal">
+                  <FiGitMerge size={14} />
+                  Kruskal's Algorithm
+                </NestedNavItem>
+                <NestedNavItem to="/algorithms/graph/prim">
+                  <FiGitCommit size={14} />
+                  Prim's Algorithm
+                </NestedNavItem>
+              </NestedSectionItems>
             </SectionItems>
           </SidebarSection>
         </SidebarContent>
