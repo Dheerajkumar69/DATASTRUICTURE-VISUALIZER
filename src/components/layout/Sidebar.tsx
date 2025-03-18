@@ -34,6 +34,7 @@ import {
   FiGitCommit,
   FiHome
 } from 'react-icons/fi';
+import { FaChessQueen, FaRoute } from 'react-icons/fa';
 
 const SidebarContainer = styled.aside<{ isOpen: boolean }>`
   width: 280px;
@@ -226,6 +227,7 @@ const Sidebar: React.FC = () => {
   const [algorithmsOpen, setAlgorithmsOpen] = useState(true);
   const [sortingAlgorithmsOpen, setSortingAlgorithmsOpen] = useState(false);
   const [graphAlgorithmsOpen, setGraphAlgorithmsOpen] = useState(false);
+  const [backtrackingAlgorithmsOpen, setBacktrackingAlgorithmsOpen] = useState(false);
   
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
@@ -308,6 +310,11 @@ const Sidebar: React.FC = () => {
               {algorithmsOpen ? <FiChevronDown size={18} /> : <FiChevronRight size={18} />}
             </SectionHeader>
             <SectionItems isOpen={algorithmsOpen}>
+              <NavItem to="/algorithms">
+                <FiHome size={16} />
+                All Algorithms
+              </NavItem>
+              
               <SubSectionHeader 
                 isOpen={sortingAlgorithmsOpen}
                 onClick={() => setSortingAlgorithmsOpen(!sortingAlgorithmsOpen)}
@@ -382,6 +389,24 @@ const Sidebar: React.FC = () => {
                 <NestedNavItem to="/algorithms/graph/prim">
                   <FiGitCommit size={14} />
                   Prim's Algorithm
+                </NestedNavItem>
+              </NestedSectionItems>
+              
+              <SubSectionHeader 
+                isOpen={backtrackingAlgorithmsOpen}
+                onClick={() => setBacktrackingAlgorithmsOpen(!backtrackingAlgorithmsOpen)}
+              >
+                <span>Backtracking</span>
+                {backtrackingAlgorithmsOpen ? <FiChevronDown size={16} /> : <FiChevronRight size={16} />}
+              </SubSectionHeader>
+              <NestedSectionItems isOpen={backtrackingAlgorithmsOpen}>
+                <NestedNavItem to="/algorithms/backtracking/nqueens">
+                  <FaChessQueen size={14} />
+                  N-Queens
+                </NestedNavItem>
+                <NestedNavItem to="/algorithms/backtracking/traveling-salesman">
+                  <FaRoute size={14} />
+                  Traveling Salesman
                 </NestedNavItem>
               </NestedSectionItems>
             </SectionItems>

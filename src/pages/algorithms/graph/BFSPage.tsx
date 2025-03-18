@@ -212,7 +212,7 @@ const CodeContainer = styled.div`
   width: 100%;
 `;
 
-const PriorityQueueDisplay = styled.div`
+const QueueStateDisplay = styled.div`
   padding: 1rem;
   background-color: ${props => props.theme.colors.background};
   border: 1px solid ${props => props.theme.colors.border};
@@ -231,7 +231,7 @@ interface Node {
   color: string;
   textColor: string;
   visited: boolean;
-  inQueue: boolean;
+  queued: boolean;
   processing: boolean;
   label: string;
 }
@@ -251,13 +251,13 @@ interface Graph {
 
 interface Step {
   currentNode: number | null;
-  priorityQueue: number[];
+  queue: number[];
   visited: number[];
   description: string;
   graph: Graph;
 }
 
-const AStarPage: React.FC = () => {
+const BFSPage: React.FC = () => {
   const [graph, setGraph] = useState<Graph>({
     nodes: [],
     edges: [],
@@ -269,7 +269,6 @@ const AStarPage: React.FC = () => {
   const [isPaused, setIsPaused] = useState<boolean>(false);
   const [animationSpeed, setAnimationSpeed] = useState<number>(500);
   const [startNode, setStartNode] = useState<number>(0);
-  const [endNode, setEndNode] = useState<number>(1);
   const [nodeCount, setNodeCount] = useState<number>(8);
   const [stepInfo, setStepInfo] = useState<string>('');
   
@@ -389,7 +388,7 @@ const AStarPage: React.FC = () => {
         color: "#fff",
         textColor: "#000",
         visited: false,
-        inQueue: false,
+        queued: false,
         processing: false,
         label: i.toString()
       });
@@ -437,11 +436,11 @@ const AStarPage: React.FC = () => {
     renderGraph(newGraph);
     setSteps([]);
     setCurrentStep(0);
-    setStepInfo('Graph initialized. Select start and end nodes and click "Start" to begin A* Search.');
+    setStepInfo('Graph initialized. Select a start node and click "Start" to begin BFS traversal.');
   };
   
-  // Run A* Search algorithm
-  const runAStar = () => {
+  // Run BFS algorithm
+  const runBFS = () => {
     if (graph.nodes.length === 0) return;
     
     setIsAnimating(false);
@@ -450,34 +449,34 @@ const AStarPage: React.FC = () => {
     
     const steps: Step[] = [];
     const visited: number[] = [];
-    const priorityQueue: number[] = [startNode];
+    const queue: number[] = [startNode];
     
     // Create a deep copy of the graph for the initial state
     const initialGraph = JSON.parse(JSON.stringify(graph)) as Graph;
-    initialGraph.nodes[startNode].inQueue = true;
+    initialGraph.nodes[startNode].queued = true;
     initialGraph.nodes[startNode].color = "#ffcc00"; // Queued node color
     
     steps.push({
       currentNode: null,
-      priorityQueue: [...priorityQueue],
+      queue: [...queue],
       visited: [...visited],
-      description: `Added starting node ${startNode} to the priority queue.`,
+      description: `Added starting node ${startNode} to the queue.`,
       graph: initialGraph
     });
     
-    while (priorityQueue.length > 0) {
-      const currentNode = priorityQueue.shift()!;
+    while (queue.length > 0) {
+      const currentNode = queue.shift()!;
       visited.push(currentNode);
       
       // Create a new graph state with the current node as processing
       const processingGraph = JSON.parse(JSON.stringify(steps[steps.length - 1].graph)) as Graph;
       processingGraph.nodes[currentNode].processing = true;
-      processingGraph.nodes[currentNode].inQueue = false;
+      processingGraph.nodes[currentNode].queued = false;
       processingGraph.nodes[currentNode].color = "#ff9900"; // Processing node color
       
       steps.push({
         currentNode,
-        priorityQueue: [...priorityQueue],
+        queue: [...queue],
         visited: [...visited],
         description: `Processing node ${currentNode}.`,
         graph: processingGraph
@@ -487,12 +486,12 @@ const AStarPage: React.FC = () => {
       const neighbors = graph.adjacencyList[currentNode] || [];
       
       for (const neighbor of neighbors) {
-        if (!visited.includes(neighbor) && !priorityQueue.includes(neighbor)) {
-          priorityQueue.push(neighbor);
+        if (!visited.includes(neighbor) && !queue.includes(neighbor)) {
+          queue.push(neighbor);
           
           // Create a new graph state with the neighbor added to queue
           const neighborGraph = JSON.parse(JSON.stringify(steps[steps.length - 1].graph)) as Graph;
-          neighborGraph.nodes[neighbor].inQueue = true;
+          neighborGraph.nodes[neighbor].queued = true;
           neighborGraph.nodes[neighbor].color = "#ffcc00"; // Queued node color
           
           // Highlight the edge
@@ -507,9 +506,9 @@ const AStarPage: React.FC = () => {
           
           steps.push({
             currentNode,
-            priorityQueue: [...priorityQueue],
+            queue: [...queue],
             visited: [...visited],
-            description: `Added node ${neighbor} to the priority queue.`,
+            description: `Added node ${neighbor} to the queue.`,
             graph: neighborGraph
           });
         }
@@ -524,7 +523,7 @@ const AStarPage: React.FC = () => {
       
       steps.push({
         currentNode: null,
-        priorityQueue: [...priorityQueue],
+        queue: [...queue],
         visited: [...visited],
         description: `Marked node ${currentNode} as visited.`,
         graph: visitedGraph
@@ -534,9 +533,9 @@ const AStarPage: React.FC = () => {
     // Final step
     steps.push({
       currentNode: null,
-      priorityQueue: [],
+      queue: [],
       visited,
-      description: `A* Search complete. Visited nodes: ${visited.join(', ')}.`,
+      description: `BFS traversal complete. Visited nodes: ${visited.join(', ')}.`,
       graph: steps[steps.length - 1].graph
     });
     
@@ -547,7 +546,7 @@ const AStarPage: React.FC = () => {
   // Control methods
   const startAnimation = () => {
     if (steps.length === 0) {
-      runAStar();
+      runBFS();
     }
     setIsAnimating(true);
     setIsPaused(false);
@@ -566,7 +565,7 @@ const AStarPage: React.FC = () => {
     const resetGraph = JSON.parse(JSON.stringify(graph)) as Graph;
     resetGraph.nodes.forEach(node => {
       node.visited = false;
-      node.inQueue = false;
+      node.queued = false;
       node.processing = false;
       node.color = "#fff";
       node.textColor = "#000";
@@ -577,7 +576,7 @@ const AStarPage: React.FC = () => {
     });
     
     renderGraph(resetGraph);
-    setStepInfo('Reset. Click "Start" to begin A* Search.');
+    setStepInfo('Reset. Click "Start" to begin BFS traversal.');
   };
   
   const stepForward = () => {
@@ -604,45 +603,34 @@ const AStarPage: React.FC = () => {
     setStartNode(node);
   };
   
-  const handleEndNodeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const node = parseInt(e.target.value, 10);
-    setEndNode(node);
-  };
-  
   const handleSpeedChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setAnimationSpeed(parseInt(e.target.value, 10));
   };
   
-  // A* Search algorithm code
-  const aStarCode = `/**
- * Performs A* Search on a graph
+  // BFS algorithm code
+  const bfsCode = `/**
+ * Performs Breadth-First Search traversal on a graph
  * @param {Map<number, number[]>} graph - Adjacency list representation of the graph
- * @param {number} startNode - Node to start A* Search from
- * @param {number} endNode - Node to end A* Search at
+ * @param {number} startNode - Node to start BFS from
  * @returns {number[]} - The order of visited nodes
  */
-function aStar(graph, startNode, endNode) {
+function bfs(graph, startNode) {
   // Array to store visited nodes in order
   const visited = [];
   
-  // Priority queue for A* Search, starting with the initial node
-  const priorityQueue = [startNode];
+  // Queue for BFS, starting with the initial node
+  const queue = [startNode];
   
   // Set to keep track of visited nodes
   const visitedSet = new Set([startNode]);
   
-  // Continue until the priority queue is empty
-  while (priorityQueue.length > 0) {
+  // Continue until the queue is empty
+  while (queue.length > 0) {
     // Dequeue the next node
-    const currentNode = priorityQueue.shift();
+    const currentNode = queue.shift();
     
     // Add the current node to the visited list
     visited.push(currentNode);
-    
-    // If the end node is reached, return the visited order
-    if (currentNode === endNode) {
-      return visited;
-    }
     
     // Get neighbors of the current node
     const neighbors = graph.get(currentNode) || [];
@@ -651,8 +639,8 @@ function aStar(graph, startNode, endNode) {
     for (const neighbor of neighbors) {
       // If the neighbor hasn't been visited or queued yet
       if (!visitedSet.has(neighbor)) {
-        // Add to the priority queue and mark as visited
-        priorityQueue.push(neighbor);
+        // Add to the queue and mark as visited
+        queue.push(neighbor);
         visitedSet.add(neighbor);
       }
     }
@@ -671,9 +659,9 @@ graph.set(4, [1, 6]);
 graph.set(5, [2]);
 graph.set(6, [4]);
 
-const visitedOrder = aStar(graph, 0, 6);
-console.log("A* Search traversal order:", visitedOrder);
-// Output: A* Search traversal order: [0, 1, 2, 3, 4, 5, 6]
+const visitedOrder = bfs(graph, 0);
+console.log("BFS traversal order:", visitedOrder);
+// Output: BFS traversal order: [0, 1, 2, 3, 4, 5, 6]
 `;
   
   return (
@@ -685,20 +673,22 @@ console.log("A* Search traversal order:", visitedOrder);
       </NavigationRow>
       
       <PageHeader>
-        <PageTitle>A* Search Algorithm</PageTitle>
+        <PageTitle>Breadth-First Search (BFS)</PageTitle>
         <Description>
-          A* Search is an informed search algorithm that uses heuristics to find the shortest path in a graph. 
-          It is commonly used in AI and game development for pathfinding and graph traversal.
+          Breadth-First Search (BFS) is a graph traversal algorithm that explores all the vertices of a graph at the present depth 
+          prior to moving on to vertices at the next depth level. BFS uses a queue data structure for its implementation, which follows 
+          the First-In-First-Out (FIFO) principle. BFS is commonly used for finding the shortest path in unweighted graphs, 
+          connected components, and solving puzzles.
         </Description>
       </PageHeader>
       
       <InfoPanel>
-        <InfoTitle>How A* Search Works:</InfoTitle>
-        <InfoText>1. Select a starting node and add it to a priority queue.</InfoText>
-        <InfoText>2. Visit the node with the lowest cost (heuristic + path cost) and mark it as visited.</InfoText>
-        <InfoText>3. Add all unvisited neighbors of the current node to the priority queue.</InfoText>
-        <InfoText>4. Repeat steps 2-3 until the end node is reached or the queue is empty.</InfoText>
-        <InfoText>5. The order of visited nodes is the A* Search traversal of the graph.</InfoText>
+        <InfoTitle>How BFS Works:</InfoTitle>
+        <InfoText>1. Select a starting node and add it to a queue.</InfoText>
+        <InfoText>2. Visit the first node in the queue, mark it as visited, and remove it from the queue.</InfoText>
+        <InfoText>3. Add all unvisited neighbors of the current node to the queue.</InfoText>
+        <InfoText>4. Repeat steps 2-3 until the queue is empty.</InfoText>
+        <InfoText>5. The order of visited nodes is the BFS traversal of the graph.</InfoText>
       </InfoPanel>
       
       <InfoPanel>
@@ -721,15 +711,6 @@ console.log("A* Search traversal order:", visitedOrder);
         <InputGroup>
           <Label>Start Node:</Label>
           <Select value={startNode} onChange={handleStartNodeChange}>
-            {Array.from({ length: nodeCount }, (_, i) => (
-              <option key={i} value={i}>{i}</option>
-            ))}
-          </Select>
-        </InputGroup>
-        
-        <InputGroup>
-          <Label>End Node:</Label>
-          <Select value={endNode} onChange={handleEndNodeChange}>
             {Array.from({ length: nodeCount }, (_, i) => (
               <option key={i} value={i}>{i}</option>
             ))}
@@ -775,9 +756,9 @@ console.log("A* Search traversal order:", visitedOrder);
           {steps.length > 0 && currentStep < steps.length && (
             <div>
               <InfoText>
-                <strong>Priority Queue: </strong>
-                {steps[currentStep].priorityQueue.length > 0 
-                  ? `[${steps[currentStep].priorityQueue.join(', ')}]` 
+                <strong>Queue: </strong>
+                {steps[currentStep].queue.length > 0 
+                  ? `[${steps[currentStep].queue.join(', ')}]` 
                   : 'Empty'}
               </InfoText>
               <InfoText>
@@ -796,11 +777,11 @@ console.log("A* Search traversal order:", visitedOrder);
       </GraphContainer>
       
       <InfoPanel>
-        <InfoTitle>A* Search Algorithm Implementation:</InfoTitle>
+        <InfoTitle>BFS Algorithm Implementation:</InfoTitle>
         <CodeContainer>
           <Suspense fallback={<div>Loading code...</div>}>
             <SyntaxHighlighter language="javascript" style={vs2015}>
-              {aStarCode}
+              {bfsCode}
             </SyntaxHighlighter>
           </Suspense>
         </CodeContainer>
@@ -809,23 +790,26 @@ console.log("A* Search traversal order:", visitedOrder);
       <InfoPanel>
         <InfoTitle>Time & Space Complexity:</InfoTitle>
         <InfoText>
-          <strong>Time Complexity:</strong> O(E) where E is the number of edges in the graph. The complexity depends on the heuristic used.
+          <strong>Time Complexity:</strong> O(V + E) where V is the number of vertices and E is the number of edges in the graph.
+          Each vertex and edge is visited once.
         </InfoText>
         <InfoText>
-          <strong>Space Complexity:</strong> O(V) where V is the number of vertices. This is needed for the priority queue and visited set.
+          <strong>Space Complexity:</strong> O(V) where V is the number of vertices. This is needed for the queue and visited set.
         </InfoText>
       </InfoPanel>
       
       <InfoPanel>
-        <InfoTitle>Applications of A* Search:</InfoTitle>
-        <InfoText>• Pathfinding in games and AI</InfoText>
-        <InfoText>• Navigation systems</InfoText>
-        <InfoText>• Robotics and autonomous vehicles</InfoText>
-        <InfoText>• Network routing protocols</InfoText>
-        <InfoText>• Solving puzzles and mazes</InfoText>
+        <InfoTitle>Applications of BFS:</InfoTitle>
+        <InfoText>• Finding the shortest path in unweighted graphs</InfoText>
+        <InfoText>• Traversing a website's pages for web crawling</InfoText>
+        <InfoText>• Finding all connected components in a graph</InfoText>
+        <InfoText>• Testing if a graph is bipartite</InfoText>
+        <InfoText>• Building peer-to-peer networks</InfoText>
+        <InfoText>• GPS navigation systems</InfoText>
+        <InfoText>• Social networking websites (finding friends at a certain distance)</InfoText>
       </InfoPanel>
     </PageContainer>
   );
 };
 
-export default AStarPage; 
+export default BFSPage; 

@@ -20,6 +20,7 @@ import HeapPage from './pages/dataStructures/HeapPage';
 import TriePage from './pages/dataStructures/TriePage';
 import SortingPage from './pages/algorithms/SortingPage';
 import SearchingPage from './pages/algorithms/SearchingPage';
+import AlgorithmsPage from './pages/algorithms/AlgorithmsPage';
 
 // Import sorting algorithm pages
 import BubbleSortPage from './pages/algorithms/sorting/BubbleSortPage';
@@ -41,6 +42,11 @@ import GraphAlgorithmsPage from './pages/algorithms/GraphAlgorithmsPage';
 import AStarPage from './pages/algorithms/graph/AStarPage';
 import KruskalPage from './pages/algorithms/graph/KruskalPage';
 import PrimPage from './pages/algorithms/graph/PrimPage';
+
+// Import backtracking algorithm pages
+import BacktrackingPage from './pages/algorithms/backtracking/BacktrackingPage';
+import NQueensPage from './pages/algorithms/backtracking/NQueensPage';
+import TravelingSalesmanPage from './pages/algorithms/backtracking/TravelingSalesmanPage';
 
 const AppContainer = styled.div`
   display: flex;
@@ -83,9 +89,11 @@ const App: React.FC = () => {
               <Route path="/data-structures/hash-table" element={<HashTablePage />} />
               <Route path="/data-structures/heap" element={<HeapPage />} />
               <Route path="/data-structures/trie" element={<TriePage />} />
+              <Route path="/algorithms" element={<AlgorithmsPage />} />
               <Route path="/algorithms/sorting" element={<SortingPage />} />
               <Route path="/algorithms/searching" element={<SearchingPage />} />
               <Route path="/algorithms/graph" element={<GraphAlgorithmsPage />} />
+              <Route path="/algorithms/backtracking" element={<BacktrackingPage />} />
               
               {/* Sorting Algorithm Routes */}
               <Route path="/algorithms/sorting/bubble-sort" element={<BubbleSortPage />} />
@@ -103,6 +111,10 @@ const App: React.FC = () => {
               <Route path="/algorithms/graph/astar" element={<AStarPage />} />
               <Route path="/algorithms/graph/kruskal" element={<KruskalPage />} />
               <Route path="/algorithms/graph/prim" element={<PrimPage />} />
+              
+              {/* Backtracking Algorithm Routes */}
+              <Route path="/algorithms/backtracking/nqueens" element={<NQueensPage />} />
+              <Route path="/algorithms/backtracking/traveling-salesman" element={<TravelingSalesmanPage />} />
             </Routes>
           </ContentArea>
         </MainContent>

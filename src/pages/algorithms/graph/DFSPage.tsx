@@ -212,7 +212,7 @@ const CodeContainer = styled.div`
   width: 100%;
 `;
 
-const PriorityQueueDisplay = styled.div`
+const StackStateDisplay = styled.div`
   padding: 1rem;
   background-color: ${props => props.theme.colors.background};
   border: 1px solid ${props => props.theme.colors.border};
@@ -231,7 +231,7 @@ interface Node {
   color: string;
   textColor: string;
   visited: boolean;
-  inQueue: boolean;
+  inStack: boolean;
   processing: boolean;
   label: string;
 }
@@ -251,13 +251,13 @@ interface Graph {
 
 interface Step {
   currentNode: number | null;
-  priorityQueue: number[];
+  stack: number[];
   visited: number[];
   description: string;
   graph: Graph;
 }
 
-const AStarPage: React.FC = () => {
+const DFSPage: React.FC = () => {
   const [graph, setGraph] = useState<Graph>({
     nodes: [],
     edges: [],
@@ -269,7 +269,6 @@ const AStarPage: React.FC = () => {
   const [isPaused, setIsPaused] = useState<boolean>(false);
   const [animationSpeed, setAnimationSpeed] = useState<number>(500);
   const [startNode, setStartNode] = useState<number>(0);
-  const [endNode, setEndNode] = useState<number>(1);
   const [nodeCount, setNodeCount] = useState<number>(8);
   const [stepInfo, setStepInfo] = useState<string>('');
   
@@ -389,7 +388,7 @@ const AStarPage: React.FC = () => {
         color: "#fff",
         textColor: "#000",
         visited: false,
-        inQueue: false,
+        inStack: false,
         processing: false,
         label: i.toString()
       });
@@ -437,11 +436,11 @@ const AStarPage: React.FC = () => {
     renderGraph(newGraph);
     setSteps([]);
     setCurrentStep(0);
-    setStepInfo('Graph initialized. Select start and end nodes and click "Start" to begin A* Search.');
+    setStepInfo('Graph initialized. Select a start node and click "Start" to begin DFS traversal.');
   };
   
-  // Run A* Search algorithm
-  const runAStar = () => {
+  // Run DFS algorithm
+  const runDFS = () => {
     if (graph.nodes.length === 0) return;
     
     setIsAnimating(false);
@@ -450,50 +449,58 @@ const AStarPage: React.FC = () => {
     
     const steps: Step[] = [];
     const visited: number[] = [];
-    const priorityQueue: number[] = [startNode];
+    const stack: number[] = [startNode];
     
     // Create a deep copy of the graph for the initial state
     const initialGraph = JSON.parse(JSON.stringify(graph)) as Graph;
-    initialGraph.nodes[startNode].inQueue = true;
-    initialGraph.nodes[startNode].color = "#ffcc00"; // Queued node color
+    initialGraph.nodes[startNode].inStack = true;
+    initialGraph.nodes[startNode].color = "#9c27b0"; // Stack node color (purple)
     
     steps.push({
       currentNode: null,
-      priorityQueue: [...priorityQueue],
+      stack: [...stack],
       visited: [...visited],
-      description: `Added starting node ${startNode} to the priority queue.`,
+      description: `Added starting node ${startNode} to the stack.`,
       graph: initialGraph
     });
     
-    while (priorityQueue.length > 0) {
-      const currentNode = priorityQueue.shift()!;
+    while (stack.length > 0) {
+      const currentNode = stack.pop()!;
+      
+      if (visited.includes(currentNode)) {
+        continue;
+      }
+      
       visited.push(currentNode);
       
       // Create a new graph state with the current node as processing
       const processingGraph = JSON.parse(JSON.stringify(steps[steps.length - 1].graph)) as Graph;
       processingGraph.nodes[currentNode].processing = true;
-      processingGraph.nodes[currentNode].inQueue = false;
-      processingGraph.nodes[currentNode].color = "#ff9900"; // Processing node color
+      processingGraph.nodes[currentNode].inStack = false;
+      processingGraph.nodes[currentNode].color = "#ff9900"; // Processing node color (orange)
       
       steps.push({
         currentNode,
-        priorityQueue: [...priorityQueue],
+        stack: [...stack],
         visited: [...visited],
         description: `Processing node ${currentNode}.`,
         graph: processingGraph
       });
       
       // Get neighbors of current node
-      const neighbors = graph.adjacencyList[currentNode] || [];
+      const neighbors = [...(graph.adjacencyList[currentNode] || [])];
+      
+      // Reverse to get correct DFS order (since we're using a stack)
+      neighbors.reverse();
       
       for (const neighbor of neighbors) {
-        if (!visited.includes(neighbor) && !priorityQueue.includes(neighbor)) {
-          priorityQueue.push(neighbor);
+        if (!visited.includes(neighbor) && !stack.includes(neighbor)) {
+          stack.push(neighbor);
           
-          // Create a new graph state with the neighbor added to queue
+          // Create a new graph state with the neighbor added to stack
           const neighborGraph = JSON.parse(JSON.stringify(steps[steps.length - 1].graph)) as Graph;
-          neighborGraph.nodes[neighbor].inQueue = true;
-          neighborGraph.nodes[neighbor].color = "#ffcc00"; // Queued node color
+          neighborGraph.nodes[neighbor].inStack = true;
+          neighborGraph.nodes[neighbor].color = "#9c27b0"; // Stack node color (purple)
           
           // Highlight the edge
           const edgeIndex = neighborGraph.edges.findIndex(
@@ -502,14 +509,14 @@ const AStarPage: React.FC = () => {
           );
           
           if (edgeIndex !== -1) {
-            neighborGraph.edges[edgeIndex].color = "#3498db"; // Highlighted edge color
+            neighborGraph.edges[edgeIndex].color = "#3498db"; // Highlighted edge color (blue)
           }
           
           steps.push({
             currentNode,
-            priorityQueue: [...priorityQueue],
+            stack: [...stack],
             visited: [...visited],
-            description: `Added node ${neighbor} to the priority queue.`,
+            description: `Added node ${neighbor} to the stack.`,
             graph: neighborGraph
           });
         }
@@ -519,12 +526,12 @@ const AStarPage: React.FC = () => {
       const visitedGraph = JSON.parse(JSON.stringify(steps[steps.length - 1].graph)) as Graph;
       visitedGraph.nodes[currentNode].visited = true;
       visitedGraph.nodes[currentNode].processing = false;
-      visitedGraph.nodes[currentNode].color = "#4caf50"; // Visited node color
+      visitedGraph.nodes[currentNode].color = "#4caf50"; // Visited node color (green)
       visitedGraph.nodes[currentNode].textColor = "#fff";
       
       steps.push({
         currentNode: null,
-        priorityQueue: [...priorityQueue],
+        stack: [...stack],
         visited: [...visited],
         description: `Marked node ${currentNode} as visited.`,
         graph: visitedGraph
@@ -534,9 +541,9 @@ const AStarPage: React.FC = () => {
     // Final step
     steps.push({
       currentNode: null,
-      priorityQueue: [],
+      stack: [],
       visited,
-      description: `A* Search complete. Visited nodes: ${visited.join(', ')}.`,
+      description: `DFS traversal complete. Visited nodes: ${visited.join(', ')}.`,
       graph: steps[steps.length - 1].graph
     });
     
@@ -547,7 +554,7 @@ const AStarPage: React.FC = () => {
   // Control methods
   const startAnimation = () => {
     if (steps.length === 0) {
-      runAStar();
+      runDFS();
     }
     setIsAnimating(true);
     setIsPaused(false);
@@ -566,7 +573,7 @@ const AStarPage: React.FC = () => {
     const resetGraph = JSON.parse(JSON.stringify(graph)) as Graph;
     resetGraph.nodes.forEach(node => {
       node.visited = false;
-      node.inQueue = false;
+      node.inStack = false;
       node.processing = false;
       node.color = "#fff";
       node.textColor = "#000";
@@ -577,7 +584,7 @@ const AStarPage: React.FC = () => {
     });
     
     renderGraph(resetGraph);
-    setStepInfo('Reset. Click "Start" to begin A* Search.');
+    setStepInfo('Reset. Click "Start" to begin DFS traversal.');
   };
   
   const stepForward = () => {
@@ -604,60 +611,76 @@ const AStarPage: React.FC = () => {
     setStartNode(node);
   };
   
-  const handleEndNodeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const node = parseInt(e.target.value, 10);
-    setEndNode(node);
-  };
-  
   const handleSpeedChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setAnimationSpeed(parseInt(e.target.value, 10));
   };
   
-  // A* Search algorithm code
-  const aStarCode = `/**
- * Performs A* Search on a graph
+  // DFS algorithm code
+  const dfsCode = `/**
+ * Performs Depth-First Search traversal on a graph
  * @param {Map<number, number[]>} graph - Adjacency list representation of the graph
- * @param {number} startNode - Node to start A* Search from
- * @param {number} endNode - Node to end A* Search at
+ * @param {number} startNode - Node to start DFS from
  * @returns {number[]} - The order of visited nodes
  */
-function aStar(graph, startNode, endNode) {
+function dfs(graph, startNode) {
   // Array to store visited nodes in order
   const visited = [];
   
-  // Priority queue for A* Search, starting with the initial node
-  const priorityQueue = [startNode];
-  
   // Set to keep track of visited nodes
-  const visitedSet = new Set([startNode]);
+  const visitedSet = new Set();
   
-  // Continue until the priority queue is empty
-  while (priorityQueue.length > 0) {
-    // Dequeue the next node
-    const currentNode = priorityQueue.shift();
+  // Stack for DFS (iterative implementation)
+  const stack = [startNode];
+  
+  while (stack.length > 0) {
+    // Pop the top node from the stack
+    const currentNode = stack.pop();
     
-    // Add the current node to the visited list
-    visited.push(currentNode);
-    
-    // If the end node is reached, return the visited order
-    if (currentNode === endNode) {
-      return visited;
+    // Skip if already visited
+    if (visitedSet.has(currentNode)) {
+      continue;
     }
+    
+    // Mark as visited and add to result
+    visitedSet.add(currentNode);
+    visited.push(currentNode);
     
     // Get neighbors of the current node
     const neighbors = graph.get(currentNode) || [];
     
-    // Process each neighbor
-    for (const neighbor of neighbors) {
-      // If the neighbor hasn't been visited or queued yet
+    // Add neighbors to stack in reverse order
+    // (to process them in the original order when popped)
+    for (let i = neighbors.length - 1; i >= 0; i--) {
+      const neighbor = neighbors[i];
       if (!visitedSet.has(neighbor)) {
-        // Add to the priority queue and mark as visited
-        priorityQueue.push(neighbor);
-        visitedSet.add(neighbor);
+        stack.push(neighbor);
       }
     }
   }
   
+  return visited;
+}
+
+// Recursive DFS implementation
+function dfsRecursive(graph, startNode) {
+  const visited = [];
+  const visitedSet = new Set();
+  
+  function explore(node) {
+    // Mark the current node as visited
+    visitedSet.add(node);
+    visited.push(node);
+    
+    // Explore all unvisited neighbors
+    const neighbors = graph.get(node) || [];
+    for (const neighbor of neighbors) {
+      if (!visitedSet.has(neighbor)) {
+        explore(neighbor);
+      }
+    }
+  }
+  
+  explore(startNode);
   return visited;
 }
 
@@ -671,10 +694,9 @@ graph.set(4, [1, 6]);
 graph.set(5, [2]);
 graph.set(6, [4]);
 
-const visitedOrder = aStar(graph, 0, 6);
-console.log("A* Search traversal order:", visitedOrder);
-// Output: A* Search traversal order: [0, 1, 2, 3, 4, 5, 6]
-`;
+const visitedOrder = dfs(graph, 0);
+console.log("DFS traversal order:", visitedOrder);
+// Example output: DFS traversal order: [0, 2, 5, 1, 4, 6, 3]`;
   
   return (
     <PageContainer>
@@ -685,20 +707,21 @@ console.log("A* Search traversal order:", visitedOrder);
       </NavigationRow>
       
       <PageHeader>
-        <PageTitle>A* Search Algorithm</PageTitle>
+        <PageTitle>Depth-First Search (DFS)</PageTitle>
         <Description>
-          A* Search is an informed search algorithm that uses heuristics to find the shortest path in a graph. 
-          It is commonly used in AI and game development for pathfinding and graph traversal.
+          Depth-First Search (DFS) is a graph traversal algorithm that explores as far as possible along each branch before backtracking. 
+          DFS uses a stack data structure (or recursion) for its implementation, which follows the Last-In-First-Out (LIFO) principle. 
+          DFS is commonly used for cycle detection, topological sorting, finding connected components, and solving puzzles like mazes.
         </Description>
       </PageHeader>
       
       <InfoPanel>
-        <InfoTitle>How A* Search Works:</InfoTitle>
-        <InfoText>1. Select a starting node and add it to a priority queue.</InfoText>
-        <InfoText>2. Visit the node with the lowest cost (heuristic + path cost) and mark it as visited.</InfoText>
-        <InfoText>3. Add all unvisited neighbors of the current node to the priority queue.</InfoText>
-        <InfoText>4. Repeat steps 2-3 until the end node is reached or the queue is empty.</InfoText>
-        <InfoText>5. The order of visited nodes is the A* Search traversal of the graph.</InfoText>
+        <InfoTitle>How DFS Works:</InfoTitle>
+        <InfoText>1. Select a starting node, mark it as visited, and add it to a stack.</InfoText>
+        <InfoText>2. Pop a node from the stack and explore all its unvisited adjacent nodes.</InfoText>
+        <InfoText>3. For each unvisited neighbor, mark it, add it to the stack, and recursively apply step 2.</InfoText>
+        <InfoText>4. Backtrack when all neighbors of a node have been visited.</InfoText>
+        <InfoText>5. Repeat steps 2-4 until the stack is empty.</InfoText>
       </InfoPanel>
       
       <InfoPanel>
@@ -721,15 +744,6 @@ console.log("A* Search traversal order:", visitedOrder);
         <InputGroup>
           <Label>Start Node:</Label>
           <Select value={startNode} onChange={handleStartNodeChange}>
-            {Array.from({ length: nodeCount }, (_, i) => (
-              <option key={i} value={i}>{i}</option>
-            ))}
-          </Select>
-        </InputGroup>
-        
-        <InputGroup>
-          <Label>End Node:</Label>
-          <Select value={endNode} onChange={handleEndNodeChange}>
             {Array.from({ length: nodeCount }, (_, i) => (
               <option key={i} value={i}>{i}</option>
             ))}
@@ -775,9 +789,9 @@ console.log("A* Search traversal order:", visitedOrder);
           {steps.length > 0 && currentStep < steps.length && (
             <div>
               <InfoText>
-                <strong>Priority Queue: </strong>
-                {steps[currentStep].priorityQueue.length > 0 
-                  ? `[${steps[currentStep].priorityQueue.join(', ')}]` 
+                <strong>Stack: </strong>
+                {steps[currentStep].stack.length > 0 
+                  ? `[${steps[currentStep].stack.join(', ')}]` 
                   : 'Empty'}
               </InfoText>
               <InfoText>
@@ -796,11 +810,11 @@ console.log("A* Search traversal order:", visitedOrder);
       </GraphContainer>
       
       <InfoPanel>
-        <InfoTitle>A* Search Algorithm Implementation:</InfoTitle>
+        <InfoTitle>DFS Algorithm Implementation:</InfoTitle>
         <CodeContainer>
           <Suspense fallback={<div>Loading code...</div>}>
             <SyntaxHighlighter language="javascript" style={vs2015}>
-              {aStarCode}
+              {dfsCode}
             </SyntaxHighlighter>
           </Suspense>
         </CodeContainer>
@@ -809,23 +823,26 @@ console.log("A* Search traversal order:", visitedOrder);
       <InfoPanel>
         <InfoTitle>Time & Space Complexity:</InfoTitle>
         <InfoText>
-          <strong>Time Complexity:</strong> O(E) where E is the number of edges in the graph. The complexity depends on the heuristic used.
+          <strong>Time Complexity:</strong> O(V + E) where V is the number of vertices and E is the number of edges in the graph.
+          Each vertex and edge is visited once.
         </InfoText>
         <InfoText>
-          <strong>Space Complexity:</strong> O(V) where V is the number of vertices. This is needed for the priority queue and visited set.
+          <strong>Space Complexity:</strong> O(V) where V is the number of vertices. This is needed for the stack (or recursion stack) and visited set.
         </InfoText>
       </InfoPanel>
       
       <InfoPanel>
-        <InfoTitle>Applications of A* Search:</InfoTitle>
-        <InfoText>• Pathfinding in games and AI</InfoText>
-        <InfoText>• Navigation systems</InfoText>
-        <InfoText>• Robotics and autonomous vehicles</InfoText>
-        <InfoText>• Network routing protocols</InfoText>
-        <InfoText>• Solving puzzles and mazes</InfoText>
+        <InfoTitle>Applications of DFS:</InfoTitle>
+        <InfoText>• Cycle detection in graphs</InfoText>
+        <InfoText>• Topological sorting for DAGs (Directed Acyclic Graphs)</InfoText>
+        <InfoText>• Finding strongly connected components in directed graphs</InfoText>
+        <InfoText>• Solving puzzles such as mazes</InfoText>
+        <InfoText>• Generating spanning trees</InfoText>
+        <InfoText>• Pathfinding in games</InfoText>
+        <InfoText>• Analyzing and traversing file systems</InfoText>
       </InfoPanel>
     </PageContainer>
   );
 };
 
-export default AStarPage; 
+export default DFSPage; 
