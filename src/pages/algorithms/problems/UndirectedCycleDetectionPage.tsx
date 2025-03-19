@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import { FaArrowLeft, FaPlay, FaPause, FaUndo, FaStepForward, FaStepBackward, FaRandom } from 'react-icons/fa';
+import { FaArrowLeft, FaPlay, FaPause, FaUndo, FaStepForward, FaStepBackward } from 'react-icons/fa';
 
 // Define vertex and edge types
 type VertexState = 'unvisited' | 'visiting' | 'visited';
@@ -42,10 +42,7 @@ const PageContainer = styled.div`
   padding: 2rem;
   height: 100%;
   overflow-y: auto;
-
-  @media (max-width: 768px) {
-    padding: 1rem;
-  }
+  @media (max-width: 768px) { padding: 1rem; }
 `;
 
 const NavigationRow = styled.div`
@@ -62,13 +59,8 @@ const BackButton = styled(Link)`
   text-decoration: none;
   margin-right: 1rem;
   
-  &:hover {
-    text-decoration: underline;
-  }
-  
-  svg {
-    margin-right: 0.5rem;
-  }
+  &:hover { text-decoration: underline; }
+  svg { margin-right: 0.5rem; }
 `;
 
 const PageHeader = styled.div`
@@ -110,18 +102,9 @@ const Button = styled.button`
   font-weight: 500;
   transition: all 0.2s ease;
   
-  &:hover {
-    background-color: ${props => props.theme.colors.hover};
-  }
-  
-  svg {
-    margin-right: 0.5rem;
-  }
-  
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
+  &:hover { background-color: ${props => props.theme.colors.hover}; }
+  svg { margin-right: 0.5rem; }
+  &:disabled { opacity: 0.5; cursor: not-allowed; }
 `;
 
 const GraphContainer = styled.div`
@@ -184,6 +167,41 @@ const Select = styled.select`
   color: ${props => props.theme.colors.text};
 `;
 
+// Separate components for better modularity
+const AlgorithmExplanation = () => (
+  <InfoPanel>
+    <InfoTitle>How Cycle Detection Works in Undirected Graphs:</InfoTitle>
+    <InfoText>1. Start a DFS traversal from any vertex.</InfoText>
+    <InfoText>2. For each vertex, mark it as "visiting" when first encountered.</InfoText>
+    <InfoText>3. Recursively visit all adjacent unvisited vertices.</InfoText>
+    <InfoText>4. If we encounter an already "visiting" vertex that is not the parent of the current vertex, we've found a cycle.</InfoText>
+    <InfoText>5. Mark vertices as "visited" once all their neighbors have been processed.</InfoText>
+  </InfoPanel>
+);
+
+const Complexity = () => (
+  <InfoPanel>
+    <InfoTitle>Time & Space Complexity:</InfoTitle>
+    <InfoText>
+      <strong>Time Complexity:</strong> O(V + E) where V is the number of vertices and E is the number of edges.
+    </InfoText>
+    <InfoText>
+      <strong>Space Complexity:</strong> O(V) for the recursion stack and visited array.
+    </InfoText>
+  </InfoPanel>
+);
+
+const Applications = () => (
+  <InfoPanel>
+    <InfoTitle>Applications of Cycle Detection:</InfoTitle>
+    <InfoText>• Deadlock detection in operating systems</InfoText>
+    <InfoText>• Circuit analysis in electrical engineering</InfoText>
+    <InfoText>• Checking for circular dependencies in software packages</InfoText>
+    <InfoText>• Verifying that a graph is a tree (a tree is a connected graph with no cycles)</InfoText>
+    <InfoText>• Finding minimal spanning trees in networks</InfoText>
+  </InfoPanel>
+);
+
 const UndirectedCycleDetectionPage: React.FC = () => {
   const [graph, setGraph] = useState<Graph>({
     vertices: [],
@@ -205,13 +223,13 @@ const UndirectedCycleDetectionPage: React.FC = () => {
   }, []);
   
   // Generate a random graph
-  const generateRandomGraph = () => {
+  const generateRandomGraph = useCallback(() => {
     const newVertices: Vertex[] = Array.from({ length: 8 }, (_, i) => ({
       id: i,
       x: 0,
       y: 0,
       name: String.fromCharCode(65 + i),
-      state: 'unvisited' as const
+      state: 'unvisited'
     }));
     
     const newEdges: Edge[] = [];
@@ -224,7 +242,7 @@ const UndirectedCycleDetectionPage: React.FC = () => {
           newEdges.push({
             from: i,
             to: j,
-            state: 'normal' as const
+            state: 'normal'
           });
           adjList[i].push(j);
           adjList[j].push(i);
@@ -239,7 +257,7 @@ const UndirectedCycleDetectionPage: React.FC = () => {
         newEdges.push({
           from: i,
           to: j,
-          state: 'normal' as const
+          state: 'normal'
         });
         adjList[i].push(j);
         adjList[j].push(i);
@@ -264,18 +282,17 @@ const UndirectedCycleDetectionPage: React.FC = () => {
     });
     setSteps([]);
     setCurrentStep(0);
-  };
+  }, []);
   
   // Setup canvas and render
   useEffect(() => {
-    if (canvasRef.current) {
-      const canvas = canvasRef.current;
-      const ctx = canvas.getContext('2d');
-      
-      if (ctx) {
-        renderGraph(ctx);
-      }
-    }
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    
+    renderGraph(ctx);
   }, [graph, currentStep, steps]);
   
   // Animation timer
@@ -296,21 +313,21 @@ const UndirectedCycleDetectionPage: React.FC = () => {
   }, [isAnimating, isPaused, currentStep, steps, animationSpeed]);
   
   // Run DFS to detect cycles
-  const detectCycle = () => {
+  const detectCycle = useCallback(() => {
     if (graph.vertices.length === 0) return;
     
     setIsAnimating(false);
     setIsPaused(false);
     setCurrentStep(0);
     
-    const steps: Step[] = [];
+    const newSteps: Step[] = [];
     
     // Make copies of vertices and edges
     let verticesCopy: Vertex[] = graph.vertices.map(v => ({ ...v, state: 'unvisited' }));
     let edgesCopy: Edge[] = graph.edges.map(e => ({ ...e, state: 'normal' }));
     
     // Initial step
-    steps.push({
+    newSteps.push({
       vertices: [...verticesCopy],
       edges: [...edgesCopy],
       currentVertex: null,
@@ -318,12 +335,9 @@ const UndirectedCycleDetectionPage: React.FC = () => {
       description: `Starting cycle detection from vertex ${verticesCopy[0].name} using DFS.`
     });
     
-    // Track parent for each vertex in DFS traversal
-    const parent: number[] = Array(verticesCopy.length).fill(-1);
-    
     // Create adjacency list
     const adjList: number[][] = Array(verticesCopy.length).fill(0).map(() => []);
-    edgesCopy.forEach((edge, idx) => {
+    edgesCopy.forEach((edge) => {
       adjList[edge.from].push(edge.to);
       adjList[edge.to].push(edge.from); // Undirected graph
     });
@@ -334,7 +348,7 @@ const UndirectedCycleDetectionPage: React.FC = () => {
       verticesCopy = [...verticesCopy];
       verticesCopy[vertex] = { ...verticesCopy[vertex], state: 'visiting' };
       
-      steps.push({
+      newSteps.push({
         vertices: [...verticesCopy],
         edges: [...edgesCopy],
         currentVertex: vertex,
@@ -353,7 +367,7 @@ const UndirectedCycleDetectionPage: React.FC = () => {
           edgesCopy = [...edgesCopy];
           edgesCopy[i] = { ...edgesCopy[i], state: 'discovery' };
           
-          steps.push({
+          newSteps.push({
             vertices: [...verticesCopy],
             edges: [...edgesCopy],
             currentVertex: vertex,
@@ -370,7 +384,7 @@ const UndirectedCycleDetectionPage: React.FC = () => {
           edgesCopy = [...edgesCopy];
           edgesCopy[i] = { ...edgesCopy[i], state: 'cycle' };
           
-          steps.push({
+          newSteps.push({
             vertices: [...verticesCopy],
             edges: [...edgesCopy],
             currentVertex: vertex,
@@ -386,7 +400,7 @@ const UndirectedCycleDetectionPage: React.FC = () => {
       verticesCopy = [...verticesCopy];
       verticesCopy[vertex] = { ...verticesCopy[vertex], state: 'visited' };
       
-      steps.push({
+      newSteps.push({
         vertices: [...verticesCopy],
         edges: [...edgesCopy],
         currentVertex: vertex,
@@ -402,7 +416,7 @@ const UndirectedCycleDetectionPage: React.FC = () => {
     
     // Final step
     if (!cycleFound) {
-      steps.push({
+      newSteps.push({
         vertices: [...verticesCopy],
         edges: [...edgesCopy],
         currentVertex: null,
@@ -411,12 +425,12 @@ const UndirectedCycleDetectionPage: React.FC = () => {
       });
     }
     
-    setSteps(steps);
+    setSteps(newSteps);
     setCurrentStep(0);
-  };
+  }, [graph]);
   
   // Render the graph on canvas
-  const renderGraph = (ctx: CanvasRenderingContext2D) => {
+  const renderGraph = useCallback((ctx: CanvasRenderingContext2D) => {
     const canvas = ctx.canvas;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     
@@ -471,11 +485,12 @@ const UndirectedCycleDetectionPage: React.FC = () => {
           ctx.fillStyle = '#2196f3'; // Blue
       }
       
-      // Highlight cycle vertices
+      // Highlight cycle vertices - with proper null checking
+      const currentStepData = steps[currentStep];
       if (steps.length > 0 && 
           currentStep < steps.length && 
-          steps[currentStep]?.cyclePath && 
-          steps[currentStep]?.cyclePath?.includes(vertex.id)) {
+          currentStepData?.cyclePath && 
+          currentStepData.cyclePath.includes(vertex.id)) {
         ctx.fillStyle = '#f44336'; // Red
       }
       
@@ -489,47 +504,66 @@ const UndirectedCycleDetectionPage: React.FC = () => {
       ctx.textBaseline = 'middle';
       ctx.fillText(vertex.name, vertex.x, vertex.y);
     });
-  };
+  }, [graph, steps, currentStep]);
   
   // Control methods
-  const startAnimation = () => {
+  const startAnimation = useCallback(() => {
     if (steps.length === 0) {
       detectCycle();
     }
     setIsAnimating(true);
     setIsPaused(false);
-  };
+  }, [steps.length, detectCycle]);
   
-  const pauseAnimation = () => {
+  const pauseAnimation = useCallback(() => {
     setIsPaused(true);
-  };
+  }, []);
   
-  const resetAnimation = () => {
+  const resetAnimation = useCallback(() => {
     setIsAnimating(false);
     setIsPaused(false);
     setCurrentStep(0);
     generateRandomGraph();
-  };
+  }, [generateRandomGraph]);
   
-  const stepForward = () => {
+  const stepForward = useCallback(() => {
     if (currentStep < steps.length - 1) {
       setCurrentStep(prev => prev + 1);
     }
-  };
+  }, [currentStep, steps.length]);
   
-  const stepBackward = () => {
+  const stepBackward = useCallback(() => {
     if (currentStep > 0) {
       setCurrentStep(prev => prev - 1);
     }
-  };
+  }, [currentStep]);
   
-  const handleSpeedChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleSpeedChange = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
     setAnimationSpeed(parseInt(e.target.value, 10));
-  };
+  }, []);
   
-  const handleGraphTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleGraphTypeChange = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
     setGraphType(e.target.value as 'random' | 'cyclic' | 'acyclic');
-  };
+  }, []);
+  
+  // Memoize step description component
+  const StepDescription = useMemo(() => {
+    if (steps.length === 0 || currentStep >= steps.length) return null;
+    
+    const currentStepData = steps[currentStep];
+    return (
+      <InfoPanel>
+        <InfoTitle>Current Step:</InfoTitle>
+        <InfoText>{currentStepData.description}</InfoText>
+        {currentStepData.cyclePath && (
+          <InfoText>
+            <strong>Cycle Path: </strong>
+            {currentStepData.cyclePath.map(v => graph.vertices[v]?.name || '').filter(Boolean).join(" → ")}
+          </InfoText>
+        )}
+      </InfoPanel>
+    );
+  }, [steps, currentStep, graph.vertices]);
   
   return (
     <PageContainer>
@@ -547,14 +581,7 @@ const UndirectedCycleDetectionPage: React.FC = () => {
         </Description>
       </PageHeader>
       
-      <InfoPanel>
-        <InfoTitle>How Cycle Detection Works in Undirected Graphs:</InfoTitle>
-        <InfoText>1. Start a DFS traversal from any vertex.</InfoText>
-        <InfoText>2. For each vertex, mark it as "visiting" when first encountered.</InfoText>
-        <InfoText>3. Recursively visit all adjacent unvisited vertices.</InfoText>
-        <InfoText>4. If we encounter an already "visiting" vertex that is not the parent of the current vertex, we've found a cycle.</InfoText>
-        <InfoText>5. Mark vertices as "visited" once all their neighbors have been processed.</InfoText>
-      </InfoPanel>
+      <AlgorithmExplanation />
       
       <ControlsContainer>
         <Select value={graphType} onChange={handleGraphTypeChange}>
@@ -563,7 +590,7 @@ const UndirectedCycleDetectionPage: React.FC = () => {
           <option value="acyclic">Graph Without Cycle</option>
         </Select>
         
-        <Select value={animationSpeed} onChange={handleSpeedChange}>
+        <Select value={animationSpeed.toString()} onChange={handleSpeedChange}>
           <option value="1000">Slow</option>
           <option value="500">Medium</option>
           <option value="200">Fast</option>
@@ -602,37 +629,10 @@ const UndirectedCycleDetectionPage: React.FC = () => {
         </CanvasContainer>
       </GraphContainer>
       
-      {steps.length > 0 && currentStep < steps.length && (
-        <InfoPanel>
-          <InfoTitle>Current Step:</InfoTitle>
-          <InfoText>{steps[currentStep].description}</InfoText>
-          {steps[currentStep]?.cyclePath && (
-            <InfoText>
-              <strong>Cycle Path: </strong>
-              {steps[currentStep]?.cyclePath?.map(v => graph.vertices[v].name).join(" → ")}
-            </InfoText>
-          )}
-        </InfoPanel>
-      )}
+      {StepDescription}
       
-      <InfoPanel>
-        <InfoTitle>Time & Space Complexity:</InfoTitle>
-        <InfoText>
-          <strong>Time Complexity:</strong> O(V + E) where V is the number of vertices and E is the number of edges.
-        </InfoText>
-        <InfoText>
-          <strong>Space Complexity:</strong> O(V) for the recursion stack and visited array.
-        </InfoText>
-      </InfoPanel>
-      
-      <InfoPanel>
-        <InfoTitle>Applications of Cycle Detection:</InfoTitle>
-        <InfoText>• Deadlock detection in operating systems</InfoText>
-        <InfoText>• Circuit analysis in electrical engineering</InfoText>
-        <InfoText>• Checking for circular dependencies in software packages</InfoText>
-        <InfoText>• Verifying that a graph is a tree (a tree is a connected graph with no cycles)</InfoText>
-        <InfoText>• Finding minimal spanning trees in networks</InfoText>
-      </InfoPanel>
+      <Complexity />
+      <Applications />
     </PageContainer>
   );
 };

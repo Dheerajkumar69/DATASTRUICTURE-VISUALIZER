@@ -8,7 +8,7 @@ import {
   FiCode, 
   FiArrowRight 
 } from 'react-icons/fi';
-import { FaChessQueen, FaRoute, FaNetworkWired, FaProjectDiagram, FaRegCompass } from 'react-icons/fa';
+import { FaChessQueen, FaRoute, FaNetworkWired, FaProjectDiagram, FaRegCompass, FaPuzzlePiece } from 'react-icons/fa';
 
 const PageContainer = styled.div`
   padding: 2rem;
@@ -240,6 +240,24 @@ const AlgorithmsPage: React.FC = () => {
           </AlgorithmsList>
           <ViewButton>
             Explore Backtracking Algorithms <FiArrowRight size={16} />
+          </ViewButton>
+        </CategoryCard>
+        
+        <CategoryCard to="/algorithms/problems">
+          <CategoryIcon>
+            <FaPuzzlePiece size={24} />
+          </CategoryIcon>
+          <CategoryTitle>Algorithm Problems</CategoryTitle>
+          <CategoryDescription>
+            Classic algorithmic problems with interactive visualizations to help you understand their solutions and implementations.
+          </CategoryDescription>
+          <AlgorithmsList>
+            <AlgorithmItem>Graph Problems (Cycle Detection, Eulerian Path)</AlgorithmItem>
+            <AlgorithmItem>Grid Problems (Knight's Tour, Number of Islands)</AlgorithmItem>
+            <AlgorithmItem>Tree Problems (Lowest Common Ancestor)</AlgorithmItem>
+          </AlgorithmsList>
+          <ViewButton>
+            Explore Algorithm Problems <FiArrowRight size={16} />
           </ViewButton>
         </CategoryCard>
       </CategoriesGrid>

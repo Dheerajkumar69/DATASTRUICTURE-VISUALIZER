@@ -34,7 +34,21 @@ import {
   FiGitCommit,
   FiHome
 } from 'react-icons/fi';
-import { FaChessQueen, FaRoute } from 'react-icons/fa';
+import { 
+  FaChessQueen, 
+  FaRoute, 
+  FaPuzzlePiece, 
+  FaProjectDiagram, 
+  FaTree, 
+  FaChessKnight, 
+  FaSearchLocation, 
+  FaGlobeAmericas, 
+  FaRandom, 
+  FaWater, 
+  FaMapMarkerAlt, 
+  FaDoorOpen, 
+  FaCode 
+} from 'react-icons/fa';
 
 const SidebarContainer = styled.aside<{ isOpen: boolean }>`
   width: 280px;
@@ -176,6 +190,15 @@ const NestedSectionItems = styled.div<{ isOpen: boolean }>`
   display: ${({ isOpen }) => (isOpen ? 'block' : 'none')};
 `;
 
+const CategoryLabel = styled.div`
+  font-size: 0.8rem;
+  color: ${props => props.theme.colors.textLight};
+  margin: 0.75rem 0 0.25rem;
+  padding-left: 0.5rem;
+  font-weight: 500;
+  text-transform: uppercase;
+`;
+
 const NestedNavItem = styled(NavLink)`
   display: flex;
   align-items: center;
@@ -228,6 +251,7 @@ const Sidebar: React.FC = () => {
   const [sortingAlgorithmsOpen, setSortingAlgorithmsOpen] = useState(false);
   const [graphAlgorithmsOpen, setGraphAlgorithmsOpen] = useState(false);
   const [backtrackingAlgorithmsOpen, setBacktrackingAlgorithmsOpen] = useState(false);
+  const [problemsAlgorithmsOpen, setProblemsAlgorithmsOpen] = useState(false);
   
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
@@ -407,6 +431,84 @@ const Sidebar: React.FC = () => {
                 <NestedNavItem to="/algorithms/backtracking/traveling-salesman">
                   <FaRoute size={14} />
                   Traveling Salesman
+                </NestedNavItem>
+              </NestedSectionItems>
+              
+              <SubSectionHeader 
+                isOpen={problemsAlgorithmsOpen}
+                onClick={() => setProblemsAlgorithmsOpen(!problemsAlgorithmsOpen)}
+              >
+                <span>Algorithm Problems</span>
+                {problemsAlgorithmsOpen ? <FiChevronDown size={16} /> : <FiChevronRight size={16} />}
+              </SubSectionHeader>
+              <NestedSectionItems isOpen={problemsAlgorithmsOpen}>
+                <NestedNavItem to="/algorithms/problems">
+                  <FaPuzzlePiece size={14} />
+                  All Problems
+                </NestedNavItem>
+                
+                <CategoryLabel>Graph Problems</CategoryLabel>
+                <NestedNavItem to="/algorithms/problems/undirected-cycle-detection">
+                  <FaProjectDiagram size={14} />
+                  Undirected Cycle Detection
+                </NestedNavItem>
+                <NestedNavItem to="/algorithms/problems/directed-cycle-detection">
+                  <FaProjectDiagram size={14} />
+                  Directed Cycle Detection
+                </NestedNavItem>
+                <NestedNavItem to="/algorithms/problems/eulerian-path">
+                  <FaRoute size={14} />
+                  Eulerian Path
+                </NestedNavItem>
+                <NestedNavItem to="/algorithms/problems/chinese-postman">
+                  <FaGlobeAmericas size={14} />
+                  Chinese Postman
+                </NestedNavItem>
+                <NestedNavItem to="/algorithms/problems/minimum-edges-feedback-arc">
+                  <FaRandom size={14} />
+                  Feedback Arc Set
+                </NestedNavItem>
+                <NestedNavItem to="/algorithms/problems/traveling-salesman">
+                  <FaRoute size={14} />
+                  Traveling Salesman
+                </NestedNavItem>
+                
+                <CategoryLabel>Tree Problems</CategoryLabel>
+                <NestedNavItem to="/algorithms/problems/lowest-common-ancestor">
+                  <FaTree size={14} />
+                  Lowest Common Ancestor
+                </NestedNavItem>
+                
+                <CategoryLabel>Grid-Based Problems</CategoryLabel>
+                <NestedNavItem to="/algorithms/problems/shortest-path-grid">
+                  <FaSearchLocation size={14} />
+                  Shortest Path in Grid
+                </NestedNavItem>
+                <NestedNavItem to="/algorithms/problems/minimum-knight-moves">
+                  <FaChessKnight size={14} />
+                  Knight Moves
+                </NestedNavItem>
+                <NestedNavItem to="/algorithms/problems/number-of-islands">
+                  <FaWater size={14} />
+                  Number of Islands
+                </NestedNavItem>
+                <NestedNavItem to="/algorithms/problems/flood-fill">
+                  <FaMapMarkerAlt size={14} />
+                  Flood Fill
+                </NestedNavItem>
+                <NestedNavItem to="/algorithms/problems/maze-solving">
+                  <FaDoorOpen size={14} />
+                  Maze Solving
+                </NestedNavItem>
+                <NestedNavItem to="/algorithms/problems/knights-tour">
+                  <FaChessKnight size={14} />
+                  Knight's Tour
+                </NestedNavItem>
+                
+                <CategoryLabel>Other Problems</CategoryLabel>
+                <NestedNavItem to="/algorithms/problems/word-ladder">
+                  <FaCode size={14} />
+                  Word Ladder
                 </NestedNavItem>
               </NestedSectionItems>
             </SectionItems>

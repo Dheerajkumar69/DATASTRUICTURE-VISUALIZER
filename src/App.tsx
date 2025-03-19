@@ -34,9 +34,6 @@ import CountingSortPage from './pages/algorithms/sorting/CountingSortPage';
 import RadixSortPage from './pages/algorithms/sorting/RadixSortPage';
 import BucketSortPage from './pages/algorithms/sorting/BucketSortPage';
 
-// Import placeholder component for unimplemented algorithms
-import ComingSoonPage from './pages/ComingSoonPage';
-
 // Import graph algorithm pages
 import GraphAlgorithmsPage from './pages/algorithms/GraphAlgorithmsPage';
 import AStarPage from './pages/algorithms/graph/AStarPage';
@@ -47,6 +44,23 @@ import PrimPage from './pages/algorithms/graph/PrimPage';
 import BacktrackingPage from './pages/algorithms/backtracking/BacktrackingPage';
 import NQueensPage from './pages/algorithms/backtracking/NQueensPage';
 import TravelingSalesmanPage from './pages/algorithms/backtracking/TravelingSalesmanPage';
+
+// Import algorithm problems pages
+import ProblemsPage from './pages/algorithms/ProblemsPage';
+import UndirectedCycleDetectionPage from './pages/algorithms/problems/UndirectedCycleDetectionPage';
+import DirectedCycleDetectionPage from './pages/algorithms/problems/DirectedCycleDetectionPage';
+import EulerianPathPage from './pages/algorithms/problems/EulerianPathPage';
+import ChinesePostmanPage from './pages/algorithms/problems/ChinesePostmanPage';
+import MinimumEdgesFeedbackArcPage from './pages/algorithms/problems/MinimumEdgesFeedbackArcPage';
+import TravelingSalesmanProblemPage from './pages/algorithms/problems/TravelingSalesmanPage';
+import LowestCommonAncestorPage from './pages/algorithms/problems/LowestCommonAncestorPage';
+import ShortestPathGridPage from './pages/algorithms/problems/ShortestPathGridPage';
+import MinimumKnightMovesPage from './pages/algorithms/problems/MinimumKnightMovesPage';
+import NumberOfIslandsPage from './pages/algorithms/problems/NumberOfIslandsPage';
+import FloodFillPage from './pages/algorithms/problems/FloodFillPage';
+import MazeSolvingPage from './pages/algorithms/problems/MazeSolvingPage';
+import KnightsTourPage from './pages/algorithms/problems/KnightsTourPage';
+import WordLadderPage from './pages/algorithms/problems/WordLadderPage';
 
 const AppContainer = styled.div`
   display: flex;
@@ -94,6 +108,7 @@ const App: React.FC = () => {
               <Route path="/algorithms/searching" element={<SearchingPage />} />
               <Route path="/algorithms/graph" element={<GraphAlgorithmsPage />} />
               <Route path="/algorithms/backtracking" element={<BacktrackingPage />} />
+              <Route path="/algorithms/problems" element={<ProblemsPage />} />
               
               {/* Sorting Algorithm Routes */}
               <Route path="/algorithms/sorting/bubble-sort" element={<BubbleSortPage />} />
@@ -115,6 +130,22 @@ const App: React.FC = () => {
               {/* Backtracking Algorithm Routes */}
               <Route path="/algorithms/backtracking/nqueens" element={<NQueensPage />} />
               <Route path="/algorithms/backtracking/traveling-salesman" element={<TravelingSalesmanPage />} />
+              
+              {/* Algorithm Problems Routes */}
+              <Route path="/algorithms/problems/undirected-cycle-detection" element={<UndirectedCycleDetectionPage />} />
+              <Route path="/algorithms/problems/directed-cycle-detection" element={<DirectedCycleDetectionPage />} />
+              <Route path="/algorithms/problems/eulerian-path" element={<EulerianPathPage />} />
+              <Route path="/algorithms/problems/chinese-postman" element={<ChinesePostmanPage />} />
+              <Route path="/algorithms/problems/minimum-edges-feedback-arc" element={<MinimumEdgesFeedbackArcPage />} />
+              <Route path="/algorithms/problems/traveling-salesman" element={<TravelingSalesmanProblemPage />} />
+              <Route path="/algorithms/problems/lowest-common-ancestor" element={<LowestCommonAncestorPage />} />
+              <Route path="/algorithms/problems/shortest-path-grid" element={<ShortestPathGridPage />} />
+              <Route path="/algorithms/problems/minimum-knight-moves" element={<MinimumKnightMovesPage />} />
+              <Route path="/algorithms/problems/number-of-islands" element={<NumberOfIslandsPage />} />
+              <Route path="/algorithms/problems/flood-fill" element={<FloodFillPage />} />
+              <Route path="/algorithms/problems/maze-solving" element={<MazeSolvingPage />} />
+              <Route path="/algorithms/problems/knights-tour" element={<KnightsTourPage />} />
+              <Route path="/algorithms/problems/word-ladder" element={<WordLadderPage />} />
             </Routes>
           </ContentArea>
         </MainContent>
