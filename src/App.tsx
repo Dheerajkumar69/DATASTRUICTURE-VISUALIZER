@@ -34,6 +34,14 @@ import CountingSortPage from './pages/algorithms/sorting/CountingSortPage';
 import RadixSortPage from './pages/algorithms/sorting/RadixSortPage';
 import BucketSortPage from './pages/algorithms/sorting/BucketSortPage';
 
+// Import math algorithm pages
+import EuclideanPage from './pages/algorithms/math/EuclideanPage';
+import ExtendedEuclideanPage from './pages/algorithms/math/ExtendedEuclideanPage';
+
+// Import array algorithm pages
+import KadanePage from './pages/algorithms/array/KadanePage';
+import SlidingWindowPage from './pages/algorithms/array/SlidingWindowPage';
+
 // Import graph algorithm pages
 import GraphAlgorithmsPage from './pages/algorithms/GraphAlgorithmsPage';
 import AStarPage from './pages/algorithms/graph/AStarPage';
@@ -121,6 +129,14 @@ const App: React.FC = () => {
               <Route path="/algorithms/sorting/counting-sort" element={<CountingSortPage />} />
               <Route path="/algorithms/sorting/radix-sort" element={<RadixSortPage />} />
               <Route path="/algorithms/sorting/bucket-sort" element={<BucketSortPage />} />
+              
+              {/* Math Algorithm Routes */}
+              <Route path="/algorithms/math/euclidean" element={<EuclideanPage />} />
+              <Route path="/algorithms/math/extended-euclidean" element={<ExtendedEuclideanPage />} />
+              
+              {/* Array Algorithm Routes */}
+              <Route path="/algorithms/array/kadane" element={<KadanePage />} />
+              <Route path="/algorithms/array/sliding-window" element={<SlidingWindowPage />} />
               
               {/* Graph Algorithm Routes */}
               <Route path="/algorithms/graph/astar" element={<AStarPage />} />

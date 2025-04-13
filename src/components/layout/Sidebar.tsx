@@ -252,6 +252,13 @@ const Sidebar: React.FC = () => {
   const [graphAlgorithmsOpen, setGraphAlgorithmsOpen] = useState(false);
   const [backtrackingAlgorithmsOpen, setBacktrackingAlgorithmsOpen] = useState(false);
   const [problemsAlgorithmsOpen, setProblemsAlgorithmsOpen] = useState(false);
+  const [mathAlgorithmsOpen, setMathAlgorithmsOpen] = useState(false);
+  const [arrayAlgorithmsOpen, setArrayAlgorithmsOpen] = useState(false);
+  const [isSortingOpen, setIsSortingOpen] = useState(false);
+  const [isDataStructuresOpen, setIsDataStructuresOpen] = useState(false); 
+  const [isTreeAlgorithmsOpen, setIsTreeAlgorithmsOpen] = useState(false);
+  const [isArrayAlgorithmsOpen, setIsArrayAlgorithmsOpen] = useState(false);
+  const [isMathAlgorithmsOpen, setIsMathAlgorithmsOpen] = useState(false);
   
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
@@ -393,6 +400,42 @@ const Sidebar: React.FC = () => {
                 <FiSearch size={16} />
                 Searching
               </NavItem>
+              
+              <SubSectionHeader 
+                isOpen={mathAlgorithmsOpen}
+                onClick={() => setMathAlgorithmsOpen(!mathAlgorithmsOpen)}
+              >
+                <span>Math Algorithms</span>
+                {mathAlgorithmsOpen ? <FiChevronDown size={16} /> : <FiChevronRight size={16} />}
+              </SubSectionHeader>
+              <NestedSectionItems isOpen={mathAlgorithmsOpen}>
+                <NestedNavItem to="/algorithms/math/euclidean">
+                  <FiHash size={14} />
+                  Euclidean Algorithm
+                </NestedNavItem>
+                <NestedNavItem to="/algorithms/math/extended-euclidean">
+                  <FiHash size={14} />
+                  Extended Euclidean
+                </NestedNavItem>
+              </NestedSectionItems>
+              
+              <SubSectionHeader 
+                isOpen={arrayAlgorithmsOpen}
+                onClick={() => setArrayAlgorithmsOpen(!arrayAlgorithmsOpen)}
+              >
+                <span>Array Algorithms</span>
+                {arrayAlgorithmsOpen ? <FiChevronDown size={16} /> : <FiChevronRight size={16} />}
+              </SubSectionHeader>
+              <NestedSectionItems isOpen={arrayAlgorithmsOpen}>
+                <NestedNavItem to="/algorithms/array/kadane">
+                  <FiList size={14} />
+                  Kadane's Algorithm
+                </NestedNavItem>
+                <NestedNavItem to="/algorithms/array/sliding-window">
+                  <FiList size={14} />
+                  Sliding Window
+                </NestedNavItem>
+              </NestedSectionItems>
               
               <SubSectionHeader 
                 isOpen={graphAlgorithmsOpen}

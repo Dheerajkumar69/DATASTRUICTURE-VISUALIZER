@@ -1,427 +1,228 @@
-import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
-import { Link } from 'react-router-dom';
-import { FaArrowLeft, FaPlay, FaPause, FaUndo, FaStepForward, FaStepBackward } from 'react-icons/fa';
+import React from 'react';
+import ProblemPageTemplate from '../../../components/templates/ProblemPageTemplate';
+import { AlgorithmInfo } from '../../../types/algorithm';
 
-// Styled components
-const PageContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  padding: 2rem;
-  height: 100%;
-  overflow-y: auto;
-
-  @media (max-width: 768px) {
-    padding: 1rem;
-  }
-`;
-
-const NavigationRow = styled.div`
-  display: flex;
-  align-items: center;
-  margin-bottom: 1.5rem;
-`;
-
-const BackButton = styled(Link)`
-  display: flex;
-  align-items: center;
-  color: ${props => props.theme.colors.primary};
-  font-weight: 500;
-  text-decoration: none;
-  margin-right: 1rem;
+const wordLadderInfo: AlgorithmInfo = {
+  name: "Word Ladder",
+  description: "Word Ladder is a graph problem where we need to find the shortest transformation sequence from a start word to an end word, such that only one letter can be changed at a time, and each transformed word must exist in a given word list.",
+  timeComplexity: {
+    best: 'O(n * m^2)',
+    average: 'O(n * m^2)',
+    worst: 'O(n * m^2)'
+  },
+  spaceComplexity: 'O(n * m)',
+  implementations: {
+    javascript: `function ladderLength(beginWord, endWord, wordList) {
+  const wordSet = new Set(wordList);
   
-  &:hover {
-    text-decoration: underline;
-  }
+  // If the end word is not in the dictionary, return 0
+  if (!wordSet.has(endWord)) return 0;
   
-  svg {
-    margin-right: 0.5rem;
-  }
-`;
-
-const PageHeader = styled.div`
-  margin-bottom: 2rem;
-`;
-
-const PageTitle = styled.h1`
-  font-size: 2.5rem;
-  margin-bottom: 0.5rem;
-  color: ${props => props.theme.colors.text};
-`;
-
-const Description = styled.p`
-  font-size: 1rem;
-  color: ${props => props.theme.colors.textLight};
-  max-width: 800px;
-  line-height: 1.6;
-  margin-bottom: 2rem;
-`;
-
-const ControlsContainer = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  gap: 1rem;
-  margin-bottom: 2rem;
-  max-width: 800px;
-`;
-
-const Button = styled.button`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.75rem 1rem;
-  background-color: ${props => props.theme.colors.card};
-  color: ${props => props.theme.colors.text};
-  border: 1px solid ${props => props.theme.colors.border};
-  border-radius: 0.5rem;
-  cursor: pointer;
-  font-weight: 500;
-  transition: all 0.2s ease;
+  // Create a queue for BFS
+  const queue = [];
+  queue.push({ word: beginWord, length: 1 });
   
-  &:hover {
-    background-color: ${props => props.theme.colors.hover};
-  }
+  // To avoid visiting the same word again
+  const visited = new Set();
+  visited.add(beginWord);
   
-  svg {
-    margin-right: 0.5rem;
-  }
-  
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-`;
-
-const WordInputContainer = styled.div`
-  display: flex;
-  gap: 1rem;
-  margin-bottom: 2rem;
-  max-width: 800px;
-`;
-
-const Input = styled.input`
-  flex: 1;
-  padding: 0.75rem;
-  border: 1px solid ${props => props.theme.colors.border};
-  border-radius: 0.5rem;
-  background-color: ${props => props.theme.colors.card};
-  color: ${props => props.theme.colors.text};
-  font-size: 1rem;
-  
-  &:focus {
-    outline: none;
-    border-color: ${props => props.theme.colors.primary};
-  }
-`;
-
-const WordLadderContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-bottom: 2rem;
-  max-width: 800px;
-`;
-
-const WordStep = styled.div<{ isActive: boolean }>`
-  padding: 1rem;
-  margin: 0.5rem 0;
-  background-color: ${props => props.isActive ? props.theme.colors.primary : props.theme.colors.card};
-  color: ${props => props.isActive ? '#ffffff' : props.theme.colors.text};
-  border-radius: 0.5rem;
-  border: 1px solid ${props => props.theme.colors.border};
-  font-size: 1.2rem;
-  font-weight: 500;
-  transition: all 0.3s ease;
-`;
-
-const InfoPanel = styled.div`
-  padding: 1rem;
-  background-color: ${props => props.theme.colors.card};
-  border-radius: 0.5rem;
-  border: 1px solid ${props => props.theme.colors.border};
-  margin-bottom: 2rem;
-  max-width: 800px;
-  width: 100%;
-`;
-
-const InfoTitle = styled.h3`
-  margin-bottom: 0.5rem;
-  color: ${props => props.theme.colors.text};
-  font-size: 1.2rem;
-`;
-
-const InfoText = styled.p`
-  color: ${props => props.theme.colors.textLight};
-  margin-bottom: 0.5rem;
-  line-height: 1.5;
-  font-size: 0.9rem;
-`;
-
-const Select = styled.select`
-  padding: 0.5rem;
-  border: 1px solid ${props => props.theme.colors.border};
-  border-radius: ${props => props.theme.borderRadius};
-  background-color: ${props => props.theme.colors.card};
-  color: ${props => props.theme.colors.text};
-`;
-
-interface Step {
-  word: string;
-  description: string;
-}
-
-const WordLadderPage: React.FC = () => {
-  const [startWord, setStartWord] = useState<string>('hit');
-  const [endWord, setEndWord] = useState<string>('cog');
-  const [steps, setSteps] = useState<Step[]>([]);
-  const [currentStep, setCurrentStep] = useState<number>(0);
-  const [isAnimating, setIsAnimating] = useState<boolean>(false);
-  const [isPaused, setIsPaused] = useState<boolean>(false);
-  const [animationSpeed, setAnimationSpeed] = useState<number>(500);
-  
-  // Sample word list (in a real application, this would be a larger dictionary)
-  const wordList = [
-    'hot', 'dot', 'dog', 'lot', 'log', 'cog',
-    'hit', 'hat', 'cat', 'bat', 'bag', 'big',
-    'pig', 'pin', 'pan', 'pen', 'pet', 'get',
-    'let', 'lit', 'sit', 'sat', 'rat', 'rag',
-    'tag', 'tan', 'tin', 'ton', 'toy', 'try'
-  ];
-  
-  // Animation timer
-  useEffect(() => {
-    let timer: NodeJS.Timeout;
+  while (queue.length > 0) {
+    const { word, length } = queue.shift();
     
-    if (isAnimating && !isPaused && currentStep < steps.length - 1) {
-      timer = setTimeout(() => {
-        setCurrentStep(prev => prev + 1);
-      }, animationSpeed);
-    } else if (currentStep >= steps.length - 1) {
-      setIsAnimating(false);
-    }
-    
-    return () => {
-      if (timer) clearTimeout(timer);
-    };
-  }, [isAnimating, isPaused, currentStep, steps, animationSpeed]);
-  
-  // Check if two words differ by exactly one letter
-  const isOneLetterDifferent = (word1: string, word2: string): boolean => {
-    if (word1.length !== word2.length) return false;
-    let differences = 0;
-    for (let i = 0; i < word1.length; i++) {
-      if (word1[i] !== word2[i]) differences++;
-      if (differences > 1) return false;
-    }
-    return differences === 1;
-  };
-  
-  // Find the shortest word ladder using BFS
-  const findWordLadder = () => {
-    if (startWord.length !== endWord.length) {
-      setSteps([{
-        word: startWord,
-        description: 'No solution found: Words must be the same length.'
-      }]);
-      return;
-    }
-    
-    setIsAnimating(false);
-    setIsPaused(false);
-    setCurrentStep(0);
-    
-    const visited = new Set<string>();
-    const queue: { word: string; path: string[] }[] = [
-      { word: startWord, path: [startWord] }
-    ];
-    visited.add(startWord);
-    
-    // Initial step
-    setSteps([{
-      word: startWord,
-      description: 'Starting with the initial word.'
-    }]);
-    
-    while (queue.length > 0) {
-      const { word, path } = queue.shift()!;
-      
-      // Check if we reached the end word
-      if (word === endWord) {
-        setSteps(path.map((w, i) => ({
-          word: w,
-          description: i === 0 ? 'Starting word.' :
-                      i === path.length - 1 ? 'Reached the target word!' :
-                      `Changed one letter from "${path[i-1]}" to "${w}".`
-        })));
-        return;
-      }
-      
-      // Find all words that differ by one letter
-      for (const nextWord of wordList) {
-        if (!visited.has(nextWord) && isOneLetterDifferent(word, nextWord)) {
-          visited.add(nextWord);
-          queue.push({
-            word: nextWord,
-            path: [...path, nextWord]
-          });
+    // Try changing each character of the word
+    for (let i = 0; i < word.length; i++) {
+      // Try replacing the character with all letters
+      for (let c = 'a'.charCodeAt(0); c <= 'z'.charCodeAt(0); c++) {
+        const newChar = String.fromCharCode(c);
+        
+        // Skip if it's the same character
+        if (word[i] === newChar) continue;
+        
+        // Create a new word by replacing the character
+        const newWord = word.slice(0, i) + newChar + word.slice(i + 1);
+        
+        // If we reached the end word, return the length + 1
+        if (newWord === endWord) return length + 1;
+        
+        // If the word is in the dictionary and not visited
+        if (wordSet.has(newWord) && !visited.has(newWord)) {
+          visited.add(newWord);
+          queue.push({ word: newWord, length: length + 1 });
         }
       }
     }
+  }
+  
+  // If no transformation sequence is found
+  return 0;
+}`,
+    python: `def ladder_length(begin_word, end_word, word_list):
+    word_set = set(word_list)
     
-    // No solution found
-    setSteps([{
-      word: startWord,
-      description: 'No solution found: No valid word ladder exists.'
-    }]);
-  };
-  
-  // Control methods
-  const startAnimation = () => {
-    if (steps.length === 0) {
-      findWordLadder();
+    # If the end word is not in the dictionary, return 0
+    if end_word not in word_set:
+        return 0
+    
+    # Create a queue for BFS
+    queue = [(begin_word, 1)]
+    
+    # To avoid visiting the same word again
+    visited = {begin_word}
+    
+    while queue:
+        word, length = queue.pop(0)
+        
+        # Try changing each character of the word
+        for i in range(len(word)):
+            # Try replacing the character with all letters
+            for c in 'abcdefghijklmnopqrstuvwxyz':
+                # Skip if it's the same character
+                if word[i] == c:
+                    continue
+                
+                # Create a new word by replacing the character
+                new_word = word[:i] + c + word[i+1:]
+                
+                # If we reached the end word, return the length + 1
+                if new_word == end_word:
+                    return length + 1
+                
+                # If the word is in the dictionary and not visited
+                if new_word in word_set and new_word not in visited:
+                    visited.add(new_word)
+                    queue.append((new_word, length + 1))
+    
+    # If no transformation sequence is found
+    return 0`,
+    java: `public int ladderLength(String beginWord, String endWord, List<String> wordList) {
+    Set<String> wordSet = new HashSet<>(wordList);
+    
+    // If the end word is not in the dictionary, return 0
+    if (!wordSet.contains(endWord)) return 0;
+    
+    // Create a queue for BFS
+    Queue<Pair<String, Integer>> queue = new LinkedList<>();
+    queue.offer(new Pair<>(beginWord, 1));
+    
+    // To avoid visiting the same word again
+    Set<String> visited = new HashSet<>();
+    visited.add(beginWord);
+    
+    while (!queue.isEmpty()) {
+        Pair<String, Integer> current = queue.poll();
+        String word = current.getKey();
+        int length = current.getValue();
+        
+        // Try changing each character of the word
+        for (int i = 0; i < word.length(); i++) {
+            char[] wordChars = word.toCharArray();
+            
+            // Try replacing the character with all letters
+            for (char c = 'a'; c <= 'z'; c++) {
+                // Skip if it's the same character
+                if (word.charAt(i) == c) continue;
+                
+                wordChars[i] = c;
+                String newWord = new String(wordChars);
+                
+                // If we reached the end word, return the length + 1
+                if (newWord.equals(endWord)) return length + 1;
+                
+                // If the word is in the dictionary and not visited
+                if (wordSet.contains(newWord) && !visited.contains(newWord)) {
+                    visited.add(newWord);
+                    queue.offer(new Pair<>(newWord, length + 1));
+                }
+            }
+        }
     }
-    setIsAnimating(true);
-    setIsPaused(false);
-  };
-  
-  const pauseAnimation = () => {
-    setIsPaused(true);
-  };
-  
-  const resetAnimation = () => {
-    setIsAnimating(false);
-    setIsPaused(false);
-    setCurrentStep(0);
-    setSteps([]);
-  };
-  
-  const stepForward = () => {
-    if (currentStep < steps.length - 1) {
-      setCurrentStep(prev => prev + 1);
+    
+    // If no transformation sequence is found
+    return 0;
+}`,
+    cpp: `int ladderLength(string beginWord, string endWord, vector<string>& wordList) {
+    unordered_set<string> wordSet(wordList.begin(), wordList.end());
+    
+    // If the end word is not in the dictionary, return 0
+    if (wordSet.find(endWord) == wordSet.end()) return 0;
+    
+    // Create a queue for BFS
+    queue<pair<string, int>> q;
+    q.push({beginWord, 1});
+    
+    // To avoid visiting the same word again
+    unordered_set<string> visited;
+    visited.insert(beginWord);
+    
+    while (!q.empty()) {
+        auto current = q.front(); q.pop();
+        string word = current.first;
+        int length = current.second;
+        
+        // Try changing each character of the word
+        for (int i = 0; i < word.size(); i++) {
+            char originalChar = word[i];
+            
+            // Try replacing the character with all letters
+            for (char c = 'a'; c <= 'z'; c++) {
+                // Skip if it's the same character
+                if (word[i] == c) continue;
+                
+                word[i] = c;
+                
+                // If we reached the end word, return the length + 1
+                if (word == endWord) return length + 1;
+                
+                // If the word is in the dictionary and not visited
+                if (wordSet.find(word) != wordSet.end() && visited.find(word) == visited.end()) {
+                    visited.insert(word);
+                    q.push({word, length + 1});
+                }
+            }
+            
+            // Revert the change
+            word[i] = originalChar;
+        }
     }
-  };
-  
-  const stepBackward = () => {
-    if (currentStep > 0) {
-      setCurrentStep(prev => prev - 1);
-    }
-  };
-  
-  const handleSpeedChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setAnimationSpeed(parseInt(e.target.value, 10));
-  };
-  
+    
+    // If no transformation sequence is found
+    return 0;
+}`
+  }
+};
+
+const problemDescription = `
+Given two words, beginWord and endWord, and a dictionary wordList, find the length of the shortest transformation sequence from beginWord to endWord.
+
+Rules for transformation:
+1. Only one letter can be changed at a time.
+2. Each transformed word must exist in the wordList.
+3. beginWord is not a part of wordList, but endWord is.
+
+For example, given:
+- beginWord = "hit"
+- endWord = "cog"
+- wordList = ["hot", "dot", "dog", "lot", "log", "cog"]
+
+The shortest transformation sequence would be: "hit" -> "hot" -> "dot" -> "dog" -> "cog"
+So the length of the shortest transformation sequence is 5.
+
+The algorithm uses a breadth-first search (BFS) approach to find the shortest path from beginWord to endWord. For each word, it tries changing each character to every possible letter and checks if the new word exists in the dictionary and hasn't been visited yet.
+`;
+
+const WordLadderPage: React.FC = () => {
+  const visualizationComponent = (
+    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+      <p>Word transformation visualization will be displayed here</p>
+    </div>
+  );
+
   return (
-    <PageContainer>
-      <NavigationRow>
-        <BackButton to="/algorithms/problems">
-          <FaArrowLeft /> Back to Problems
-        </BackButton>
-      </NavigationRow>
-      
-      <PageHeader>
-        <PageTitle>Word Ladder</PageTitle>
-        <Description>
-          The Word Ladder problem finds the shortest sequence of words that transforms one word into another,
-          where each word in the sequence differs from the previous word by exactly one letter.
-        </Description>
-      </PageHeader>
-      
-      <InfoPanel>
-        <InfoTitle>How Word Ladder Works:</InfoTitle>
-        <InfoText>1. Start with the initial word.</InfoText>
-        <InfoText>2. Find all words that differ by exactly one letter.</InfoText>
-        <InfoText>3. Use BFS to find the shortest path to the target word.</InfoText>
-        <InfoText>4. Each step must be a valid word from the dictionary.</InfoText>
-      </InfoPanel>
-      
-      <WordInputContainer>
-        <Input
-          type="text"
-          value={startWord}
-          onChange={(e) => setStartWord(e.target.value.toLowerCase())}
-          placeholder="Start word"
-          maxLength={4}
-        />
-        <Input
-          type="text"
-          value={endWord}
-          onChange={(e) => setEndWord(e.target.value.toLowerCase())}
-          placeholder="End word"
-          maxLength={4}
-        />
-      </WordInputContainer>
-      
-      <ControlsContainer>
-        <Select value={animationSpeed} onChange={handleSpeedChange}>
-          <option value="1000">Slow</option>
-          <option value="500">Medium</option>
-          <option value="200">Fast</option>
-        </Select>
-        
-        {!isAnimating || isPaused ? (
-          <Button onClick={startAnimation}>
-            <FaPlay /> {isPaused ? 'Resume' : 'Start'}
-          </Button>
-        ) : (
-          <Button onClick={pauseAnimation}>
-            <FaPause /> Pause
-          </Button>
-        )}
-        
-        <Button onClick={stepBackward} disabled={currentStep === 0 || (isAnimating && !isPaused)}>
-          <FaStepBackward /> Back
-        </Button>
-        
-        <Button onClick={stepForward} disabled={currentStep >= steps.length - 1 || (isAnimating && !isPaused)}>
-          <FaStepForward /> Forward
-        </Button>
-        
-        <Button onClick={resetAnimation} disabled={isAnimating && !isPaused}>
-          <FaUndo /> Reset
-        </Button>
-      </ControlsContainer>
-      
-      <WordLadderContainer>
-        {steps.map((step, index) => (
-          <WordStep
-            key={index}
-            isActive={index === currentStep}
-          >
-            {step.word}
-          </WordStep>
-        ))}
-      </WordLadderContainer>
-      
-      {steps.length > 0 && currentStep < steps.length && (
-        <InfoPanel>
-          <InfoTitle>Current Step:</InfoTitle>
-          <InfoText>{steps[currentStep].description}</InfoText>
-          <InfoText>
-            <strong>Step: </strong>
-            {currentStep + 1} of {steps.length}
-          </InfoText>
-        </InfoPanel>
-      )}
-      
-      <InfoPanel>
-        <InfoTitle>Time & Space Complexity:</InfoTitle>
-        <InfoText>
-          <strong>Time Complexity:</strong> O(N × L) where N is the number of words in the dictionary and L is the length of the words.
-        </InfoText>
-        <InfoText>
-          <strong>Space Complexity:</strong> O(N) for the visited set and queue.
-        </InfoText>
-      </InfoPanel>
-      
-      <InfoPanel>
-        <InfoTitle>Applications of Word Ladder:</InfoTitle>
-        <InfoText>• Spell checking and correction</InfoText>
-        <InfoText>• Word games and puzzles</InfoText>
-        <InfoText>• Natural language processing</InfoText>
-        <InfoText>• DNA sequence analysis</InfoText>
-      </InfoPanel>
-    </PageContainer>
+    <ProblemPageTemplate 
+      algorithmInfo={wordLadderInfo}
+      visualizationComponent={visualizationComponent}
+      problemDescription={problemDescription}
+    />
   );
 };
 

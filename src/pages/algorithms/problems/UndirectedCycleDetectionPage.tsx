@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { FaArrowLeft, FaPlay, FaPause, FaUndo, FaStepForward, FaStepBackward } from 'react-icons/fa';
+import ProblemPageTemplate from '../../../components/templates/ProblemPageTemplate';
+import { AlgorithmInfo } from '../../../types/algorithm';
 
 // Define vertex and edge types
 type VertexState = 'unvisited' | 'visiting' | 'visited';
@@ -201,6 +203,158 @@ const Applications = () => (
     <InfoText>• Finding minimal spanning trees in networks</InfoText>
   </InfoPanel>
 );
+
+const undirectedCycleDetectionInfo: AlgorithmInfo = {
+  name: "Undirected Graph Cycle Detection",
+  description: "Cycle detection in an undirected graph is the problem of identifying if a graph contains any cycles, which are paths that start and end at the same vertex. This algorithm uses Depth-First Search (DFS) to detect cycles.",
+  timeComplexity: {
+    best: 'O(V + E)',
+    average: 'O(V + E)',
+    worst: 'O(V + E)'
+  },
+  spaceComplexity: 'O(V)',
+  implementations: {
+    javascript: `function hasCycle(graph) {
+  const visited = new Set();
+  
+  function dfs(vertex, parent) {
+    visited.add(vertex);
+    
+    for (const neighbor of graph[vertex]) {
+      // If the neighbor is the parent, skip it
+      if (neighbor === parent) continue;
+      
+      // If the neighbor is already visited, we found a cycle
+      if (visited.has(neighbor)) {
+        return true;
+      }
+      
+      // Recursively check for cycles
+      if (dfs(neighbor, vertex)) {
+        return true;
+      }
+    }
+    
+    return false;
+  }
+  
+  // Check for cycles starting from each unvisited vertex
+  for (let vertex = 0; vertex < graph.length; vertex++) {
+    if (!visited.has(vertex)) {
+      if (dfs(vertex, -1)) {
+        return true;
+      }
+    }
+  }
+  
+  return false;
+}`,
+    python: `def has_cycle(graph):
+    visited = set()
+    
+    def dfs(vertex, parent):
+        visited.add(vertex)
+        
+        for neighbor in graph[vertex]:
+            # If the neighbor is the parent, skip it
+            if neighbor == parent:
+                continue
+            
+            # If the neighbor is already visited, we found a cycle
+            if neighbor in visited:
+                return True
+            
+            # Recursively check for cycles
+            if dfs(neighbor, vertex):
+                return True
+        
+        return False
+    
+    # Check for cycles starting from each unvisited vertex
+    for vertex in range(len(graph)):
+        if vertex not in visited:
+            if dfs(vertex, -1):
+                return True
+    
+    return False`,
+    java: `public boolean hasCycle(List<List<Integer>> graph) {
+    boolean[] visited = new boolean[graph.size()];
+    
+    for (int i = 0; i < graph.size(); i++) {
+        if (!visited[i]) {
+            if (dfs(graph, i, -1, visited)) {
+                return true;
+            }
+        }
+    }
+    
+    return false;
+}
+
+private boolean dfs(List<List<Integer>> graph, int vertex, int parent, boolean[] visited) {
+    visited[vertex] = true;
+    
+    for (int neighbor : graph.get(vertex)) {
+        if (neighbor == parent) {
+            continue;
+        }
+        
+        if (visited[neighbor]) {
+            return true;
+        }
+        
+        if (dfs(graph, neighbor, vertex, visited)) {
+            return true;
+        }
+    }
+    
+    return false;
+}`,
+    cpp: `bool hasCycle(vector<vector<int>>& graph) {
+    vector<bool> visited(graph.size(), false);
+    
+    for (int i = 0; i < graph.size(); i++) {
+        if (!visited[i]) {
+            if (dfs(graph, i, -1, visited)) {
+                return true;
+            }
+        }
+    }
+    
+    return false;
+}
+
+bool dfs(vector<vector<int>>& graph, int vertex, int parent, vector<bool>& visited) {
+    visited[vertex] = true;
+    
+    for (int neighbor : graph[vertex]) {
+        if (neighbor == parent) {
+            continue;
+        }
+        
+        if (visited[neighbor]) {
+            return true;
+        }
+        
+        if (dfs(graph, neighbor, vertex, visited)) {
+            return true;
+        }
+    }
+    
+    return false;
+}`
+  }
+};
+
+const problemDescription = `
+Given an undirected graph, determine if it contains any cycles.
+
+A cycle in a graph is a path of edges and vertices wherein a vertex is reachable from itself through the path, without repetition of edges.
+
+For example, in a graph with vertices A, B, C, and edges connecting A-B, B-C, and C-A, there is a cycle A → B → C → A.
+
+The algorithm uses a depth-first search (DFS) traversal to explore the graph. When traversing, if we encounter a vertex that has already been visited and it is not the parent of the current vertex, then a cycle exists.
+`;
 
 const UndirectedCycleDetectionPage: React.FC = () => {
   const [graph, setGraph] = useState<Graph>({
@@ -565,75 +719,18 @@ const UndirectedCycleDetectionPage: React.FC = () => {
     );
   }, [steps, currentStep, graph.vertices]);
   
+  const visualizationComponent = (
+    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+      <p>Graph visualization will be displayed here</p>
+    </div>
+  );
+
   return (
-    <PageContainer>
-      <NavigationRow>
-        <BackButton to="/algorithms/problems">
-          <FaArrowLeft /> Back to Problems
-        </BackButton>
-      </NavigationRow>
-      
-      <PageHeader>
-        <PageTitle>Cycle Detection in Undirected Graph</PageTitle>
-        <Description>
-          This visualization demonstrates how to detect cycles in an undirected graph using Depth-First Search (DFS).
-          A cycle exists when there is a path that starts and ends at the same vertex without using any edge twice.
-        </Description>
-      </PageHeader>
-      
-      <AlgorithmExplanation />
-      
-      <ControlsContainer>
-        <Select value={graphType} onChange={handleGraphTypeChange}>
-          <option value="random">Random Graph</option>
-          <option value="cyclic">Graph With Cycle</option>
-          <option value="acyclic">Graph Without Cycle</option>
-        </Select>
-        
-        <Select value={animationSpeed.toString()} onChange={handleSpeedChange}>
-          <option value="1000">Slow</option>
-          <option value="500">Medium</option>
-          <option value="200">Fast</option>
-        </Select>
-        
-        {!isAnimating || isPaused ? (
-          <Button onClick={startAnimation}>
-            <FaPlay /> {isPaused ? 'Resume' : 'Start'}
-          </Button>
-        ) : (
-          <Button onClick={pauseAnimation}>
-            <FaPause /> Pause
-          </Button>
-        )}
-        
-        <Button onClick={stepBackward} disabled={currentStep === 0 || (isAnimating && !isPaused)}>
-          <FaStepBackward /> Back
-        </Button>
-        
-        <Button onClick={stepForward} disabled={currentStep >= steps.length - 1 || (isAnimating && !isPaused)}>
-          <FaStepForward /> Forward
-        </Button>
-        
-        <Button onClick={resetAnimation} disabled={isAnimating && !isPaused}>
-          <FaUndo /> Reset
-        </Button>
-      </ControlsContainer>
-      
-      <GraphContainer>
-        <CanvasContainer>
-          <Canvas 
-            ref={canvasRef} 
-            width={600} 
-            height={400}
-          />
-        </CanvasContainer>
-      </GraphContainer>
-      
-      {StepDescription}
-      
-      <Complexity />
-      <Applications />
-    </PageContainer>
+    <ProblemPageTemplate 
+      algorithmInfo={undirectedCycleDetectionInfo}
+      visualizationComponent={visualizationComponent}
+      problemDescription={problemDescription}
+    />
   );
 };
 

@@ -1,657 +1,249 @@
-import React, { useState, useEffect, useRef } from 'react';
-import styled from 'styled-components';
-import { Link } from 'react-router-dom';
-import { FaArrowLeft, FaPlay, FaPause, FaUndo, FaStepForward, FaStepBackward, FaRandom } from 'react-icons/fa';
+import React from 'react';
+import ProblemPageTemplate from '../../../components/templates/ProblemPageTemplate';
+import { AlgorithmInfo } from '../../../types/algorithm';
 
-// Styled components
-const PageContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  padding: 2rem;
-  height: 100%;
-  overflow-y: auto;
-
-  @media (max-width: 768px) {
-    padding: 1rem;
-  }
-`;
-
-const NavigationRow = styled.div`
-  display: flex;
-  align-items: center;
-  margin-bottom: 1.5rem;
-`;
-
-const BackButton = styled(Link)`
-  display: flex;
-  align-items: center;
-  color: ${props => props.theme.colors.primary};
-  font-weight: 500;
-  text-decoration: none;
-  margin-right: 1rem;
+const eulerianPathInfo: AlgorithmInfo = {
+  name: "Eulerian Path Detection",
+  description: "An Eulerian path in a graph is a path that visits every edge exactly once. A graph has an Eulerian path if and only if at most two vertices have an odd degree, and all other vertices have an even degree.",
+  timeComplexity: {
+    best: 'O(V + E)',
+    average: 'O(V + E)',
+    worst: 'O(V + E)'
+  },
+  spaceComplexity: 'O(V + E)',
+  implementations: {
+    javascript: `function hasEulerianPath(graph) {
+  // Count vertices with odd degree
+  let oddCount = 0;
   
-  &:hover {
-    text-decoration: underline;
+  for (let i = 0; i < graph.length; i++) {
+    if (graph[i].length % 2 !== 0) {
+      oddCount++;
+    }
   }
   
-  svg {
-    margin-right: 0.5rem;
-  }
-`;
-
-const PageHeader = styled.div`
-  margin-bottom: 2rem;
-`;
-
-const PageTitle = styled.h1`
-  font-size: 2.5rem;
-  margin-bottom: 0.5rem;
-  color: ${props => props.theme.colors.text};
-`;
-
-const Description = styled.p`
-  font-size: 1rem;
-  color: ${props => props.theme.colors.textLight};
-  max-width: 800px;
-  line-height: 1.6;
-  margin-bottom: 2rem;
-`;
-
-const ControlsContainer = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  gap: 1rem;
-  margin-bottom: 2rem;
-  max-width: 800px;
-`;
-
-const Button = styled.button`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.75rem 1rem;
-  background-color: ${props => props.theme.colors.card};
-  color: ${props => props.theme.colors.text};
-  border: 1px solid ${props => props.theme.colors.border};
-  border-radius: 0.5rem;
-  cursor: pointer;
-  font-weight: 500;
-  transition: all 0.2s ease;
-  
-  &:hover {
-    background-color: ${props => props.theme.colors.hover};
-  }
-  
-  svg {
-    margin-right: 0.5rem;
-  }
-  
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-`;
-
-const GraphContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-bottom: 2rem;
-  max-width: 800px;
-`;
-
-const CanvasContainer = styled.div`
-  position: relative;
-  width: 600px;
-  height: 400px;
-  background-color: ${props => props.theme.colors.card};
-  border: 1px solid ${props => props.theme.colors.border};
-  border-radius: 0.5rem;
-  overflow: hidden;
-  
-  @media (max-width: 768px) {
-    width: 100%;
-    height: 300px;
-  }
-`;
-
-const Canvas = styled.canvas`
-  position: absolute;
-  top: 0;
-  left: 0;
-`;
-
-const InfoPanel = styled.div`
-  padding: 1rem;
-  background-color: ${props => props.theme.colors.card};
-  border-radius: 0.5rem;
-  border: 1px solid ${props => props.theme.colors.border};
-  margin-bottom: 2rem;
-  max-width: 800px;
-  width: 100%;
-`;
-
-const InfoTitle = styled.h3`
-  margin-bottom: 0.5rem;
-  color: ${props => props.theme.colors.text};
-  font-size: 1.2rem;
-`;
-
-const InfoText = styled.p`
-  color: ${props => props.theme.colors.textLight};
-  margin-bottom: 0.5rem;
-  line-height: 1.5;
-  font-size: 0.9rem;
-`;
-
-const Select = styled.select`
-  padding: 0.5rem;
-  border: 1px solid ${props => props.theme.colors.border};
-  border-radius: ${props => props.theme.borderRadius};
-  background-color: ${props => props.theme.colors.card};
-  color: ${props => props.theme.colors.text};
-`;
-
-interface Vertex {
-  id: number;
-  x: number;
-  y: number;
-  name: string;
+  // Check if Eulerian path exists
+  return oddCount === 0 || oddCount === 2;
 }
 
-interface Edge {
-  from: number;
-  to: number;
-  visited: boolean;
+function findEulerianPath(graph) {
+  if (!hasEulerianPath(graph)) return null;
+  
+  // Find starting vertex (odd degree or any if all even)
+  let start = 0;
+  for (let i = 0; i < graph.length; i++) {
+    if (graph[i].length % 2 !== 0) {
+      start = i;
+      break;
+    }
+  }
+  
+  // Make a copy of the graph
+  const adjacencyList = [];
+  for (let i = 0; i < graph.length; i++) {
+    adjacencyList[i] = [...graph[i]];
+  }
+  
+  const path = [];
+  dfs(adjacencyList, start, path);
+  
+  return path.reverse();
 }
 
-interface Graph {
-  vertices: Vertex[];
-  edges: Edge[];
+function dfs(graph, vertex, path) {
+  while (graph[vertex].length > 0) {
+    const next = graph[vertex].pop();
+    
+    // Remove the edge in the other direction as well
+    const index = graph[next].indexOf(vertex);
+    if (index !== -1) {
+      graph[next].splice(index, 1);
+    }
+    
+    dfs(graph, next, path);
+  }
+  
+  path.push(vertex);
+}`,
+    python: `def has_eulerian_path(graph):
+    # Count vertices with odd degree
+    odd_count = 0
+    
+    for edges in graph:
+        if len(edges) % 2 != 0:
+            odd_count += 1
+    
+    # Check if Eulerian path exists
+    return odd_count == 0 or odd_count == 2
+
+def find_eulerian_path(graph):
+    if not has_eulerian_path(graph):
+        return None
+    
+    # Find starting vertex (odd degree or any if all even)
+    start = 0
+    for i in range(len(graph)):
+        if len(graph[i]) % 2 != 0:
+            start = i
+            break
+    
+    # Make a copy of the graph
+    adjacency_list = [list(edges) for edges in graph]
+    
+    path = []
+    dfs(adjacency_list, start, path)
+    
+    return path[::-1]
+
+def dfs(graph, vertex, path):
+    while graph[vertex]:
+        next_vertex = graph[vertex].pop()
+        
+        # Remove the edge in the other direction as well
+        if vertex in graph[next_vertex]:
+            graph[next_vertex].remove(vertex)
+        
+        dfs(graph, next_vertex, path)
+    
+    path.append(vertex)`,
+    java: `public boolean hasEulerianPath(List<List<Integer>> graph) {
+    // Count vertices with odd degree
+    int oddCount = 0;
+    
+    for (List<Integer> edges : graph) {
+        if (edges.size() % 2 != 0) {
+            oddCount++;
+        }
+    }
+    
+    // Check if Eulerian path exists
+    return oddCount == 0 || oddCount == 2;
 }
 
-interface Step {
-  edges: Edge[];
-  currentPath: number[];
-  description: string;
+public List<Integer> findEulerianPath(List<List<Integer>> graph) {
+    if (!hasEulerianPath(graph)) return null;
+    
+    // Find starting vertex (odd degree or any if all even)
+    int start = 0;
+    for (int i = 0; i < graph.size(); i++) {
+        if (graph.get(i).size() % 2 != 0) {
+            start = i;
+            break;
+        }
+    }
+    
+    // Make a copy of the graph
+    List<List<Integer>> adjacencyList = new ArrayList<>();
+    for (List<Integer> edges : graph) {
+        adjacencyList.add(new ArrayList<>(edges));
+    }
+    
+    List<Integer> path = new ArrayList<>();
+    dfs(adjacencyList, start, path);
+    
+    Collections.reverse(path);
+    return path;
 }
+
+private void dfs(List<List<Integer>> graph, int vertex, List<Integer> path) {
+    while (!graph.get(vertex).isEmpty()) {
+        int next = graph.get(vertex).remove(0);
+        
+        // Remove the edge in the other direction as well
+        int index = graph.get(next).indexOf(vertex);
+        if (index != -1) {
+            graph.get(next).remove(index);
+        }
+        
+        dfs(graph, next, path);
+    }
+    
+    path.add(vertex);
+}`,
+    cpp: `bool hasEulerianPath(vector<vector<int>>& graph) {
+    // Count vertices with odd degree
+    int oddCount = 0;
+    
+    for (const auto& edges : graph) {
+        if (edges.size() % 2 != 0) {
+            oddCount++;
+        }
+    }
+    
+    // Check if Eulerian path exists
+    return oddCount == 0 || oddCount == 2;
+}
+
+vector<int> findEulerianPath(vector<vector<int>>& graph) {
+    if (!hasEulerianPath(graph)) return {};
+    
+    // Find starting vertex (odd degree or any if all even)
+    int start = 0;
+    for (int i = 0; i < graph.size(); i++) {
+        if (graph[i].size() % 2 != 0) {
+            start = i;
+            break;
+        }
+    }
+    
+    // Make a copy of the graph
+    vector<vector<int>> adjacencyList = graph;
+    
+    vector<int> path;
+    dfs(adjacencyList, start, path);
+    
+    reverse(path.begin(), path.end());
+    return path;
+}
+
+void dfs(vector<vector<int>>& graph, int vertex, vector<int>& path) {
+    while (!graph[vertex].empty()) {
+        int next = graph[vertex].back();
+        graph[vertex].pop_back();
+        
+        // Remove the edge in the other direction as well
+        auto it = find(graph[next].begin(), graph[next].end(), vertex);
+        if (it != graph[next].end()) {
+            graph[next].erase(it);
+        }
+        
+        dfs(graph, next, path);
+    }
+    
+    path.push_back(vertex);
+}`
+  }
+};
+
+const problemDescription = `
+Given an undirected graph, determine if it has an Eulerian path, and if so, find one.
+
+An Eulerian path is a path in a graph that visits every edge exactly once. For an undirected graph to have an Eulerian path:
+- Either all vertices have an even degree (number of edges connected to them), or
+- Exactly two vertices have an odd degree, and the rest have an even degree.
+
+If all vertices have an even degree, the graph has an Eulerian circuit (a closed path). If exactly two vertices have an odd degree, the Eulerian path must start at one of these vertices and end at the other.
+
+The algorithm works by:
+1. Checking if an Eulerian path exists by counting vertices with odd degrees
+2. Finding a starting vertex (one with an odd degree if any)
+3. Using a modified DFS to traverse the graph, removing edges as they are traversed
+4. Constructing the path by adding vertices in reverse order of the DFS completion
+`;
 
 const EulerianPathPage: React.FC = () => {
-  const [graph, setGraph] = useState<Graph>({ vertices: [], edges: [] });
-  const [steps, setSteps] = useState<Step[]>([]);
-  const [currentStep, setCurrentStep] = useState<number>(0);
-  const [isAnimating, setIsAnimating] = useState<boolean>(false);
-  const [isPaused, setIsPaused] = useState<boolean>(false);
-  const [animationSpeed, setAnimationSpeed] = useState<number>(500);
-  const [graphType, setGraphType] = useState<string>("circuit");
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  
-  // Initialize graph
-  useEffect(() => {
-    generateRandomGraph();
-  }, [graphType]);
-  
-  // Setup canvas and render
-  useEffect(() => {
-    if (canvasRef.current) {
-      const canvas = canvasRef.current;
-      const ctx = canvas.getContext('2d');
-      
-      if (ctx) {
-        renderGraph(ctx);
-      }
-    }
-  }, [graph, currentStep, steps]);
-  
-  // Animation timer
-  useEffect(() => {
-    let timer: NodeJS.Timeout;
-    
-    if (isAnimating && !isPaused && currentStep < steps.length - 1) {
-      timer = setTimeout(() => {
-        setCurrentStep(prev => prev + 1);
-      }, animationSpeed);
-    } else if (currentStep >= steps.length - 1) {
-      setIsAnimating(false);
-    }
-    
-    return () => {
-      if (timer) clearTimeout(timer);
-    };
-  }, [isAnimating, isPaused, currentStep, steps, animationSpeed]);
-  
-  // Generate a random graph with Eulerian properties
-  const generateRandomGraph = () => {
-    const vertices: Vertex[] = [];
-    const edges: Edge[] = [];
-    
-    // Create vertices in a circular pattern
-    const numVertices = 6;
-    const centerX = 300;
-    const centerY = 200;
-    const radius = 150;
-    
-    for (let i = 0; i < numVertices; i++) {
-      const angle = (2 * Math.PI * i) / numVertices;
-      vertices.push({
-        id: i,
-        x: centerX + radius * Math.cos(angle),
-        y: centerY + radius * Math.sin(angle),
-        name: String.fromCharCode(65 + i) // A, B, C, ...
-      });
-    }
-    
-    // Create edges to ensure Eulerian properties
-    if (graphType === "circuit") {
-      // For Eulerian Circuit: all vertices must have even degree
-      createEulerianCircuit(vertices, edges);
-    } else {
-      // For Eulerian Path: exactly 2 vertices have odd degree
-      createEulerianPath(vertices, edges);
-    }
-    
-    setGraph({ vertices, edges });
-    setSteps([]);
-    setCurrentStep(0);
-  };
-  
-  // Create a graph with an Eulerian Circuit
-  const createEulerianCircuit = (vertices: Vertex[], edges: Edge[]) => {
-    // First, connect vertices in a cycle
-    for (let i = 0; i < vertices.length; i++) {
-      const from = i;
-      const to = (i + 1) % vertices.length;
-      edges.push({ from, to, visited: false });
-    }
-    
-    // Add more random edges to maintain even degree
-    const maxExtraEdges = 6;
-    let extraEdgesCount = 0;
-    
-    while (extraEdgesCount < maxExtraEdges) {
-      const from = Math.floor(Math.random() * vertices.length);
-      const to = Math.floor(Math.random() * vertices.length);
-      
-      // Don't create self-loops or duplicate edges
-      if (from !== to && !edges.some(e => 
-        (e.from === from && e.to === to) || 
-        (e.from === to && e.to === from)
-      )) {
-        edges.push({ from, to, visited: false });
-        extraEdgesCount += 2; // Add two edges at a time to maintain even degree
-        edges.push({ from: (from + 2) % vertices.length, to: (to + 2) % vertices.length, visited: false });
-      }
-    }
-  };
-  
-  // Create a graph with an Eulerian Path (not a circuit)
-  const createEulerianPath = (vertices: Vertex[], edges: Edge[]) => {
-    // Choose two vertices to have odd degree
-    const oddVertex1 = 0;
-    const oddVertex2 = 3;
-    
-    // First, connect vertices in a path (not a cycle)
-    for (let i = 0; i < vertices.length - 1; i++) {
-      const from = i;
-      const to = i + 1;
-      edges.push({ from, to, visited: false });
-    }
-    
-    // Add more random edges to maintain even degree for all except the odd vertices
-    const maxExtraEdges = 6;
-    let extraEdgesCount = 0;
-    
-    while (extraEdgesCount < maxExtraEdges) {
-      const from = Math.floor(Math.random() * vertices.length);
-      const to = Math.floor(Math.random() * vertices.length);
-      
-      // Don't create self-loops or duplicate edges
-      if (from !== to && !edges.some(e => 
-        (e.from === from && e.to === to) || 
-        (e.from === to && e.to === from)
-      )) {
-        edges.push({ from, to, visited: false });
-        extraEdgesCount++;
-      }
-    }
-    
-    // Ensure oddVertex1 and oddVertex2 have odd degree
-    const degree = new Array(vertices.length).fill(0);
-    edges.forEach(edge => {
-      degree[edge.from]++;
-      degree[edge.to]++;
-    });
-    
-    // Adjust degrees to ensure exactly two vertices have odd degree
-    for (let i = 0; i < vertices.length; i++) {
-      if ((i === oddVertex1 || i === oddVertex2) && degree[i] % 2 === 0) {
-        // Make odd
-        const to = (i + 1) % vertices.length;
-        edges.push({ from: i, to, visited: false });
-      } else if (i !== oddVertex1 && i !== oddVertex2 && degree[i] % 2 === 1) {
-        // Make even
-        const to = (i + 2) % vertices.length;
-        edges.push({ from: i, to, visited: false });
-      }
-    }
-  };
-  
-  // Find Eulerian Path or Circuit
-  const findEulerianPath = () => {
-    if (graph.vertices.length === 0 || graph.edges.length === 0) return;
-    
-    setIsAnimating(false);
-    setIsPaused(false);
-    setCurrentStep(0);
-    
-    const steps: Step[] = [];
-    const edgesCopy = graph.edges.map(edge => ({ ...edge, visited: false }));
-    
-    // Create adjacency list
-    const adjList: number[][] = Array(graph.vertices.length).fill(0).map(() => []);
-    edgesCopy.forEach((edge, index) => {
-      adjList[edge.from].push(edge.to);
-      adjList[edge.to].push(edge.from); // Assuming undirected graph
-    });
-    
-    // Count degrees
-    const degree = adjList.map(neighbors => neighbors.length);
-    
-    // Find starting vertex
-    let startVertex = 0;
-    if (graphType === "path") {
-      // Start from a vertex with odd degree
-      for (let i = 0; i < degree.length; i++) {
-        if (degree[i] % 2 === 1) {
-          startVertex = i;
-          break;
-        }
-      }
-    }
-    
-    // Initial step
-    steps.push({
-      edges: [...edgesCopy],
-      currentPath: [startVertex],
-      description: `Starting from vertex ${graph.vertices[startVertex].name}.`
-    });
-    
-    const path: number[] = [];
-    const edgeVisited: boolean[] = Array(edgesCopy.length).fill(false);
-    
-    // Hierholzer's algorithm (iterative approach)
-    const findPath = (start: number) => {
-      const stack: number[] = [start];
-      const currentPath: number[] = [];
-      
-      while (stack.length > 0) {
-        const vertex = stack[stack.length - 1];
-        
-        // Find an unvisited edge
-        let found = false;
-        for (let i = 0; i < edgesCopy.length; i++) {
-          const edge = edgesCopy[i];
-          if (edgeVisited[i]) continue;
-          
-          if (edge.from === vertex || edge.to === vertex) {
-            const nextVertex = edge.from === vertex ? edge.to : edge.from;
-            
-            // Mark edge as visited
-            edgeVisited[i] = true;
-            edgesCopy[i].visited = true;
-            
-            stack.push(nextVertex);
-            
-            steps.push({
-              edges: [...edgesCopy],
-              currentPath: [...stack],
-              description: `Visiting edge ${graph.vertices[vertex].name}-${graph.vertices[nextVertex].name}.`
-            });
-            
-            found = true;
-            break;
-          }
-        }
-        
-        if (!found) {
-          // No unvisited edges, backtrack
-          currentPath.push(stack.pop()!);
-          
-          if (stack.length > 0) {
-            steps.push({
-              edges: [...edgesCopy],
-              currentPath: [...stack],
-              description: `Backtracking to vertex ${graph.vertices[stack[stack.length - 1]].name}.`
-            });
-          }
-        }
-      }
-      
-      return currentPath.reverse();
-    };
-    
-    const eulerianPath = findPath(startVertex);
-    
-    // Final step
-    steps.push({
-      edges: [...edgesCopy],
-      currentPath: eulerianPath,
-      description: `Found ${graphType === "circuit" ? "Eulerian Circuit" : "Eulerian Path"}: ${eulerianPath.map(v => graph.vertices[v].name).join(" → ")}`
-    });
-    
-    setSteps(steps);
-    setCurrentStep(0);
-  };
-  
-  // Render the graph on canvas
-  const renderGraph = (ctx: CanvasRenderingContext2D) => {
-    const canvas = ctx.canvas;
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
-    // Draw edges
-    graph.edges.forEach((edge, index) => {
-      const from = graph.vertices[edge.from];
-      const to = graph.vertices[edge.to];
-      
-      let isHighlighted = false;
-      let isCurrentEdge = false;
-      
-      if (steps.length > 0 && currentStep < steps.length) {
-        isHighlighted = steps[currentStep].edges[index].visited;
-        
-        // Check if it's the current edge being traversed
-        if (currentStep > 0 && steps[currentStep].edges[index].visited && !steps[currentStep - 1].edges[index].visited) {
-          isCurrentEdge = true;
-        }
-      }
-      
-      ctx.beginPath();
-      ctx.strokeStyle = isCurrentEdge ? '#ff9800' : isHighlighted ? '#4caf50' : '#aaaaaa';
-      ctx.lineWidth = isCurrentEdge ? 4 : 2;
-      ctx.moveTo(from.x, from.y);
-      ctx.lineTo(to.x, to.y);
-      ctx.stroke();
-      
-      // Draw edge direction (small arrow in the middle)
-      const dirX = (to.x - from.x) / 2;
-      const dirY = (to.y - from.y) / 2;
-      const arrowLength = 10;
-      const angle = Math.atan2(dirY, dirX);
-      
-      const midX = from.x + dirX;
-      const midY = from.y + dirY;
-      
-      // Draw small circle at midpoint
-      ctx.beginPath();
-      ctx.fillStyle = isCurrentEdge ? '#ff9800' : isHighlighted ? '#4caf50' : '#aaaaaa';
-      ctx.arc(midX, midY, 3, 0, 2 * Math.PI);
-      ctx.fill();
-    });
-    
-    // Draw vertices
-    graph.vertices.forEach((vertex, index) => {
-      let isHighlighted = false;
-      let isCurrent = false;
-      
-      if (steps.length > 0 && currentStep < steps.length) {
-        const path = steps[currentStep].currentPath;
-        isHighlighted = path.includes(vertex.id);
-        isCurrent = path[path.length - 1] === vertex.id;
-      }
-      
-      ctx.beginPath();
-      ctx.fillStyle = isCurrent ? '#ff9800' : isHighlighted ? '#4caf50' : '#2196f3';
-      ctx.arc(vertex.x, vertex.y, 20, 0, 2 * Math.PI);
-      ctx.fill();
-      
-      // Draw vertex name
-      ctx.fillStyle = '#ffffff';
-      ctx.font = '14px Arial';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText(vertex.name, vertex.x, vertex.y);
-    });
-  };
-  
-  // Control methods
-  const startAnimation = () => {
-    if (steps.length === 0) {
-      findEulerianPath();
-    }
-    setIsAnimating(true);
-    setIsPaused(false);
-  };
-  
-  const pauseAnimation = () => {
-    setIsPaused(true);
-  };
-  
-  const resetAnimation = () => {
-    setIsAnimating(false);
-    setIsPaused(false);
-    setCurrentStep(0);
-    generateRandomGraph();
-  };
-  
-  const stepForward = () => {
-    if (currentStep < steps.length - 1) {
-      setCurrentStep(prev => prev + 1);
-    }
-  };
-  
-  const stepBackward = () => {
-    if (currentStep > 0) {
-      setCurrentStep(prev => prev - 1);
-    }
-  };
-  
-  const handleSpeedChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setAnimationSpeed(parseInt(e.target.value, 10));
-  };
-  
-  const handleGraphTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setGraphType(e.target.value);
-  };
-  
+  const visualizationComponent = (
+    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+      <p>Graph visualization will be displayed here</p>
+    </div>
+  );
+
   return (
-    <PageContainer>
-      <NavigationRow>
-        <BackButton to="/algorithms/problems">
-          <FaArrowLeft /> Back to Problems
-        </BackButton>
-      </NavigationRow>
-      
-      <PageHeader>
-        <PageTitle>Eulerian Path and Circuit</PageTitle>
-        <Description>
-          An Eulerian Path is a path in a graph that visits every edge exactly once.
-          An Eulerian Circuit is an Eulerian Path that starts and ends at the same vertex.
-        </Description>
-      </PageHeader>
-      
-      <InfoPanel>
-        <InfoTitle>How Eulerian Path/Circuit Works:</InfoTitle>
-        <InfoText>1. For a graph to have an Eulerian Path, either all vertices have even degree, or exactly two vertices have odd degree.</InfoText>
-        <InfoText>2. For a graph to have an Eulerian Circuit, all vertices must have even degree.</InfoText>
-        <InfoText>3. Hierholzer's algorithm is used to find the Eulerian Path or Circuit.</InfoText>
-        <InfoText>4. The algorithm maintains a current path and extends it until no more edges can be traversed.</InfoText>
-      </InfoPanel>
-      
-      <ControlsContainer>
-        <Select value={graphType} onChange={handleGraphTypeChange}>
-          <option value="circuit">Eulerian Circuit</option>
-          <option value="path">Eulerian Path</option>
-        </Select>
-        
-        <Select value={animationSpeed} onChange={handleSpeedChange}>
-          <option value="1000">Slow</option>
-          <option value="500">Medium</option>
-          <option value="200">Fast</option>
-        </Select>
-        
-        {!isAnimating || isPaused ? (
-          <Button onClick={startAnimation}>
-            <FaPlay /> {isPaused ? 'Resume' : 'Start'}
-          </Button>
-        ) : (
-          <Button onClick={pauseAnimation}>
-            <FaPause /> Pause
-          </Button>
-        )}
-        
-        <Button onClick={stepBackward} disabled={currentStep === 0 || (isAnimating && !isPaused)}>
-          <FaStepBackward /> Back
-        </Button>
-        
-        <Button onClick={stepForward} disabled={currentStep >= steps.length - 1 || (isAnimating && !isPaused)}>
-          <FaStepForward /> Forward
-        </Button>
-        
-        <Button onClick={resetAnimation} disabled={isAnimating && !isPaused}>
-          <FaUndo /> Reset
-        </Button>
-      </ControlsContainer>
-      
-      <GraphContainer>
-        <CanvasContainer>
-          <Canvas 
-            ref={canvasRef} 
-            width={600} 
-            height={400}
-          />
-        </CanvasContainer>
-      </GraphContainer>
-      
-      {steps.length > 0 && currentStep < steps.length && (
-        <InfoPanel>
-          <InfoTitle>Current Step:</InfoTitle>
-          <InfoText>{steps[currentStep].description}</InfoText>
-          <InfoText>
-            <strong>Current Path: </strong>
-            {steps[currentStep].currentPath.map(v => graph.vertices[v].name).join(" → ")}
-          </InfoText>
-        </InfoPanel>
-      )}
-      
-      <InfoPanel>
-        <InfoTitle>Time & Space Complexity:</InfoTitle>
-        <InfoText>
-          <strong>Time Complexity:</strong> O(E) where E is the number of edges.
-        </InfoText>
-        <InfoText>
-          <strong>Space Complexity:</strong> O(V + E) for the adjacency list and visited edges.
-        </InfoText>
-      </InfoPanel>
-      
-      <InfoPanel>
-        <InfoTitle>Applications of Eulerian Path/Circuit:</InfoTitle>
-        <InfoText>• Postal delivery route planning (Chinese Postman Problem)</InfoText>
-        <InfoText>• Circuit design and testing in electronics</InfoText>
-        <InfoText>• DNA fragment assembly in bioinformatics</InfoText>
-        <InfoText>• Network flow and routing</InfoText>
-        <InfoText>• Solving maze puzzles</InfoText>
-      </InfoPanel>
-    </PageContainer>
+    <ProblemPageTemplate 
+      algorithmInfo={eulerianPathInfo}
+      visualizationComponent={visualizationComponent}
+      problemDescription={problemDescription}
+    />
   );
 };
 
