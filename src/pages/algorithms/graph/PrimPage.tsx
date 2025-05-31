@@ -4,10 +4,10 @@ import { FaArrowLeft, FaPlay, FaPause, FaUndo, FaStepForward, FaCode, FaRandom }
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import CustomGraphInput from '../../../components/graph/CustomGraphInput';
+import { vs2015 } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 
 // Lazy load the SyntaxHighlighter to improve initial load time
 const SyntaxHighlighter = lazy(() => import('react-syntax-highlighter'));
-import { vs2015 } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 
 // Styled components
 const PageContainer = styled.div`

@@ -463,7 +463,7 @@ const SortingPageTemplate: React.FC<SortingPageTemplateProps> = ({
       const newStep = currentStep - 2 >= 0 ? currentStep - 2 : -1;
       
       // Then replay all steps up to the new step
-      let tempArray = [...array];
+      const tempArray = [...array];
       const newSortedIndices: number[] = [];
       
       for (let i = 0; i <= newStep; i++) {

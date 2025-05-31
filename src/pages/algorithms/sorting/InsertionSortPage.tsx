@@ -169,7 +169,7 @@ const generateInsertionSortSteps = (array: number[]): AnimationStep[] => {
     
     // Update the list of sorted indices (all elements from 0 to i)
     if (i > 1) {
-      const sortedIndices = [];
+      const sortedIndices: number[] = [];
       for (let k = 0; k <= i; k++) {
         if (k !== j + 1) { // Skip the one we just marked
           sortedIndices.push(k);

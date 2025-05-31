@@ -2,17 +2,18 @@ import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { FiSun, FiMoon, FiGithub } from 'react-icons/fi';
-import { useTheme } from '../../themes/ThemeContext';
+import { useThemeContext } from '../../themes/ThemeContext';
 
 const HeaderContainer = styled.header`
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 1rem 2rem;
-  background-color: ${({ theme }) => theme.colors.background};
-  border-bottom: 1px solid ${({ theme }) => theme.colors.gray200};
+  background-color: ${({ theme }) => theme.colors.card};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.border};
   box-shadow: ${({ theme }) => theme.shadows.sm};
   z-index: 10;
+  transition: all 0.3s ease-in-out;
 `;
 
 const Logo = styled(Link)`
@@ -36,12 +37,15 @@ const LogoText = styled.div`
 const LogoTitle = styled.span`
   font-size: 1.5rem;
   font-weight: 700;
+  color: ${({ theme }) => theme.colors.text};
+  transition: color 0.3s ease;
 `;
 
 const LogoCredit = styled.span`
   font-size: 0.875rem;
   font-weight: 500;
-  color: ${({ theme }) => theme.colors.gray600};
+  color: ${({ theme }) => theme.colors.textLight};
+  transition: color 0.3s ease;
 `;
 
 const LogoIcon = styled.div`
@@ -56,12 +60,31 @@ const LogoIcon = styled.div`
   border-radius: ${({ theme }) => theme.borderRadius};
   font-weight: 700;
   font-size: 1.25rem;
+  transition: background-color 0.3s ease;
 `;
 
 const HeaderActions = styled.div`
   display: flex;
   align-items: center;
   gap: 1rem;
+`;
+
+const ThemeToggle = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1rem;
+  border-radius: ${({ theme }) => theme.borderRadius};
+  background-color: ${({ theme }) => theme.colors.gray200};
+  color: ${({ theme }) => theme.colors.text};
+  font-weight: 500;
+  font-size: 0.875rem;
+  gap: 0.5rem;
+  transition: all 0.2s ease-in-out;
+  
+  &:hover {
+    background-color: ${({ theme }) => theme.colors.gray300};
+  }
 `;
 
 const IconButton = styled.button`
@@ -75,13 +98,13 @@ const IconButton = styled.button`
   transition: ${({ theme }) => theme.transitions.default};
   
   &:hover {
-    background-color: ${({ theme }) => theme.colors.gray100};
-    color: ${({ theme }) => theme.colors.gray900};
+    background-color: ${({ theme }) => theme.colors.gray200};
+    color: ${({ theme }) => theme.colors.text};
   }
 `;
 
 const Header: React.FC = () => {
-  const { isDarkMode, toggleTheme } = useTheme();
+  const { isDarkMode, toggleTheme } = useThemeContext();
 
   return (
     <HeaderContainer>
@@ -93,10 +116,24 @@ const Header: React.FC = () => {
         </LogoText>
       </Logo>
       <HeaderActions>
-        <IconButton onClick={toggleTheme} aria-label={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}>
-          {isDarkMode ? <FiSun size={20} /> : <FiMoon size={20} />}
-        </IconButton>
-        <IconButton as="a" href="https://github.com" target="_blank" rel="noopener noreferrer" aria-label="GitHub repository">
+        <ThemeToggle onClick={toggleTheme} aria-label={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}>
+          {isDarkMode ? (
+            <>
+              <FiSun size={16} /> Light Mode
+            </>
+          ) : (
+            <>
+              <FiMoon size={16} /> Dark Mode
+            </>
+          )}
+        </ThemeToggle>
+        <IconButton 
+          as="a" 
+          href="https://github.com/dheerajkumargaur/DSA_Visualizer" 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          aria-label="GitHub repository"
+        >
           <FiGithub size={20} />
         </IconButton>
       </HeaderActions>

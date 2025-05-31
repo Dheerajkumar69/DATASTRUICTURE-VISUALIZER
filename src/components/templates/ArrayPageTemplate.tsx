@@ -6,6 +6,14 @@ import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { tomorrow } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { AlgorithmInfo } from '../../types/algorithm';
 
+// Define the Step type
+export interface Step {
+  array: number[];
+  activeIndices: number[];
+  comparingIndices: number[];
+  stepDescription: string;
+}
+
 const PageContainer = styled.div`
   padding: 2rem;
   max-width: 1200px;
@@ -169,13 +177,8 @@ const TimeComplexityValue = styled.div`
 
 interface ArrayPageTemplateProps {
   algorithmInfo: AlgorithmInfo;
-  generateSteps: (array: number[]) => Array<{
-    array: number[];
-    activeIndices: number[];
-    comparingIndices: number[];
-    stepDescription: string;
-  }>;
-  defaultArray: number[];
+  generateSteps: (array: number[]) => Step[];
+  defaultArray?: number[];
 }
 
 const ArrayPageTemplate: React.FC<ArrayPageTemplateProps> = ({
@@ -183,18 +186,13 @@ const ArrayPageTemplate: React.FC<ArrayPageTemplateProps> = ({
   generateSteps,
   defaultArray
 }) => {
-  const [array, setArray] = useState<number[]>(defaultArray);
+  const [array, setArray] = useState<number[]>(defaultArray || []);
   const [activeIndices, setActiveIndices] = useState<number[]>([]);
   const [comparingIndices, setComparingIndices] = useState<number[]>([]);
   const [isSorting, setIsSorting] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
-  const [animationSteps, setAnimationSteps] = useState<Array<{
-    array: number[];
-    activeIndices: number[];
-    comparingIndices: number[];
-    stepDescription: string;
-  }>>([]);
+  const [animationSteps, setAnimationSteps] = useState<Step[]>([]);
   const [speed, setSpeed] = useState(1000);
   const [stepDescription, setStepDescription] = useState('Click Start to begin visualization');
   const timerRef = useRef<NodeJS.Timeout>();

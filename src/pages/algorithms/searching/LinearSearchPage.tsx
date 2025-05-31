@@ -1,5 +1,5 @@
 import React from 'react';
-import ArrayPageTemplate from '../../../components/templates/ArrayPageTemplate';
+import ArrayPageTemplate, { Step } from '../../../components/templates/ArrayPageTemplate';
 import { AlgorithmInfo } from '../../../types/algorithm';
 
 const linearSearchInfo: AlgorithmInfo = {
@@ -44,13 +44,8 @@ const linearSearchInfo: AlgorithmInfo = {
   }
 };
 
-const generateLinearSearchSteps = (array: number[]): Array<{
-  array: number[];
-  activeIndices: number[];
-  comparingIndices: number[];
-  stepDescription: string;
-}> => {
-  const steps = [];
+const generateLinearSearchSteps = (array: number[]): Step[] => {
+  const steps: Step[] = [];
   
   // Choose a target that is somewhere in the second half of the array
   // This gives a good demo for linear search

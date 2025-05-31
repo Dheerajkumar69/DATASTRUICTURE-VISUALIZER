@@ -17,16 +17,10 @@ import {
   FiGitBranch,
   FiServer,
   FiAlignLeft,
-  FiShuffle,
   FiFilter,
-  FiArrowUp,
-  FiArrowDown,
   FiArrowUpCircle,
   FiArrowDownCircle,
   FiArrowUpRight,
-  FiArrowDownRight,
-  FiArrowUpLeft,
-  FiArrowDownLeft,
   FiArrowRightCircle,
   FiArrowLeftCircle,
   FiGitMerge,
@@ -52,11 +46,12 @@ import {
 
 const SidebarContainer = styled.aside<{ isOpen: boolean }>`
   width: 280px;
-  background-color: ${({ theme }) => theme.colors.background};
-  border-right: 1px solid ${({ theme }) => theme.colors.gray200};
+  background-color: ${({ theme }) => theme.colors.card};
+  border-right: 1px solid ${({ theme }) => theme.colors.border};
   height: 100%;
   overflow-y: auto;
-  transition: transform 0.3s ease;
+  transition: all 0.3s ease;
+  box-shadow: ${({ theme }) => theme.shadows.sm};
   
   @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
     position: fixed;
@@ -70,13 +65,14 @@ const SidebarHeader = styled.div`
   align-items: center;
   justify-content: space-between;
   padding: 1rem;
-  border-bottom: 1px solid ${({ theme }) => theme.colors.gray200};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.border};
 `;
 
 const SidebarTitle = styled.h2`
   font-size: 1.25rem;
   font-weight: 600;
-  color: ${({ theme }) => theme.colors.gray800};
+  color: ${({ theme }) => theme.colors.text};
+  transition: color 0.3s ease;
 `;
 
 const CloseButton = styled.button`
@@ -123,7 +119,8 @@ const SectionTitle = styled.h3`
   align-items: center;
   font-size: 1rem;
   font-weight: 600;
-  color: ${({ theme }) => theme.colors.gray700};
+  color: ${({ theme }) => theme.colors.text};
+  transition: color 0.3s ease;
   
   svg {
     margin-right: 0.5rem;
@@ -141,20 +138,20 @@ const NavItem = styled(NavLink)`
   align-items: center;
   padding: 0.5rem;
   border-radius: ${({ theme }) => theme.borderRadius};
-  color: ${({ theme }) => theme.colors.gray600};
-  transition: ${({ theme }) => theme.transitions.default};
+  color: ${({ theme }) => theme.colors.textLight};
+  transition: all 0.2s ease-in-out;
   
   svg {
     margin-right: 0.5rem;
   }
   
   &:hover {
-    background-color: ${({ theme }) => theme.colors.gray100};
-    color: ${({ theme }) => theme.colors.gray900};
+    background-color: ${({ theme }) => theme.colors.hover};
+    color: ${({ theme }) => theme.colors.text};
   }
   
   &.active {
-    background-color: ${({ theme }) => theme.colors.primaryLight};
+    background-color: ${({ theme }) => theme.colors.primaryDark};
     color: white;
     
     &:hover {
@@ -197,6 +194,7 @@ const CategoryLabel = styled.div`
   padding-left: 0.5rem;
   font-weight: 500;
   text-transform: uppercase;
+  transition: color 0.3s ease;
 `;
 
 const NestedNavItem = styled(NavLink)`
@@ -204,8 +202,8 @@ const NestedNavItem = styled(NavLink)`
   align-items: center;
   padding: 0.5rem;
   border-radius: ${({ theme }) => theme.borderRadius};
-  color: ${({ theme }) => theme.colors.gray600};
-  transition: ${({ theme }) => theme.transitions.default};
+  color: ${({ theme }) => theme.colors.textLight};
+  transition: all 0.2s ease-in-out;
   font-size: 0.9rem;
   
   svg {
@@ -213,12 +211,12 @@ const NestedNavItem = styled(NavLink)`
   }
   
   &:hover {
-    background-color: ${({ theme }) => theme.colors.gray100};
-    color: ${({ theme }) => theme.colors.gray900};
+    background-color: ${({ theme }) => theme.colors.hover};
+    color: ${({ theme }) => theme.colors.text};
   }
   
   &.active {
-    background-color: ${({ theme }) => theme.colors.primaryLight};
+    background-color: ${({ theme }) => theme.colors.primaryDark};
     color: white;
     
     &:hover {
@@ -491,15 +489,15 @@ const Sidebar: React.FC = () => {
                 </NestedNavItem>
                 
                 <CategoryLabel>Graph Problems</CategoryLabel>
-                <NestedNavItem to="/algorithms/problems/undirected-cycle-detection">
+                <NestedNavItem to="/algorithms/graph/undirected-cycle-detection">
                   <FaProjectDiagram size={14} />
                   Undirected Cycle Detection
                 </NestedNavItem>
-                <NestedNavItem to="/algorithms/problems/directed-cycle-detection">
+                <NestedNavItem to="/algorithms/graph/directed-cycle-detection">
                   <FaProjectDiagram size={14} />
                   Directed Cycle Detection
                 </NestedNavItem>
-                <NestedNavItem to="/algorithms/problems/eulerian-path">
+                <NestedNavItem to="/algorithms/graph/eulerian-path">
                   <FaRoute size={14} />
                   Eulerian Path
                 </NestedNavItem>

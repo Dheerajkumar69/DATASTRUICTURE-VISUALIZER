@@ -1,5 +1,5 @@
 import React from 'react';
-import ArrayPageTemplate from '../../../components/templates/ArrayPageTemplate';
+import ArrayPageTemplate, { Step } from '../../../components/templates/ArrayPageTemplate';
 import { AlgorithmInfo } from '../../../types/algorithm';
 
 const kadaneInfo: AlgorithmInfo = {
@@ -57,13 +57,8 @@ const kadaneInfo: AlgorithmInfo = {
   }
 };
 
-const generateKadaneSteps = (array: number[]): Array<{
-  array: number[];
-  activeIndices: number[];
-  comparingIndices: number[];
-  stepDescription: string;
-}> => {
-  const steps = [];
+const generateKadaneSteps = (array: number[]): Step[] => {
+  const steps: Step[] = [];
   let maxCurrent = array[0];
   let maxGlobal = array[0];
   let start = 0;

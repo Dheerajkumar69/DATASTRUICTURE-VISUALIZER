@@ -1,5 +1,5 @@
 import React from 'react';
-import ArrayPageTemplate from '../../../components/templates/ArrayPageTemplate';
+import ArrayPageTemplate, { Step } from '../../../components/templates/ArrayPageTemplate';
 import { AlgorithmInfo } from '../../../types/algorithm';
 
 const euclideanInfo: AlgorithmInfo = {
@@ -43,13 +43,8 @@ const euclideanInfo: AlgorithmInfo = {
   }
 };
 
-const generateEuclideanSteps = (array: number[]): Array<{
-  array: number[];
-  activeIndices: number[];
-  comparingIndices: number[];
-  stepDescription: string;
-}> => {
-  const steps = [];
+const generateEuclideanSteps = (array: number[]): Step[] => {
+  const steps: Step[] = [];
   let a = array[0];
   let b = array[1];
 

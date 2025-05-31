@@ -1,5 +1,5 @@
 import React from 'react';
-import ArrayPageTemplate from '../../../components/templates/ArrayPageTemplate';
+import ArrayPageTemplate, { Step } from '../../../components/templates/ArrayPageTemplate';
 import { AlgorithmInfo } from '../../../types/algorithm';
 
 const binarySearchInfo: AlgorithmInfo = {
@@ -197,12 +197,7 @@ int binarySearchRecursive(vector<int>& arr, int target, int left, int right) {
   }
 };
 
-const generateBinarySearchSteps = (array: number[]): Array<{
-  array: number[];
-  activeIndices: number[];
-  comparingIndices: number[];
-  stepDescription: string;
-}> => {
+const generateBinarySearchSteps = (array: number[]): Step[] => {
   // Ensure array is sorted for binary search
   const sortedArray = [...array].sort((a, b) => a - b);
   
@@ -210,7 +205,7 @@ const generateBinarySearchSteps = (array: number[]): Array<{
   const targetIndex = Math.floor(sortedArray.length / 2);
   const target = sortedArray[targetIndex];
   
-  const steps = [];
+  const steps: Step[] = [];
   
   // Initial step
   steps.push({

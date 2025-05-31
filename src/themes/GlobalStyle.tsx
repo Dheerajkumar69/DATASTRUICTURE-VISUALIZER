@@ -35,9 +35,24 @@ const GlobalStyle = createGlobalStyle`
     margin: 0;
   }
   
-  /* Ensure list items and strong text are black in dark mode */
-  li, li strong {
-    color: black !important;
+  /* Custom scrollbar styling that respects the theme */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: ${({ theme }) => theme.colors.gray100};
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: ${({ theme }) => theme.colors.gray400};
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: ${({ theme }) => theme.colors.gray500};
   }
 `;
 

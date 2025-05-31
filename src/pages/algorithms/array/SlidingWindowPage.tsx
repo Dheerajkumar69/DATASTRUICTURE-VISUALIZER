@@ -1,5 +1,5 @@
 import React from 'react';
-import ArrayPageTemplate from '../../../components/templates/ArrayPageTemplate';
+import ArrayPageTemplate, { Step } from '../../../components/templates/ArrayPageTemplate';
 import { AlgorithmInfo } from '../../../types/algorithm';
 
 const slidingWindowInfo: AlgorithmInfo = {
@@ -79,13 +79,8 @@ const slidingWindowInfo: AlgorithmInfo = {
   }
 };
 
-const generateSlidingWindowSteps = (array: number[]): Array<{
-  array: number[];
-  activeIndices: number[];
-  comparingIndices: number[];
-  stepDescription: string;
-}> => {
-  const steps = [];
+const generateSlidingWindowSteps = (array: number[]): Step[] => {
+  const steps: Step[] = [];
   const k = 3; // Window size
   let windowSum = 0;
   let maxSum = 0;

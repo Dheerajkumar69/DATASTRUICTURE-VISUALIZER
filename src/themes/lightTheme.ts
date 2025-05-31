@@ -8,6 +8,15 @@ export const lightTheme = {
     secondaryDark: '#059669',
     background: '#F9FAFB',
     foreground: '#1F2937',
+    card: '#FFFFFF',
+    text: '#1F2937',
+    textLight: '#6B7280',
+    border: '#E5E7EB',
+    hover: '#F3F4F6',
+    error: '#DC2626',
+    highlight: '#A855F7',
+    accent: '#8B5CF6',
+    gray50: '#F9FAFB',
     gray100: '#F3F4F6',
     gray200: '#E5E7EB',
     gray300: '#D1D5DB',
@@ -25,6 +34,26 @@ export const lightTheme = {
   fonts: {
     sans: "'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif",
     mono: "'Roboto Mono', monospace",
+    body: "'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif",
+    heading: "'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif",
+    code: "'Roboto Mono', monospace",
+  },
+  fontSizes: {
+    xs: '0.75rem',
+    sm: '0.875rem',
+    md: '1rem',
+    lg: '1.125rem',
+    xl: '1.25rem',
+    xxl: '1.5rem',
+  },
+  fontWeights: {
+    normal: 400,
+    medium: 500,
+    bold: 700,
+  },
+  lineHeights: {
+    body: 1.5,
+    heading: 1.2,
   },
   borderRadius: '8px',
   shadows: {
@@ -35,6 +64,8 @@ export const lightTheme = {
   },
   transitions: {
     default: 'all 0.2s ease-in-out',
+    fast: 'all 0.1s ease-in-out',
+    slow: 'all 0.3s ease-in-out',
   },
   breakpoints: {
     xs: '480px',

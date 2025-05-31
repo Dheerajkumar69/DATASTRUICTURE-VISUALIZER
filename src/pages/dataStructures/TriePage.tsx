@@ -482,18 +482,20 @@ const TriePage: React.FC = () => {
     highlightPath(prefix, false);
   };
   
-  const highlightPath = (str: string, requireEndOfWord: boolean = true) => {
-    // Reset all highlights
+  const highlightPath = (str: string, requireEndOfWord = true) => {
+    if (!str) return;
+    
+    // Create a copy of nodes to avoid modifying state directly
     const newNodes = nodes.map(node => ({
       ...node,
       isHighlighted: false
     }));
     
-    let current = root;
-    let path = [];
     let found = true;
+    let current = root;
+    const path: string[] = [];
     
-    // Navigate through the trie following the string
+    // Follow the path in the trie
     for (let i = 0; i < str.length; i++) {
       const char = str[i];
       
@@ -558,7 +560,7 @@ const TriePage: React.FC = () => {
       
       if (children.length > 0) {
         const totalWidth = (children.length - 1) * horizontalSpacing;
-        let startX = (node.x || 400) - totalWidth / 2;
+        const startX = (node.x || 400) - totalWidth / 2;
         
         children.forEach((child, index) => {
           child.level = level + 1;
@@ -796,8 +798,8 @@ function collectWords(node, prefix, result) {
             <InfoTitle>About Tries (Prefix Trees)</InfoTitle>
             <InfoContent>
               <p>
-                A trie (pronounced "try") is a tree-like data structure used to store a dynamic set of strings.
-                Unlike a binary search tree, nodes in a trie do not store their associated key. Instead, a node's position in the tree defines the key with which it is associated.
+                A trie (pronounced &ldquo;try&rdquo;) is a tree-like data structure used to store a dynamic set of strings.
+                Unlike a binary search tree, nodes in a trie do not store their associated key. Instead, a node&rsquo;s position in the tree defines the key with which it is associated.
               </p>
               <ul>
                 <li><strong>Insert:</strong> Add a word to the trie</li>

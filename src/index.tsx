@@ -5,9 +5,6 @@ import { Analytics } from "@vercel/analytics/react";
 import App from './App';
 import './index.css';
 
-// Set default theme to light mode
-localStorage.setItem('theme', 'light');
-
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
