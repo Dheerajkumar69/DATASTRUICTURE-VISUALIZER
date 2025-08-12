@@ -124,7 +124,7 @@ export const useVirtualization = <T>(
   };
 };
 
-// React component for virtualized list
+// Export types for components that will use this hook
 export interface VirtualizedListProps<T> {
   items: T[];
   itemHeight: number;
@@ -135,104 +135,6 @@ export interface VirtualizedListProps<T> {
   overscan?: number;
   getItemHeight?: (index: number) => number;
   onScroll?: (scrollTop: number) => void;
-}
-
-export function VirtualizedList<T>({
-  items,
-  itemHeight,
-  height,
-  width = '100%',
-  renderItem,
-  className,
-  overscan = 5,
-  getItemHeight,
-  onScroll
-}: VirtualizedListProps<T>) {
-  const {
-    visibleItems,
-    visibleRange,
-    totalHeight,
-    offsetY,
-    handleScroll,
-    isScrolling
-  } = useVirtualization(items, {
-    itemHeight,
-    containerHeight: height,
-    overscan,
-    getItemHeight
-  });
-
-  const handleScrollEvent = useCallback((event: React.UIEvent<HTMLElement>) => {
-    handleScroll(event);
-    onScroll?.(event.currentTarget.scrollTop);
-  }, [handleScroll, onScroll]);
-
-  return (
-    <div
-      className={className}
-      style={{
-        height,
-        width,
-        overflow: 'auto',
-        position: 'relative'
-      }}
-      onScroll={handleScrollEvent}
-      role="list"
-      aria-label={`List with ${items.length} items`}
-    >
-      <div style={{ height: totalHeight, position: 'relative' }}>
-        <div
-          style={{
-            transform: `translateY(${offsetY}px)`,
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0
-          }}
-        >
-          {visibleItems.map((item, virtualIndex) => {
-            const actualIndex = visibleRange.startIndex + virtualIndex;
-            return (
-              <div
-                key={actualIndex}
-                style={{
-                  height: getItemHeight ? getItemHeight(actualIndex) : itemHeight,
-                  position: 'relative'
-                }}
-                role="listitem"
-                aria-setsize={items.length}
-                aria-posinset={actualIndex + 1}
-              >
-                {renderItem(item, actualIndex)}
-              </div>
-            );
-          })}
-        </div>
-      </div>
-      
-      {/* Scroll indicator for accessibility */}
-      {isScrolling && (
-        <div
-          style={{
-            position: 'absolute',
-            top: '50%',
-            right: '10px',
-            transform: 'translateY(-50%)',
-            background: 'rgba(0, 0, 0, 0.7)',
-            color: 'white',
-            padding: '4px 8px',
-            borderRadius: '4px',
-            fontSize: '0.875rem',
-            pointerEvents: 'none',
-            zIndex: 1000
-          }}
-          aria-live="polite"
-        >
-          {Math.round((visibleRange.startIndex / items.length) * 100)}%
-        </div>
-      )}
-    </div>
-  );
 }
 
 // Hook for infinite scrolling

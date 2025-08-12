@@ -1,4 +1,28 @@
 export const lightTheme = {
+  // Flat properties for backward compatibility
+  background: '#F9FAFB',
+  foreground: '#1F2937',
+  text: '#1F2937',
+  textLight: '#6B7280',
+  textSecondary: '#6B7280',
+  border: '#E5E7EB',
+  hover: '#F3F4F6',
+  card: '#FFFFFF',
+  cardBackground: '#FFFFFF',
+  primary: '#6366F1',
+  primaryLight: '#818CF8',
+  primaryDark: '#4F46E5',
+  secondary: '#10B981',
+  secondaryLight: '#34D399',
+  secondaryDark: '#059669',
+  success: '#10B981',
+  info: '#3B82F6',
+  warning: '#F59E0B',
+  danger: '#EF4444',
+  error: '#DC2626',
+  highlight: '#A855F7',
+  accent: '#8B5CF6',
+  
   colors: {
     primary: '#6366F1',
     primaryLight: '#818CF8',

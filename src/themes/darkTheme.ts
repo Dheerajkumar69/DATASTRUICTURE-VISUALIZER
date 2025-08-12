@@ -1,4 +1,28 @@
 export const darkTheme = {
+  // Flat properties for backward compatibility
+  background: '#0D1117',
+  foreground: '#F0F6FC',
+  text: '#F0F6FC',
+  textLight: '#C9D1D9',
+  textSecondary: '#C9D1D9',
+  border: '#374151',
+  hover: '#2A2F45',
+  card: '#161B26',
+  cardBackground: '#161B26',
+  primary: '#818CF8',
+  primaryLight: '#A5B4FC',
+  primaryDark: '#6366F1',
+  secondary: '#34D399',
+  secondaryLight: '#6EE7B7',
+  secondaryDark: '#10B981',
+  success: '#34D399',
+  info: '#60A5FA',
+  warning: '#FBBF24',
+  danger: '#F87171',
+  error: '#EF4444',
+  highlight: '#C084FC',
+  accent: '#A78BFA',
+  
   colors: {
     primary: '#818CF8',
     primaryLight: '#A5B4FC',

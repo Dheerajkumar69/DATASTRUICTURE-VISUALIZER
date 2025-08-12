@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import { FaBars, FaTimes, FaHome, FaList, FaCode, FaGithub, FaMoon, FaSun } from 'react-icons/fa';
 import { MobileDrawer, responsive, TouchButton } from './MobileOptimizations';
-import { useTheme } from '../../hooks/useTheme';
+import { useThemeContext } from '../../themes/ThemeContext';
 
 const HeaderContainer = styled.header`
   position: sticky;
@@ -120,6 +120,32 @@ const MobileNavLink = styled(NavLink)`
   }
 `;
 
+const ExternalLink = styled.a<{ isActive?: boolean }>`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 16px;
+  width: 100%;
+  border-radius: 8px;
+  margin-bottom: 4px;
+  font-size: 16px;
+  text-decoration: none;
+  color: ${props => props.isActive ? props.theme.colors.primary : props.theme.colors.text};
+  background: ${props => props.isActive ? props.theme.colors.primaryLight + '20' : 'transparent'};
+  font-weight: ${props => props.isActive ? '600' : '400'};
+  transition: all 0.2s ease;
+  
+  svg {
+    width: 20px;
+    height: 20px;
+  }
+  
+  &:hover {
+    background: ${({ theme }) => theme.colors.hover};
+    color: ${({ theme }) => theme.colors.primary};
+  }
+`;
+
 const MenuButton = styled(TouchButton)`
   background: transparent;
   color: ${({ theme }) => theme.colors.text};
@@ -207,7 +233,7 @@ const navItems = [
 
 export const MobileHeader: React.FC = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const { theme, toggleTheme } = useTheme();
+  const { isDarkMode, toggleTheme } = useThemeContext();
   const location = useLocation();
 
   // Close drawer when route changes
@@ -258,18 +284,18 @@ export const MobileHeader: React.FC = () => {
             
             <ThemeToggle 
               onClick={toggleTheme}
-              title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+              title={`Switch to ${isDarkMode ? 'light' : 'dark'} mode`}
             >
-              {theme === 'dark' ? <FaSun /> : <FaMoon />}
+              {isDarkMode ? <FaSun /> : <FaMoon />}
             </ThemeToggle>
           </DesktopNav>
           
           <MobileActions>
             <ThemeToggle 
               onClick={toggleTheme}
-              title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+              title={`Switch to ${isDarkMode ? 'light' : 'dark'} mode`}
             >
-              {theme === 'dark' ? <FaSun /> : <FaMoon />}
+              {isDarkMode ? <FaSun /> : <FaMoon />}
             </ThemeToggle>
             
             <MenuButton 
@@ -308,15 +334,14 @@ export const MobileHeader: React.FC = () => {
         
         <NavSection>
           <SectionTitle>External Links</SectionTitle>
-          <MobileNavLink 
-            as="a"
+          <ExternalLink 
             href="https://github.com/yourusername/datastructure-visualizer"
             target="_blank"
             rel="noopener noreferrer"
           >
             <FaGithub />
             View on GitHub
-          </MobileNavLink>
+          </ExternalLink>
         </NavSection>
         
         <DrawerFooter>
@@ -324,9 +349,9 @@ export const MobileHeader: React.FC = () => {
             <ThemeLabel>Theme:</ThemeLabel>
             <ThemeToggle 
               onClick={toggleTheme}
-              title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+              title={`Switch to ${isDarkMode ? 'light' : 'dark'} mode`}
             >
-              {theme === 'dark' ? <FaSun /> : <FaMoon />}
+              {isDarkMode ? <FaSun /> : <FaMoon />}
             </ThemeToggle>
           </ThemeSection>
         </DrawerFooter>

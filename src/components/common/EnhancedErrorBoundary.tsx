@@ -1,6 +1,6 @@
 import React, { Component, ErrorInfo, ReactNode } from 'react';
 import styled from 'styled-components';
-import { FiAlertTriangle, FiRefreshCw, FiHome, FiBug } from 'react-icons/fi';
+import { FiAlertTriangle, FiRefreshCw, FiHome, FiFlag } from 'react-icons/fi';
 
 interface Props {
   children: ReactNode;
@@ -284,7 +284,7 @@ Additional Information:
             </ErrorButton>
             
             <ErrorButton variant="secondary" onClick={this.handleReportBug} aria-label="Report this bug">
-              <FiBug />
+              <FiFlag />
               Report Bug
             </ErrorButton>
           </ErrorActions>

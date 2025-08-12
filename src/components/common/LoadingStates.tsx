@@ -308,11 +308,12 @@ export const LoadingOverlay: React.FC<LoadingOverlayProps> = ({
       <OverlayMessage id="loading-message">{message}</OverlayMessage>
       
       {typeof progress === 'number' && (
-        <ProgressIndicator 
-          progress={progress} 
-          showText 
-          style={{ marginBottom: '1rem' }} 
-        />
+        <div style={{ marginBottom: '1rem' }}>
+          <ProgressIndicator 
+            progress={progress} 
+            showText 
+          />
+        </div>
       )}
       
       {onCancel && (

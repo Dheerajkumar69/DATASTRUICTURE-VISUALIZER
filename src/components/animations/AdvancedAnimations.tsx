@@ -214,7 +214,7 @@ interface AnimatedElementProps {
 }
 
 const AnimationWrapper = styled.div<{
-  $animation: string;
+  $animation: any;
   $duration: number;
   $delay: number;
   $easing: string;
@@ -289,7 +289,7 @@ const StaggeredContainer = styled.div`
 const StaggeredItem = styled.div<{
   $index: number;
   $staggerDelay: number;
-  $animation: string;
+  $animation: any;
   $reduceMotion: boolean;
 }>`
   ${props => !props.$reduceMotion && css`
@@ -421,7 +421,7 @@ const pageFade = keyframes`
 `;
 
 const PageTransition = styled.div<{
-  $animation: string;
+  $animation: any;
   $reduceMotion: boolean;
 }>`
   ${props => !props.$reduceMotion && css`

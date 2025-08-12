@@ -11,12 +11,12 @@ import ScrollToTop from './components/utils/ScrollToTop';
 import ResourcePreloader from './components/utils/ResourcePreloader';
 import { routeConfig } from './routes/RouteConfig';
 import LazyRouteWrapper from './components/common/LazyRouteWrapper';
-import EnhancedErrorBoundary from './components/common/EnhancedErrorBoundary';
-import { AccessibilityProvider } from './components/accessibility/AccessibilityProvider';
-import VoiceAnnouncer from './components/accessibility/VoiceAnnouncer';
-import FocusManager, { SkipLink } from './components/accessibility/FocusManager';
-import { performanceMonitor } from './utils/performanceMonitoring';
-import './styles/accessibility.css';
+import ErrorBoundary from './components/common/ErrorBoundary';
+// import { AccessibilityProvider } from './components/accessibility/AccessibilityProvider';
+// import VoiceAnnouncer from './components/accessibility/VoiceAnnouncer';
+// import FocusManager, { SkipLink } from './components/accessibility/FocusManager';
+// import { performanceMonitor } from './utils/performanceMonitoring';
+// import './styles/accessibility.css';
 
 const AppContainer = styled.div`
   display: flex;
@@ -50,52 +50,46 @@ const ContentArea = styled.div`
 
 const App: React.FC = () => {
   // Initialize performance monitoring
-  useEffect(() => {
-    performanceMonitor.init();
-  }, []);
+  // useEffect(() => {
+  //   performanceMonitor.init();
+  // }, []);
 
   return (
-    <EnhancedErrorBoundary>
-      <AccessibilityProvider>
-        <ThemeProvider>
-          <AnimationProvider>
-            <ResourcePreloader>
-              <GlobalStyle />
-              <SkipLink href="#main-content">Skip to main content</SkipLink>
-              <VoiceAnnouncer />
-              <FocusManager autoFocus={false} trapFocus={false} restoreFocus={true}>
-                <AppContainer role="application" aria-label="Data Structure Visualizer">
-                  <ScrollToTop />
-                  <Header />
-                  <MainContent>
-                    <Sidebar />
-                    <ContentArea 
-                      id="main-content" 
-                      tabIndex={-1} 
-                      role="main"
-                      aria-label="Main visualization content"
-                    >
-                      <EnhancedErrorBoundary>
-                        <Routes>
-                          {routeConfig.map((route, index) => (
-                            <Route
-                              key={index}
-                              path={route.path}
-                              element={<LazyRouteWrapper component={route.component} loadingMessage={route.loadingMessage} />}
-                            />
-                          ))}
-                        </Routes>
-                      </EnhancedErrorBoundary>
-                    </ContentArea>
-                  </MainContent>
-                  <Footer />
-                </AppContainer>
-              </FocusManager>
-            </ResourcePreloader>
-          </AnimationProvider>
-        </ThemeProvider>
-      </AccessibilityProvider>
-    </EnhancedErrorBoundary>
+    <ErrorBoundary>
+      <ThemeProvider>
+        <AnimationProvider>
+          <ResourcePreloader>
+            <GlobalStyle />
+            <AppContainer role="application" aria-label="Data Structure Visualizer">
+              <ScrollToTop />
+              <Header />
+              <MainContent>
+                <Sidebar />
+                <ContentArea 
+                  id="main-content" 
+                  tabIndex={-1} 
+                  role="main"
+                  aria-label="Main visualization content"
+                >
+                  <ErrorBoundary>
+                    <Routes>
+                      {routeConfig.map((route, index) => (
+                        <Route
+                          key={index}
+                          path={route.path}
+                          element={<LazyRouteWrapper component={route.component} loadingMessage={route.loadingMessage} />}
+                        />
+                      ))}
+                    </Routes>
+                  </ErrorBoundary>
+                </ContentArea>
+              </MainContent>
+              <Footer />
+            </AppContainer>
+          </ResourcePreloader>
+        </AnimationProvider>
+      </ThemeProvider>
+    </ErrorBoundary>
   );
 };
 

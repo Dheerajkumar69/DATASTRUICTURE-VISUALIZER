@@ -2,6 +2,31 @@ import 'styled-components';
 
 declare module 'styled-components' {
   export interface DefaultTheme {
+    // Flat color properties for backward compatibility
+    background: string;
+    foreground: string;
+    text: string;
+    textLight: string;
+    textSecondary: string;
+    border: string;
+    hover: string;
+    card: string;
+    cardBackground: string;
+    primary: string;
+    primaryLight: string;
+    primaryDark: string;
+    secondary: string;
+    secondaryLight: string;
+    secondaryDark: string;
+    success: string;
+    info: string;
+    warning: string;
+    danger: string;
+    error: string;
+    highlight: string;
+    accent: string;
+    
+    // Nested color object
     colors: {
       primary: string;
       primaryLight: string;
@@ -78,4 +103,4 @@ declare module 'styled-components' {
       xl: string;
     };
   }
-} 
+}

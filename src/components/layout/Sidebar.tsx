@@ -274,7 +274,7 @@ const Sidebar: React.FC = () => {
     if (key === 'Enter' || key === ' ') {
       if (currentTarget.getAttribute('role') === 'button') {
         event.preventDefault();
-        currentTarget.click();
+        (currentTarget as HTMLElement).click();
       }
     }
   };

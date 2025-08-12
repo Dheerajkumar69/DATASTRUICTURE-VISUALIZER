@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import { FiSun, FiMoon, FiGithub, FiAccessibility } from 'react-icons/fi';
+import { FiSun, FiMoon, FiGithub, FiSettings } from 'react-icons/fi';
 import { useThemeContext } from '../../themes/ThemeContext';
 import { useAccessibility } from '../../hooks/useAccessibility';
 
@@ -150,7 +150,7 @@ const Header: React.FC = () => {
           title={`${isHighContrast ? 'Disable' : 'Enable'} high contrast mode`}
           style={{ backgroundColor: isHighContrast ? '#0000FF' : undefined }}
         >
-          <FiAccessibility size={16} aria-hidden="true" />
+          <FiSettings size={16} aria-hidden="true" />
           {isHighContrast ? 'Standard' : 'High Contrast'}
         </ThemeToggle>
         
