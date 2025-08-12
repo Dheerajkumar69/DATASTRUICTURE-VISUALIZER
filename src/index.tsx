@@ -4,6 +4,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { Analytics } from "@vercel/analytics/react";
 import App from './App';
 import './index.css';
+import './sw-registration';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
