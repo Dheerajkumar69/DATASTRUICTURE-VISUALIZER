@@ -10,8 +10,8 @@ const HeaderContainer = styled.header`
   align-items: center;
   justify-content: space-between;
   padding: 1rem 2rem;
-  background-color: ${({ theme }) => theme.colors.card};
-  border-bottom: 1px solid ${({ theme }) => theme.colors.border};
+  background-color: ${({ theme }) => theme.cardBackground};
+  border-bottom: 1px solid ${({ theme }) => theme.border};
   box-shadow: ${({ theme }) => theme.shadows.sm};
   z-index: 10;
   transition: all 0.3s ease-in-out;
@@ -22,11 +22,11 @@ const Logo = styled(Link)`
   align-items: center;
   font-size: 1.5rem;
   font-weight: 700;
-  color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.primary};
   transition: ${({ theme }) => theme.transitions.default};
 
   &:hover {
-    color: ${({ theme }) => theme.colors.primaryDark};
+    color: ${({ theme }) => theme.primaryDark};
   }
 `;
 
@@ -38,14 +38,14 @@ const LogoText = styled.div`
 const LogoTitle = styled.span`
   font-size: 1.5rem;
   font-weight: 700;
-  color: ${({ theme }) => theme.colors.text};
+  color: ${({ theme }) => theme.text};
   transition: color 0.3s ease;
 `;
 
 const LogoCredit = styled.span`
   font-size: 0.875rem;
   font-weight: 500;
-  color: ${({ theme }) => theme.colors.textLight};
+  color: ${({ theme }) => theme.textLight};
   transition: color 0.3s ease;
 `;
 
@@ -56,8 +56,8 @@ const LogoIcon = styled.div`
   width: 40px;
   height: 40px;
   margin-right: 0.75rem;
-  background-color: ${({ theme }) => theme.colors.primary};
-  color: ${({ theme }) => theme.colors.card};
+  background-color: ${({ theme }) => theme.primary};
+  color: ${({ theme }) => theme.cardBackground};
   border-radius: ${({ theme }) => theme.borderRadius};
   font-weight: 700;
   font-size: 1.25rem;
@@ -76,15 +76,18 @@ const ThemeToggle = styled.button`
   justify-content: center;
   padding: 0.5rem 1rem;
   border-radius: ${({ theme }) => theme.borderRadius};
-  background-color: ${({ theme }) => theme.colors.gray200};
-  color: ${({ theme }) => theme.colors.text};
+  background-color: ${({ theme }) => theme.hover};
+  color: ${({ theme }) => theme.text};
   font-weight: 500;
   font-size: 0.875rem;
   gap: 0.5rem;
   transition: all 0.2s ease-in-out;
+  border: 1px solid ${({ theme }) => theme.border};
   
   &:hover {
-    background-color: ${({ theme }) => theme.colors.gray300};
+    background-color: ${({ theme }) => theme.primary};
+    color: ${({ theme }) => theme.cardBackground};
+    border-color: ${({ theme }) => theme.primary};
   }
 `;
 
@@ -95,27 +98,24 @@ const IconButton = styled.button`
   width: 40px;
   height: 40px;
   border-radius: ${({ theme }) => theme.borderRadius};
-  color: ${({ theme }) => theme.colors.textLight};
+  color: ${({ theme }) => theme.textLight};
   transition: ${({ theme }) => theme.transitions.default};
+  border: 1px solid transparent;
   
   &:hover {
-    background-color: ${({ theme }) => theme.colors.gray200};
-    color: ${({ theme }) => theme.colors.text};
+    background-color: ${({ theme }) => theme.hover};
+    color: ${({ theme }) => theme.text};
+    border-color: ${({ theme }) => theme.border};
   }
 `;
 
 const Header: React.FC = () => {
   const { isDarkMode, toggleTheme } = useThemeContext();
-  const { isHighContrast, setIsHighContrast, announceRef, announce } = useAccessibility();
+  const { announceRef, announce } = useAccessibility();
 
   const handleThemeToggle = () => {
     toggleTheme();
     announce(`Switched to ${isDarkMode ? 'light' : 'dark'} theme`);
-  };
-
-  const handleHighContrastToggle = () => {
-    setIsHighContrast(!isHighContrast);
-    announce(`High contrast mode ${!isHighContrast ? 'enabled' : 'disabled'}`);
   };
 
   return (
@@ -144,17 +144,7 @@ const Header: React.FC = () => {
           )}
         </ThemeToggle>
         
-        <ThemeToggle 
-          onClick={handleHighContrastToggle}
-          aria-label={`${isHighContrast ? 'Disable' : 'Enable'} high contrast mode`}
-          title={`${isHighContrast ? 'Disable' : 'Enable'} high contrast mode`}
-          style={{ backgroundColor: isHighContrast ? '#0000FF' : undefined }}
-        >
-          <FiSettings size={16} aria-hidden="true" />
-          {isHighContrast ? 'Standard' : 'High Contrast'}
-        </ThemeToggle>
-        
-        <IconButton 
+        <IconButton
           as="a" 
           href="https://github.com/dheerajkumargaur/DSA_Visualizer" 
           target="_blank" 
