@@ -51,10 +51,12 @@ const WordNode = styled.div<{ state: 'current' | 'visited' | 'unvisited' | 'star
       default: return props.theme.colors.background;
     }
   }};
+  transition: all 0.3s ease;
   color: ${props => 
     props.state === 'unvisited' ? props.theme.colors.text : 'white'
   };
   border-radius: ${props => props.theme.borderRadius};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   font-weight: bold;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
   position: relative;
@@ -69,7 +71,8 @@ const LevelIndicator = styled.span`
   top: -8px;
   right: -8px;
   background-color: ${props => props.theme.colors.textLight};
-  color: white;
+  transition: all 0.3s ease;
+  color: ${({ theme }) => theme.colors.card};
   border-radius: 50%;
   width: 20px;
   height: 20px;
@@ -102,7 +105,9 @@ const VisitedWordsContainer = styled.div`
   margin-top: 1.5rem;
   padding: 1rem;
   border-radius: ${props => props.theme.borderRadius};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   background-color: rgba(0, 0, 0, 0.02);
+  transition: all 0.3s ease;
 `;
 
 const RejectedWordsContainer = styled.div`
@@ -116,6 +121,7 @@ const WordListInput = styled(TextArea)`
   height: 100px;
   border: 1px solid ${props => props.theme.colors.border};
   border-radius: ${props => props.theme.borderRadius};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   padding: 0.75rem;
   font-size: 0.9rem;
 `;

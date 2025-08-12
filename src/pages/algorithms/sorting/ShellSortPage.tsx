@@ -1,11 +1,11 @@
 import React, { useState, useEffect, lazy, Suspense, memo } from 'react';
 import styled from 'styled-components';
-import { motion } from 'framer-motion';
 import { FiPlay, FiPause, FiRefreshCw, FiChevronsLeft, FiChevronsRight } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 import { FaArrowLeft } from 'react-icons/fa';
 import AlgorithmDropdown from '../../../components/algorithms/AlgorithmDropdown';
 import { vs2015 } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+import { motion } from 'framer-motion';
 
 // Lazy load only the syntax highlighter component
 const SyntaxHighlighter = lazy(() => import('react-syntax-highlighter'));
@@ -82,7 +82,7 @@ const PageDescription = styled.p`
 `;
 
 const VisualizationContainer = styled.div`
-  background-color: white;
+  background-color: ${({ theme }) => theme.colors.card};
   border-radius: ${({ theme }) => theme.borderRadius};
   padding: 1rem;
   
@@ -113,7 +113,7 @@ const Button = styled.button<{ active?: boolean }>`
   padding: 0.5rem;
   border: 1px solid ${({ theme }) => theme.colors.gray200};
   border-radius: ${({ theme }) => theme.borderRadius};
-  background-color: white;
+  background-color: ${({ theme }) => theme.colors.card};
   color: ${({ theme, active }) => active ? theme.colors.primary : theme.colors.gray700};
   cursor: pointer;
   font-size: 0.8rem;
@@ -166,7 +166,7 @@ const SpeedSelect = styled.select`
   padding: 0.5rem;
   border: 1px solid ${({ theme }) => theme.colors.gray300};
   border-radius: ${({ theme }) => theme.borderRadius};
-  background-color: white;
+  background-color: ${({ theme }) => theme.colors.card};
   font-size: 0.8rem;
   
   @media (min-width: 768px) {
@@ -371,8 +371,8 @@ const CodeBlock = styled.div`
 
 const CodeTitle = styled.div`
   padding: 0.5rem 1rem;
-  background-color: #333;
-  color: white;
+  background-color: ${({ theme }) => theme.colors.text};
+  color: ${({ theme }) => theme.colors.card};
   font-family: ${({ theme }) => theme.fonts.mono};
   font-size: 0.8rem;
   
@@ -388,7 +388,7 @@ const LoadingPlaceholder = styled.div`
   justify-content: center;
   height: 200px;
   background-color: #1E1E1E;
-  color: #666;
+  color: ${({ theme }) => theme.colors.textLight};
   font-size: 0.9rem;
 `;
 

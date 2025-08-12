@@ -40,6 +40,7 @@ const VisualizationContainer = styled.div`
   width: 100%;
   height: 100%;
   border-radius: ${props => props.theme.borderRadius};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   overflow: hidden;
   background-color: ${props => props.theme.colors.card};
   box-shadow: ${props => props.theme.shadows.md};
@@ -60,9 +61,10 @@ const Button = styled.button`
   gap: 0.5rem;
   padding: 0.5rem 1rem;
   background-color: ${props => props.theme.colors.primary};
-  color: white;
+  color: ${({ theme }) => theme.colors.card};
   border: none;
   border-radius: ${props => props.theme.borderRadius};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   cursor: pointer;
   transition: all 0.2s;
   

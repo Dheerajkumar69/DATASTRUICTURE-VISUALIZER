@@ -16,7 +16,9 @@ const InfoPanel = styled.div`
   margin-top: 2rem;
   padding: 1rem;
   background-color: ${props => props.theme.colors.card};
+  transition: all 0.3s ease;
   border-radius: ${props => props.theme.borderRadius};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   width: 100%;
 `;
 

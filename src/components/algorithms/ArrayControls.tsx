@@ -28,6 +28,7 @@ const Button = styled.button<{ primary?: boolean }>`
   color: ${props => props.primary ? '#ffffff' : props.theme.colors.text};
   border: 1px solid ${props => props.theme.colors.border};
   border-radius: ${props => props.theme.borderRadius};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   cursor: pointer;
   font-weight: 500;
   transition: all 0.2s ease;
@@ -46,10 +47,6 @@ const Button = styled.button<{ primary?: boolean }>`
   }
 `;
 
-const ButtonGroup = styled.div`
-  display: flex;
-  gap: 0.5rem;
-`;
 
 const InputGroup = styled.div`
   display: flex;
@@ -66,6 +63,7 @@ const Input = styled.input`
   padding: 0.5rem;
   border: 1px solid ${props => props.theme.colors.border};
   border-radius: ${props => props.theme.borderRadius};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   background-color: ${props => props.theme.colors.card};
   color: ${props => props.theme.colors.text};
   
@@ -80,6 +78,7 @@ const CustomArrayInput = styled.input`
   padding: 0.5rem;
   border: 1px solid ${props => props.theme.colors.border};
   border-radius: ${props => props.theme.borderRadius};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   background-color: ${props => props.theme.colors.card};
   color: ${props => props.theme.colors.text};
   

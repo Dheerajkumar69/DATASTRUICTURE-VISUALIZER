@@ -17,7 +17,9 @@ const LegendContainer = styled.div`
 const InfoPanel = styled.div`
   padding: 1rem;
   background-color: ${props => props.theme.colors.card};
+  transition: all 0.3s ease;
   border-radius: ${props => props.theme.borderRadius};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   margin-bottom: 1rem;
   box-shadow: ${props => props.theme.shadows.sm};
 `;
@@ -619,11 +621,11 @@ const EulerianPathPage: React.FC = () => {
   
   // Legend items
   const legendItems = [
-    { color: "#D1D5DB", label: "Unvisited Vertex" },
+    { color: "#E2E8F0", label: "Unvisited Vertex" },
     { color: "#10B981", label: "Visited Vertex" },
     { color: "#3B82F6", label: "Current Vertex" },
     { color: "#F59E0B", label: "Odd Degree Vertex" },
-    { color: "#D1D5DB", label: "Unvisited Edge" },
+    { color: "#E2E8F0", label: "Unvisited Edge" },
     { color: "#10B981", label: "Visited Edge" },
     { color: "#3B82F6", label: "Current Edge" }
   ];

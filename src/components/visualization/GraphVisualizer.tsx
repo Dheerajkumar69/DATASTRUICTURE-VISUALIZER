@@ -51,6 +51,7 @@ const CanvasContainer = styled.div<{ width: number | string, height: number | st
   position: relative;
   border: 1px solid ${props => props.theme.colors.border};
   border-radius: ${props => props.theme.borderRadius};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   overflow: hidden;
 `;
 

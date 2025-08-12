@@ -79,7 +79,9 @@ const VisualizationSection = styled.div`
 const InfoCard = styled.div`
   padding: 1.5rem;
   background-color: ${props => props.theme.colors.card};
+  transition: all 0.3s ease;
   border-radius: ${props => props.theme.borderRadius};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   box-shadow: ${props => props.theme.shadows.sm};
   margin-bottom: 1.5rem;
 `;
@@ -101,6 +103,7 @@ const ComplexityTable = styled.table`
 const ComplexityRow = styled.tr`
   &:nth-child(even) {
     background-color: ${props => props.theme.colors.background};
+  transition: all 0.3s ease;
   }
 `;
 
@@ -113,6 +116,7 @@ const ComplexityHeader = styled.th`
   padding: 0.5rem;
   text-align: left;
   background-color: ${props => props.theme.colors.background};
+  transition: all 0.3s ease;
   border: 1px solid ${props => props.theme.colors.border};
   font-weight: 500;
 `;

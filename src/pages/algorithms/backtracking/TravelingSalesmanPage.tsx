@@ -146,6 +146,7 @@ const SizeSelect = styled.select`
   padding: 0.5rem;
   border: 1px solid ${props => props.theme.colors.border};
   border-radius: ${props => props.theme.borderRadius};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   background-color: ${props => props.theme.colors.card};
   color: ${props => props.theme.colors.text};
 `;
@@ -645,7 +646,6 @@ function solveTSP(distanceMatrix) {
       if (completeDistance < bestDistance) {
         bestDistance = completeDistance;
         bestPath = [...currentPath];
-        console.log(\`New best tour: \${bestDistance}\`);
       }
       return;
     }
@@ -692,7 +692,7 @@ const distances = [
 
 const { tour, distance } = solveTSP(distances);
 console.log(\`Best tour: \${tour.join(' → ')}\`);
-console.log(\`Tour distance: \${distance}\`);`;
+// console.log(\`Tour distance: \${distance}\`);`;
   
   return (
     <PageContainer>

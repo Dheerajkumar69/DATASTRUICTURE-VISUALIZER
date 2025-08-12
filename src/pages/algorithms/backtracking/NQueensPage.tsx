@@ -146,6 +146,7 @@ const SizeSelect = styled.select`
   padding: 0.5rem;
   border: 1px solid ${props => props.theme.colors.border};
   border-radius: ${props => props.theme.borderRadius};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   background-color: ${props => props.theme.colors.card};
   color: ${props => props.theme.colors.text};
 `;
@@ -665,11 +666,8 @@ function solveNQueens(n) {
 
 // Example: Print all solutions for 4-Queens
 const solutions = solveNQueens(4);
-console.log(\`Found \${solutions.length} solutions:\`);
 solutions.forEach((solution, index) => {
-  console.log(\`Solution \${index + 1}:\`);
   solution.forEach(row => console.log(row));
-  console.log('');
 });`;
   
   return (

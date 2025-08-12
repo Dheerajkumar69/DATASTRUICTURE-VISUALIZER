@@ -114,7 +114,7 @@ const AlgorithmDescription = styled.p`
 
 const AlgorithmLink = styled(Link)`
   background-color: ${props => props.theme.colors.primary};
-  color: white;
+  color: ${({ theme }) => theme.colors.card};
   padding: 0.75rem 1.25rem;
   border-radius: 0.5rem;
   text-decoration: none;

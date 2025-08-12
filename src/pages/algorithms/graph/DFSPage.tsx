@@ -2,10 +2,10 @@ import React, { useState, useEffect, useRef, lazy, Suspense } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { FaArrowLeft, FaPlay, FaPause, FaUndo, FaStepForward, FaStepBackward, FaRandom } from 'react-icons/fa';
+import { vs2015 } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 
 // Lazy load the SyntaxHighlighter for better performance
 const SyntaxHighlighter = lazy(() => import('react-syntax-highlighter'));
-import { vs2015 } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 
 // Styled components
 const PageContainer = styled.div`
@@ -147,6 +147,7 @@ const Input = styled.input`
   padding: 0.5rem;
   border: 1px solid ${props => props.theme.colors.border};
   border-radius: ${props => props.theme.borderRadius};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   background-color: ${props => props.theme.colors.card};
   color: ${props => props.theme.colors.text};
   width: 60px;
@@ -156,6 +157,7 @@ const Select = styled.select`
   padding: 0.5rem;
   border: 1px solid ${props => props.theme.colors.border};
   border-radius: ${props => props.theme.borderRadius};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   background-color: ${props => props.theme.colors.card};
   color: ${props => props.theme.colors.text};
 `;
@@ -695,7 +697,6 @@ graph.set(5, [2]);
 graph.set(6, [4]);
 
 const visitedOrder = dfs(graph, 0);
-console.log("DFS traversal order:", visitedOrder);
 // Example output: DFS traversal order: [0, 2, 5, 1, 4, 6, 3]`;
   
   return (

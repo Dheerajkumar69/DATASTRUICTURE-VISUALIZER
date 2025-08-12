@@ -23,7 +23,7 @@ const PageContainer = styled.div`
 const StickyHeader = styled.div`
   position: sticky;
   top: 0;
-  background: white;
+  background: ${({ theme }) => theme.colors.background};
   padding: 1rem 0;
   z-index: 100;
 `;
@@ -38,19 +38,19 @@ const BackButton = styled(Link)`
   display: flex;
   align-items: center;
   text-decoration: none;
-  color: #333;
+  color: ${({ theme }) => theme.colors.textLight};
   font-size: 0.9rem;
   margin-right: 1rem;
   
   &:hover {
-    color: #007bff;
+    color: ${({ theme }) => theme.colors.primary};
   }
 `;
 
 const PageHeader = styled.h1`
   margin: 0;
   font-size: 2rem;
-  color: #333;
+  color: ${({ theme }) => theme.colors.text};
 `;
 
 const ContentContainer = styled.div`
@@ -61,7 +61,8 @@ const ContentContainer = styled.div`
 `;
 
 const VisualizationContainer = styled.div`
-  background: #f8f9fa;
+  background: ${({ theme }) => theme.colors.card};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: 8px;
   padding: 1.5rem;
   min-height: 400px;
@@ -81,13 +82,14 @@ const ArrayElement = styled.div<{ isActive?: boolean; isComparing?: boolean }>`
   align-items: center;
   justify-content: center;
   background: ${props => 
-    props.isActive ? '#007bff' : 
-    props.isComparing ? '#ffc107' : 
-    '#e9ecef'};
-  color: ${props => props.isActive || props.isComparing ? 'white' : '#333'};
+    props.isActive ? props.theme.colors.primary : 
+    props.isComparing ? props.theme.colors.warning : 
+    props.theme.colors.gray200};
+  color: ${props => props.isActive || props.isComparing ? 'white' : props.theme.colors.text};
   border-radius: 4px;
   font-weight: bold;
   transition: all 0.3s ease;
+  border: 1px solid ${({ theme }) => theme.colors.border};
 `;
 
 const ControlsContainer = styled.div`
@@ -103,17 +105,17 @@ const Button = styled.button`
   padding: 0.5rem 1rem;
   border: none;
   border-radius: 4px;
-  background: #007bff;
-  color: white;
+  background: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.card};
   cursor: pointer;
   transition: background 0.3s ease;
   
   &:hover {
-    background: #0056b3;
+    background: ${({ theme }) => theme.colors.primaryDark};
   }
   
   &:disabled {
-    background: #ccc;
+    background: ${({ theme }) => theme.colors.gray400};
     cursor: not-allowed;
   }
 `;
@@ -121,13 +123,16 @@ const Button = styled.button`
 const StepDescription = styled.div`
   margin-top: 1rem;
   padding: 1rem;
-  background: #e9ecef;
+  background: ${({ theme }) => theme.colors.gray100};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: 4px;
   font-size: 0.9rem;
+  color: ${({ theme }) => theme.colors.text};
 `;
 
 const CodeContainer = styled.div`
-  background: #f8f9fa;
+  background: ${({ theme }) => theme.colors.card};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: 8px;
   padding: 1.5rem;
   overflow: auto;
@@ -143,12 +148,12 @@ const InfoSection = styled.div`
 
 const InfoTitle = styled.h3`
   margin: 0 0 0.5rem 0;
-  color: #333;
+  color: ${({ theme }) => theme.colors.text};
 `;
 
 const InfoText = styled.p`
   margin: 0;
-  color: #666;
+  color: ${({ theme }) => theme.colors.textLight};
 `;
 
 const TimeComplexityContainer = styled.div`
@@ -159,20 +164,21 @@ const TimeComplexityContainer = styled.div`
 `;
 
 const TimeComplexityItem = styled.div`
-  background: #f8f9fa;
+  background: ${({ theme }) => theme.colors.gray100};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   padding: 1rem;
   border-radius: 4px;
 `;
 
 const TimeComplexityLabel = styled.div`
   font-size: 0.8rem;
-  color: #666;
+  color: ${({ theme }) => theme.colors.textLight};
   margin-bottom: 0.5rem;
 `;
 
 const TimeComplexityValue = styled.div`
   font-weight: bold;
-  color: #333;
+  color: ${({ theme }) => theme.colors.text};
 `;
 
 interface ArrayPageTemplateProps {

@@ -152,11 +152,11 @@ const NavItem = styled(NavLink)`
   
   &.active {
     background-color: ${({ theme }) => theme.colors.primaryDark};
-    color: white;
+    color: ${({ theme }) => theme.colors.card};
     
     &:hover {
       background-color: ${({ theme }) => theme.colors.primary};
-      color: white;
+      color: ${({ theme }) => theme.colors.card};
     }
   }
 `;
@@ -170,7 +170,7 @@ const MobileMenuButton = styled.button`
   height: 48px;
   border-radius: 50%;
   background-color: ${({ theme }) => theme.colors.primary};
-  color: white;
+  color: ${({ theme }) => theme.colors.card};
   align-items: center;
   justify-content: center;
   box-shadow: ${({ theme }) => theme.shadows.lg};
@@ -217,11 +217,11 @@ const NestedNavItem = styled(NavLink)`
   
   &.active {
     background-color: ${({ theme }) => theme.colors.primaryDark};
-    color: white;
+    color: ${({ theme }) => theme.colors.card};
     
     &:hover {
       background-color: ${({ theme }) => theme.colors.primary};
-      color: white;
+      color: ${({ theme }) => theme.colors.card};
     }
   }
 `;
@@ -262,30 +262,70 @@ const Sidebar: React.FC = () => {
     setIsOpen(!isOpen);
   };
 
+  // Keyboard navigation handler
+  const handleKeyDown = (event: React.KeyboardEvent) => {
+    const { key, currentTarget } = event;
+    
+    if (key === 'Escape' && window.innerWidth <= 768) {
+      setIsOpen(false);
+      return;
+    }
+
+    if (key === 'Enter' || key === ' ') {
+      if (currentTarget.getAttribute('role') === 'button') {
+        event.preventDefault();
+        currentTarget.click();
+      }
+    }
+  };
+
   return (
     <>
-      <SidebarContainer isOpen={isOpen}>
+      <SidebarContainer 
+        isOpen={isOpen}
+        role="navigation"
+        aria-label="Main navigation"
+        onKeyDown={handleKeyDown}
+      >
         <SidebarHeader>
-          <SidebarTitle>Navigation</SidebarTitle>
-          <CloseButton onClick={toggleSidebar}>
-            <FiX size={20} />
+          <SidebarTitle id="navigation-title">Navigation</SidebarTitle>
+          <CloseButton 
+            onClick={toggleSidebar}
+            aria-label="Close navigation menu"
+            title="Close navigation menu"
+          >
+            <FiX size={20} aria-hidden="true" />
           </CloseButton>
         </SidebarHeader>
-        <SidebarContent>
+        <SidebarContent role="menu" aria-labelledby="navigation-title">
           <SidebarSection>
             <SectionHeader 
               isOpen={dataStructuresOpen} 
               onClick={() => setDataStructuresOpen(!dataStructuresOpen)}
+              role="button"
+              tabIndex={0}
+              aria-expanded={dataStructuresOpen}
+              aria-controls="data-structures-menu"
+              aria-label="Toggle data structures section"
+              onKeyDown={handleKeyDown}
             >
               <SectionTitle>
-                <FiDatabase size={18} />
+                <FiDatabase size={18} aria-hidden="true" />
                 Data Structures
               </SectionTitle>
-              {dataStructuresOpen ? <FiChevronDown size={18} /> : <FiChevronRight size={18} />}
+              {dataStructuresOpen ? 
+                <FiChevronDown size={18} aria-hidden="true" /> : 
+                <FiChevronRight size={18} aria-hidden="true" />
+              }
             </SectionHeader>
-            <SectionItems isOpen={dataStructuresOpen}>
-              <NavItem to="/data-structures/array">
-                <FiList size={16} />
+            <SectionItems 
+              isOpen={dataStructuresOpen} 
+              id="data-structures-menu"
+              role="group"
+              aria-labelledby="data-structures-title"
+            >
+              <NavItem to="/data-structures/array" aria-label="Navigate to Array data structure">
+                <FiList size={16} aria-hidden="true" />
                 Array
               </NavItem>
               <NavItem to="/data-structures/linked-list">
@@ -557,8 +597,14 @@ const Sidebar: React.FC = () => {
         </SidebarContent>
       </SidebarContainer>
       
-      <MobileMenuButton onClick={toggleSidebar}>
-        <FiMenu size={24} />
+      <MobileMenuButton 
+        onClick={toggleSidebar}
+        aria-label={isOpen ? "Close navigation menu" : "Open navigation menu"}
+        aria-expanded={isOpen}
+        aria-controls="navigation-sidebar"
+        title={isOpen ? "Close navigation menu" : "Open navigation menu"}
+      >
+        <FiMenu size={24} aria-hidden="true" />
       </MobileMenuButton>
     </>
   );

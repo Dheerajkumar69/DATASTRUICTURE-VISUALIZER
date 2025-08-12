@@ -31,8 +31,14 @@ const GlobalStyle = createGlobalStyle`
     font: inherit;
   }
 
-  h1, h2, h3, h4, h5, h6, p {
+  h1, h2, h3, h4, h5, h6 {
     margin: 0;
+    color: ${({ theme }) => theme.colors.text};
+  }
+  
+  p {
+    margin: 0;
+    color: ${({ theme }) => theme.colors.text};
   }
   
   /* Custom scrollbar styling that respects the theme */
@@ -49,10 +55,28 @@ const GlobalStyle = createGlobalStyle`
   ::-webkit-scrollbar-thumb {
     background: ${({ theme }) => theme.colors.gray400};
     border-radius: 4px;
+    transition: background-color 0.2s ease;
   }
 
   ::-webkit-scrollbar-thumb:hover {
     background: ${({ theme }) => theme.colors.gray500};
+  }
+  
+  /* Fix scrollbar for Firefox */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: ${({ theme }) => theme.colors.gray400} ${({ theme }) => theme.colors.gray100};
+  }
+  
+  /* Handle selection colors */
+  ::selection {
+    background: ${({ theme }) => theme.colors.primary};
+    color: ${({ theme }) => theme.colors.card};
+  }
+  
+  ::-moz-selection {
+    background: ${({ theme }) => theme.colors.primary};
+    color: ${({ theme }) => theme.colors.card};
   }
 `;
 

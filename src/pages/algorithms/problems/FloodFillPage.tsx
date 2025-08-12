@@ -90,8 +90,10 @@ const Grid = styled.div`
   grid-template-rows: repeat(10, 40px);
   gap: 2px;
   background-color: ${props => props.theme.colors.gray200};
+  transition: all 0.3s ease;
   padding: 2px;
   border-radius: ${props => props.theme.borderRadius};
+  border: 1px solid ${({ theme }) => theme.colors.border};
 `;
 
 const ColorPicker = styled.input`
@@ -100,6 +102,7 @@ const ColorPicker = styled.input`
   padding: 0;
   border: none;
   border-radius: ${props => props.theme.borderRadius};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   cursor: pointer;
   margin-right: 1rem;
 `;

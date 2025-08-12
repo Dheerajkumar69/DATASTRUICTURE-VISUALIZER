@@ -1,8 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import { FiSun, FiMoon, FiGithub } from 'react-icons/fi';
+import { FiSun, FiMoon, FiGithub, FiAccessibility } from 'react-icons/fi';
 import { useThemeContext } from '../../themes/ThemeContext';
+import { useAccessibility } from '../../hooks/useAccessibility';
 
 const HeaderContainer = styled.header`
   display: flex;
@@ -56,7 +57,7 @@ const LogoIcon = styled.div`
   height: 40px;
   margin-right: 0.75rem;
   background-color: ${({ theme }) => theme.colors.primary};
-  color: white;
+  color: ${({ theme }) => theme.colors.card};
   border-radius: ${({ theme }) => theme.borderRadius};
   font-weight: 700;
   font-size: 1.25rem;
@@ -94,7 +95,7 @@ const IconButton = styled.button`
   width: 40px;
   height: 40px;
   border-radius: ${({ theme }) => theme.borderRadius};
-  color: ${({ theme }) => theme.colors.gray600};
+  color: ${({ theme }) => theme.colors.textLight};
   transition: ${({ theme }) => theme.transitions.default};
   
   &:hover {
@@ -105,9 +106,20 @@ const IconButton = styled.button`
 
 const Header: React.FC = () => {
   const { isDarkMode, toggleTheme } = useThemeContext();
+  const { isHighContrast, setIsHighContrast, announceRef, announce } = useAccessibility();
+
+  const handleThemeToggle = () => {
+    toggleTheme();
+    announce(`Switched to ${isDarkMode ? 'light' : 'dark'} theme`);
+  };
+
+  const handleHighContrastToggle = () => {
+    setIsHighContrast(!isHighContrast);
+    announce(`High contrast mode ${!isHighContrast ? 'enabled' : 'disabled'}`);
+  };
 
   return (
-    <HeaderContainer>
+    <HeaderContainer role="banner">
       <Logo to="/">
         <LogoIcon>DS</LogoIcon>
         <LogoText>
@@ -116,27 +128,46 @@ const Header: React.FC = () => {
         </LogoText>
       </Logo>
       <HeaderActions>
-        <ThemeToggle onClick={toggleTheme} aria-label={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}>
+        <ThemeToggle 
+          onClick={handleThemeToggle} 
+          aria-label={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+          title={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+        >
           {isDarkMode ? (
             <>
-              <FiSun size={16} /> Light Mode
+              <FiSun size={16} aria-hidden="true" /> Light Mode
             </>
           ) : (
             <>
-              <FiMoon size={16} /> Dark Mode
+              <FiMoon size={16} aria-hidden="true" /> Dark Mode
             </>
           )}
         </ThemeToggle>
+        
+        <ThemeToggle 
+          onClick={handleHighContrastToggle}
+          aria-label={`${isHighContrast ? 'Disable' : 'Enable'} high contrast mode`}
+          title={`${isHighContrast ? 'Disable' : 'Enable'} high contrast mode`}
+          style={{ backgroundColor: isHighContrast ? '#0000FF' : undefined }}
+        >
+          <FiAccessibility size={16} aria-hidden="true" />
+          {isHighContrast ? 'Standard' : 'High Contrast'}
+        </ThemeToggle>
+        
         <IconButton 
           as="a" 
           href="https://github.com/dheerajkumargaur/DSA_Visualizer" 
           target="_blank" 
           rel="noopener noreferrer" 
-          aria-label="GitHub repository"
+          aria-label="View source code on GitHub (opens in new tab)"
+          title="View source code on GitHub"
         >
-          <FiGithub size={20} />
+          <FiGithub size={20} aria-hidden="true" />
         </IconButton>
       </HeaderActions>
+      
+      {/* Screen reader announcements */}
+      <div ref={announceRef} aria-live="polite" aria-atomic="true" className="sr-only" />
     </HeaderContainer>
   );
 };

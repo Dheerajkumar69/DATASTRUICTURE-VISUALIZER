@@ -15,6 +15,7 @@ declare module 'styled-components' {
       danger: string;
       error: string;
       highlight: string;
+      accent: string;
       background: string;
       foreground: string;
       card: string;
@@ -61,6 +62,7 @@ declare module 'styled-components' {
       sm: string;
       md: string;
       lg: string;
+      xl: string;
     };
     transitions: {
       default: string;

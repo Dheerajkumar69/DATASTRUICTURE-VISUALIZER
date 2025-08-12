@@ -50,9 +50,11 @@ const Button = styled.button`
   gap: 0.5rem;
   padding: 0.5rem 1rem;
   background-color: ${props => props.theme.colors.primary};
-  color: white;
+  transition: all 0.3s ease;
+  color: ${({ theme }) => theme.colors.card};
   border: none;
   border-radius: ${props => props.theme.borderRadius};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   cursor: pointer;
   
   &:hover {
@@ -69,7 +71,9 @@ const StepInfo = styled.div`
   margin: 1rem 0;
   padding: 1rem;
   background-color: ${props => props.theme.colors.card};
+  transition: all 0.3s ease;
   border-radius: ${props => props.theme.borderRadius};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   width: 100%;
   text-align: center;
 `;

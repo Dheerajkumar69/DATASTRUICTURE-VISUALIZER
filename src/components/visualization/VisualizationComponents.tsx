@@ -18,6 +18,7 @@ export const GraphContainer = styled.div`
   position: relative;
   border: 1px solid ${props => props.theme.colors.border};
   border-radius: ${props => props.theme.borderRadius};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   overflow: hidden;
 `;
 
@@ -31,7 +32,9 @@ export const StepInfo = styled.div`
   margin: 1rem 0;
   padding: 1rem;
   background-color: ${props => props.theme.colors.card};
+  transition: all 0.3s ease;
   border-radius: ${props => props.theme.borderRadius};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   width: 100%;
   max-width: 800px;
   text-align: center;
@@ -41,7 +44,9 @@ export const InfoPanel = styled.div`
   margin-top: 1rem;
   padding: 1rem;
   background-color: ${props => props.theme.colors.card};
+  transition: all 0.3s ease;
   border-radius: ${props => props.theme.borderRadius};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   width: 100%;
   max-width: 800px;
 `;
@@ -72,7 +77,9 @@ const LegendContainer = styled.div`
   justify-content: center;
   padding: 0.5rem 1rem;
   background-color: ${props => props.theme.colors.card};
+  transition: all 0.3s ease;
   border-radius: ${props => props.theme.borderRadius};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   box-shadow: ${props => props.theme.shadows.sm};
 `;
 
@@ -86,6 +93,7 @@ const ColorBox = styled.div<{ bgColor: string }>`
   width: 1rem;
   height: 1rem;
   background-color: ${props => props.bgColor};
+  transition: all 0.3s ease;
   border-radius: 3px;
   border: 1px solid ${props => props.theme.colors.border};
 `;
@@ -114,15 +122,19 @@ export const ControlPanel = styled.div`
   gap: 1rem;
   margin-bottom: 1rem;
   background-color: ${props => props.theme.colors.card};
+  transition: all 0.3s ease;
   padding: 1rem;
   border-radius: ${props => props.theme.borderRadius};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   box-shadow: ${props => props.theme.shadows.sm};
 `;
 
 export const AlgorithmStep = styled.div`
   padding: 1rem;
   background-color: ${props => props.theme.colors.card};
+  transition: all 0.3s ease;
   border-radius: ${props => props.theme.borderRadius};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   box-shadow: ${props => props.theme.shadows.sm};
   margin-top: 1rem;
   text-align: center;
@@ -160,7 +172,9 @@ export const Select = styled.select`
   padding: 0.5rem;
   border: 1px solid ${props => props.theme.colors.border};
   border-radius: ${props => props.theme.borderRadius};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   background-color: ${props => props.theme.colors.card};
+  transition: all 0.3s ease;
   color: ${props => props.theme.colors.text};
 `;
 
@@ -168,6 +182,7 @@ export const Input = styled.input`
   padding: 0.5rem;
   border: 1px solid ${props => props.theme.colors.border};
   border-radius: ${props => props.theme.borderRadius};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   width: 150px;
 `;
 
@@ -175,6 +190,7 @@ export const TextArea = styled.textarea`
   padding: 0.5rem;
   border: 1px solid ${props => props.theme.colors.border};
   border-radius: ${props => props.theme.borderRadius};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   width: 100%;
   min-height: 100px;
   font-family: monospace;

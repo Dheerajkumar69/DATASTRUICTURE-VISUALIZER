@@ -301,7 +301,7 @@ export const Select = styled.select`
   padding: 8px 12px;
   border: 1px solid ${({ theme }) => theme.colors.gray300};
   border-radius: ${({ theme }) => theme.borderRadius};
-  background-color: white;
+  background-color: ${({ theme }) => theme.colors.card};
   color: ${({ theme }) => theme.colors.gray700};
   cursor: pointer;
   transition: ${({ theme }) => theme.transitions.default};

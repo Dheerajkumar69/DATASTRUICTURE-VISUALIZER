@@ -56,9 +56,10 @@ const ButtonRow = styled.div`
 const Button = styled.button`
   padding: 0.5rem 1rem;
   background-color: ${props => props.theme.colors.primary};
-  color: white;
+  color: ${({ theme }) => theme.colors.card};
   border: none;
   border-radius: ${props => props.theme.borderRadius};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   cursor: pointer;
   transition: all 0.2s;
   

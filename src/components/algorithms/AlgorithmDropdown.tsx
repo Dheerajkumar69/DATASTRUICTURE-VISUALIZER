@@ -30,6 +30,7 @@ const DropdownButton = styled.button`
   color: ${props => props.theme.colors.text};
   border: 1px solid ${props => props.theme.colors.border};
   border-radius: ${props => props.theme.borderRadius};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   cursor: pointer;
   font-weight: 500;
   transition: all 0.2s ease;
@@ -51,6 +52,7 @@ const DropdownMenu = styled.div<{ isOpen: boolean }>`
   background-color: ${props => props.theme.colors.card};
   border: 1px solid ${props => props.theme.colors.border};
   border-radius: ${props => props.theme.borderRadius};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   margin-top: 0.25rem;
   max-height: ${props => (props.isOpen ? '300px' : '0')};
   overflow-y: auto;
