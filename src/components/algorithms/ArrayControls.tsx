@@ -107,7 +107,7 @@ const ArrayControls: React.FC<ArrayControlsProps> = ({
   
   const handleSizeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const size = parseInt(e.target.value, 10);
-    if (size >= 5 && size <= 100) {
+    if (size >= 10 && size <= 10) {
       onSizeChange(size);
     }
   };
@@ -126,8 +126,8 @@ const ArrayControls: React.FC<ArrayControlsProps> = ({
         return num;
       });
       
-      if (array.length < 5 || array.length > 100) {
-        setError(`Array length must be between 5 and 100`);
+      if (array.length < 10 || array.length > 10) {
+        setError(`Array length must be 10`);
         return;
       }
       
@@ -148,8 +148,8 @@ const ArrayControls: React.FC<ArrayControlsProps> = ({
         <Label>Array Size:</Label>
         <Input
           type="number"
-          min="5"
-          max="100"
+          min="10"
+          max="10"
           value={arraySize}
           onChange={handleSizeChange}
           disabled={disabled}
@@ -165,7 +165,7 @@ const ArrayControls: React.FC<ArrayControlsProps> = ({
       <InputGroup>
         <CustomArrayInput
           type="text"
-          placeholder="Custom array (comma-separated: 5,2,8,1,9...)"
+          placeholder="Custom array (10 numbers: 5,2,8,1,9,3,7,4,6,1)"
           value={customArrayInput}
           onChange={(e) => setCustomArrayInput(e.target.value)}
           disabled={disabled}

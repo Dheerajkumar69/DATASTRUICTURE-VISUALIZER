@@ -213,6 +213,65 @@ export const routeConfig = [
     loadingMessage: 'Loading traveling salesman...'
   },
 
+  // Algorithm Problems Index
+  {
+    path: '/algorithms/problems-index',
+    component: LazyRoutes.AlgorithmProblemsIndexPage,
+    loadingMessage: 'Loading algorithm problems index...'
+  },
+
+  // New Algorithm Problem routes
+  {
+    path: '/algorithms/problems/maximum-subarray',
+    component: LazyRoutes.MaximumSubarrayPage,
+    loadingMessage: 'Loading maximum subarray problem...'
+  },
+  {
+    path: '/algorithms/problems/sliding-window-maximum',
+    component: LazyRoutes.SlidingWindowMaxPage,
+    loadingMessage: 'Loading sliding window maximum problem...'
+  },
+  {
+    path: '/algorithms/problems/rotate-array',
+    component: LazyRoutes.RotateArrayPage,
+    loadingMessage: 'Loading rotate array problem...'
+  },
+  {
+    path: '/algorithms/problems/merge-intervals',
+    component: LazyRoutes.MergeIntervalsPage,
+    loadingMessage: 'Loading merge intervals problem...'
+  },
+  {
+    path: '/algorithms/problems/two-sum',
+    component: LazyRoutes.TwoSumPage,
+    loadingMessage: 'Loading two sum problem...'
+  },
+  {
+    path: '/algorithms/problems/kadane-algorithm',
+    component: LazyRoutes.KadaneAlgorithmPage,
+    loadingMessage: 'Loading Kadane algorithm...'
+  },
+  {
+    path: '/algorithms/problems/longest-common-subsequence',
+    component: LazyRoutes.LongestCommonSubsequencePage,
+    loadingMessage: 'Loading longest common subsequence...'
+  },
+  {
+    path: '/algorithms/problems/longest-palindromic-substring',
+    component: LazyRoutes.LongestPalindromicSubstringPage,
+    loadingMessage: 'Loading longest palindromic substring...'
+  },
+  {
+    path: '/algorithms/problems/string-matching-kmp',
+    component: LazyRoutes.StringMatchingKMPPage,
+    loadingMessage: 'Loading KMP string matching...'
+  },
+  {
+    path: '/algorithms/problems/trapping-rain-water',
+    component: LazyRoutes.TrappingRainWaterPage,
+    loadingMessage: 'Loading trapping rain water...'
+  },
+
   // Problem routes
   {
     path: '/algorithms/problems/chinese-postman',

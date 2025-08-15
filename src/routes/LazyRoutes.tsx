@@ -78,3 +78,17 @@ export const FloodFillPage = lazy(() => import('../pages/algorithms/problems/Flo
 export const MazeSolvingPage = lazy(() => import('../pages/algorithms/problems/MazeSolvingPage'));
 export const KnightsTourPage = lazy(() => import('../pages/algorithms/problems/KnightsTourPage'));
 export const WordLadderPage = lazy(() => import('../pages/algorithms/problems/WordLadderPage'));
+
+// New algorithm problem pages
+export const AlgorithmProblemsIndexPage = lazy(() => import('../pages/algorithms/AlgorithmProblemsIndexPage'));
+export const MaximumSubarrayPage = lazy(() => import('../pages/algorithms/problems/MaximumSubarrayPage'));
+export const SlidingWindowMaxPage = lazy(() => import('../pages/algorithms/problems/SlidingWindowMaxPage'));
+export const RotateArrayPage = lazy(() => import('../pages/algorithms/problems/RotateArrayPage'));
+export const MergeIntervalsPage = lazy(() => import('../pages/algorithms/problems/MergeIntervalsPage'));
+export const TwoSumPage = lazy(() => import('../pages/algorithms/problems/TwoSumPage'));
+export const KadaneAlgorithmPage = lazy(() => import('../pages/algorithms/problems/KadaneAlgorithmPage'));
+export const LongestCommonSubsequencePage = lazy(() => import('../pages/algorithms/problems/LongestCommonSubsequencePage'));
+export const LongestPalindromicSubstringPage = lazy(() => import('../pages/algorithms/problems/LongestPalindromicSubstringPage'));
+export const StringMatchingKMPPage = lazy(() => import('../pages/algorithms/problems/StringMatchingKMPPage'));
+export const TrappingRainWaterPage = lazy(() => import('../pages/algorithms/problems/TrappingRainWaterPage'));
+export const SlidingWindowMaximumPage = lazy(() => import('../pages/algorithms/problems/SlidingWindowMaximumPage'));

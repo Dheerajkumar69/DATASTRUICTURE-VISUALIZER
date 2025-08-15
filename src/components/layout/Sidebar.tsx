@@ -26,7 +26,8 @@ import {
   FiGitMerge,
   FiCompass,
   FiGitCommit,
-  FiHome
+  FiHome,
+  FiMaximize2
 } from 'react-icons/fi';
 import { 
   FaChessQueen, 
@@ -249,7 +250,7 @@ const Sidebar: React.FC = () => {
   const [sortingAlgorithmsOpen, setSortingAlgorithmsOpen] = useState(false);
   const [graphAlgorithmsOpen, setGraphAlgorithmsOpen] = useState(false);
   const [backtrackingAlgorithmsOpen, setBacktrackingAlgorithmsOpen] = useState(false);
-  const [problemsAlgorithmsOpen, setProblemsAlgorithmsOpen] = useState(false);
+  const [problemsAlgorithmsOpen, setProblemsAlgorithmsOpen] = useState(true);
   const [mathAlgorithmsOpen, setMathAlgorithmsOpen] = useState(false);
   const [arrayAlgorithmsOpen, setArrayAlgorithmsOpen] = useState(false);
   const [isSortingOpen, setIsSortingOpen] = useState(false);
@@ -526,6 +527,58 @@ const Sidebar: React.FC = () => {
                 <NestedNavItem to="/algorithms/problems">
                   <FaPuzzlePiece size={14} />
                   All Problems
+                </NestedNavItem>
+                <NestedNavItem to="/algorithms/problems-index">
+                  <FaCode size={14} />
+                  Problems Index
+                </NestedNavItem>
+                
+                <CategoryLabel>Array & DP Problems</CategoryLabel>
+                <NestedNavItem to="/algorithms/problems/maximum-subarray">
+                  <FiBarChart2 size={14} />
+                  Maximum Subarray (Kadane's)
+                </NestedNavItem>
+                <NestedNavItem to="/algorithms/problems/sliding-window-maximum">
+                  <FiMaximize2 size={14} />
+                  Sliding Window Maximum
+                </NestedNavItem>
+                <NestedNavItem to="/algorithms/problems/trapping-rain-water">
+                  <FaWater size={14} />
+                  Trapping Rain Water
+                </NestedNavItem>
+                <NestedNavItem to="/algorithms/problems/rotate-array">
+                  <FiArrowRightCircle size={14} />
+                  Rotate Array
+                </NestedNavItem>
+                <NestedNavItem to="/algorithms/problems/merge-intervals">
+                  <FiLayers size={14} />
+                  Merge Intervals
+                </NestedNavItem>
+                <NestedNavItem to="/algorithms/problems/kadane-algorithm">
+                  <FiBarChart2 size={14} />
+                  Kadane Algorithm
+                </NestedNavItem>
+                
+                <CategoryLabel>String Problems</CategoryLabel>
+                <NestedNavItem to="/algorithms/problems/longest-common-subsequence">
+                  <FaCode size={14} />
+                  Longest Common Subsequence
+                </NestedNavItem>
+                <NestedNavItem to="/algorithms/problems/longest-palindromic-substring">
+                  <FaCode size={14} />
+                  Longest Palindromic Substring
+                </NestedNavItem>
+                <NestedNavItem to="/algorithms/problems/string-matching-kmp">
+                  <FiSearch size={14} />
+                  String Matching (KMP)
+                </NestedNavItem>
+                <NestedNavItem to="/algorithms/problems/edit-distance">
+                  <FaCode size={14} />
+                  Edit Distance
+                </NestedNavItem>
+                <NestedNavItem to="/algorithms/problems/two-sum">
+                  <FiHash size={14} />
+                  Two Sum
                 </NestedNavItem>
                 
                 <CategoryLabel>Graph Problems</CategoryLabel>

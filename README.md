@@ -6,6 +6,10 @@ A beautiful, interactive, and responsive web application for visualizing data st
 
 - **Multiple Data Structures**: Visualize arrays, linked lists, stacks, queues, trees, graphs, hash tables, heaps, and more
 - **Real-Time Visualization**: See data structures come to life as you modify and manipulate them
+- **Algorithm Problem Visualizations**: Step-by-step solutions to classic coding problems
+  - **Array & Dynamic Programming**: Maximum Subarray (Kadane's), Sliding Window Maximum, Trapping Rain Water, Rotate Array, Merge Intervals
+  - **String Algorithms**: Longest Common Subsequence, Longest Palindromic Substring, String Matching (KMP), Edit Distance
+  - **Matrix Problems**: Matrix Rotation, Game of Life, Search in 2D Matrix, Spiral Traversal
 - **User-Friendly Interface**: Beautiful themes and intuitive controls for a smooth experience
 - **Responsive Design**: Works perfectly on all devices, from desktops to smartphones
 - **Interactive Playground**: Experiment with operations like insert, delete, search, and sort

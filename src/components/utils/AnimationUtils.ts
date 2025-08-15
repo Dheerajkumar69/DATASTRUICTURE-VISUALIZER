@@ -2,9 +2,9 @@ import { keyframes } from 'styled-components';
 
 // Standard animation durations
 export const ANIMATION_DURATION = {
-  SLOW: 1000,
-  MEDIUM: 500,
-  FAST: 200,
+  SLOW: 10,
+  MEDIUM: 10,
+  FAST: 10,
 };
 
 // Standard animation timing functions

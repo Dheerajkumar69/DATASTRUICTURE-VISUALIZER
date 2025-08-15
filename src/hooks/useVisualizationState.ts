@@ -26,7 +26,7 @@ const initialState = <T>(): State<T> => ({
   currentStep: 0,
   isAnimating: false,
   isPaused: false,
-  animationSpeed: 1000, // Default 1 second
+  animationSpeed: 10, // Default 10ms
 });
 
 // Reducer function
