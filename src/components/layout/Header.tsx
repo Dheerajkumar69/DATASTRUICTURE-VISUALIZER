@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import { FiSun, FiMoon, FiGithub } from 'react-icons/fi';
+import { FiSun, FiMoon, FiGithub, FiSettings } from 'react-icons/fi';
 import { useThemeContext } from '../../themes/ThemeContext';
 import { useAccessibility } from '../../hooks/useAccessibility';
 
@@ -68,7 +68,6 @@ const HeaderActions = styled.div`
   display: flex;
   align-items: center;
   gap: 1rem;
-  margin-left: auto;
 `;
 
 const ThemeToggle = styled.button`
