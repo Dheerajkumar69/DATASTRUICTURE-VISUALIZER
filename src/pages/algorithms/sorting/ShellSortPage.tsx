@@ -4,15 +4,7 @@ import { FiPlay, FiPause, FiRefreshCw, FiChevronsLeft, FiChevronsRight } from 'r
 import { Link } from 'react-router-dom';
 import { FaArrowLeft } from 'react-icons/fa';
 import AlgorithmDropdown from '../../../components/algorithms/AlgorithmDropdown';
-<<<<<<< HEAD
-<<<<<<< HEAD
-import { vs2015 } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import { motion } from 'framer-motion';
-
-=======
->>>>>>> parent of 5badfa4 (version 4.0.0)
-=======
->>>>>>> parent of 5badfa4 (version 4.0.0)
 // Lazy load only the syntax highlighter component
 const SyntaxHighlighter = lazy(() => import('react-syntax-highlighter'));
 // Import the style directly, as it's small

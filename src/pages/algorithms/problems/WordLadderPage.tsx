@@ -1,9 +1,8 @@
 import React from 'react';
+import styled from 'styled-components';
 import ProblemPageTemplate from '../../../components/templates/ProblemPageTemplate';
 import { AlgorithmInfo } from '../../../types/algorithm';
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 // Styled components specific to WordLadder
 const InputContainer = styled.div`
   display: flex;
@@ -106,7 +105,7 @@ const RejectedWordsContainer = styled.div`
   padding-top: 1.5rem;
 `;
 
-const WordListInput = styled(TextArea)`
+const WordListInput = styled.textarea`
   width: 300px;
   height: 100px;
   border: 1px solid ${props => props.theme.colors.border};
@@ -130,7 +129,7 @@ const QueueItemLevel = styled.span`
   font-weight: bold;
 `;
 
-// Types for visualization
+// Types for visualization (placeholder for future interactive viz)
 interface Step {
   currentWord: string;
   visited: Set<string>;
@@ -140,12 +139,6 @@ interface Step {
   finalPath: string[] | null;
   rejected: Array<{word: string, reason: string}>;
 }
-
-// Word Ladder Algorithm
-=======
->>>>>>> parent of 5badfa4 (version 4.0.0)
-=======
->>>>>>> parent of 5badfa4 (version 4.0.0)
 const wordLadderInfo: AlgorithmInfo = {
   name: "Word Ladder",
   description: "Word Ladder is a graph problem where we need to find the shortest transformation sequence from a start word to an end word, such that only one letter can be changed at a time, and each transformed word must exist in a given word list.",

@@ -180,16 +180,13 @@ const Canvas = styled.canvas`
 const InfoPanel = styled.div`
   padding: 1rem;
   background-color: ${props => props.theme.colors.card};
-<<<<<<< HEAD
-<<<<<<< HEAD
+//
   transition: all 0.3s ease;
   border-radius: ${props => props.theme.borderRadius};
   border: 1px solid ${({ theme }) => theme.colors.border};
   margin-bottom: 1rem;
   box-shadow: ${props => props.theme.shadows.sm};
-=======
-=======
->>>>>>> parent of 5badfa4 (version 4.0.0)
+//
   border-radius: 0.5rem;
   border: 1px solid ${props => props.theme.colors.border};
   margin-bottom: 2rem;
@@ -657,67 +654,7 @@ function bfs(graph, startNode) {
     }
   }
   
-<<<<<<< HEAD
-<<<<<<< HEAD
-  // Legend items
-  const legendItems = [
-    { color: "#E2E8F0", label: "Unvisited" },
-    { color: "#ECC94B", label: "Visiting (In Queue)" },
-    { color: "#3B82F6", label: "Processing" },
-    { color: "#10B981", label: "Visited" },
-    { color: "#6366F1", label: "Discovery Edge" },
-    { color: "#F59E0B", label: "Back Edge" }
-  ];
-  
-  // Additional information panel
-  const additionalInfo = (
-    <>
-      <InfoPanel>
-        <InfoTitle>How BFS Works</InfoTitle>
-        <ul>
-          <li>BFS uses a queue data structure to keep track of nodes to visit</li>
-          <li>It starts at a given node and explores all neighbors at the current depth before moving on</li>
-          <li>BFS guarantees the shortest path in unweighted graphs</li>
-          <li>It expands outward in "levels" from the starting node</li>
-        </ul>
-      </InfoPanel>
-      
-      <InfoPanel>
-        <InfoTitle>Applications of BFS</InfoTitle>
-        <ul>
-          <li>Finding shortest paths in unweighted graphs</li>
-          <li>Web crawlers for indexing web pages</li>
-          <li>Social network friend suggestion algorithms</li>
-          <li>Puzzle solving (e.g., sliding puzzles, Rubik's cube)</li>
-          <li>Connected components in undirected graphs</li>
-          <li>Testing bipartiteness of a graph</li>
-        </ul>
-      </InfoPanel>
-    </>
-  );
-  
-  // Visualization component
-  const visualizationComponent = (
-    <>
-      <EnhancedGraphProblemVisualizer
-        problemType="bfs"
-        height="650px"
-        nodeRadius={25}
-        showEdgeWeights={false}
-        autoFit={true}
-        allowZoomPan={true}
-        generateNewGraph={generateBFSGraph}
-        runAlgorithm={runBFSAlgorithm}
-      />
-      
-      <LegendContainer>
-        <Legend items={legendItems} />
-      </LegendContainer>
-    </>
-  );
-=======
-=======
->>>>>>> parent of 5badfa4 (version 4.0.0)
+  // (Legend and additionalInfo sections omitted in this build-focused cleanup)
   return visited;
 }
 
@@ -735,10 +672,7 @@ const visitedOrder = bfs(graph, 0);
 console.log("BFS traversal order:", visitedOrder);
 // Output: BFS traversal order: [0, 1, 2, 3, 4, 5, 6]
 `;
-<<<<<<< HEAD
->>>>>>> parent of 5badfa4 (version 4.0.0)
-=======
->>>>>>> parent of 5badfa4 (version 4.0.0)
+//
   
   return (
     <PageContainer>

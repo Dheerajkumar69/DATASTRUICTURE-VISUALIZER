@@ -1,18 +1,9 @@
 import React from 'react';
+import styled from 'styled-components';
 import ProblemPageTemplate from '../../../components/templates/ProblemPageTemplate';
 import { AlgorithmInfo } from '../../../types/algorithm';
-<<<<<<< HEAD
-<<<<<<< HEAD
-import GraphProblemVisualizer from '../../../components/visualization/GraphProblemVisualizer';
-import { Legend } from '../../../components/visualization/VisualizationComponents';
 
-// Styled Components
-const LegendContainer = styled.div`
-  margin-top: 1rem;
-  display: flex;
-  justify-content: center;
-`;
-
+// Styled Components (kept minimal here; visualization handled inside templates/visualizers)
 const InfoPanel = styled.div`
   margin-top: 2rem;
   padding: 1rem;
@@ -22,24 +13,6 @@ const InfoPanel = styled.div`
   border: 1px solid ${({ theme }) => theme.colors.border};
   width: 100%;
 `;
-
-const InfoTitle = styled.h3`
-  font-size: 1.2rem;
-  margin-bottom: 10px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid ${props => props.theme.colors.border};
-`;
-
-const InfoText = styled.p`
-  font-size: 0.9rem;
-  line-height: 1.5;
-  color: ${props => props.theme.colors.textLight};
-  margin-bottom: 0.5rem;
-`;
-=======
->>>>>>> parent of 5badfa4 (version 4.0.0)
-=======
->>>>>>> parent of 5badfa4 (version 4.0.0)
 
 const eulerianPathInfo: AlgorithmInfo = {
   name: "Eulerian Path Detection",
