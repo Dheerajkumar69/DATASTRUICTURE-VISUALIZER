@@ -18,8 +18,6 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-<<<<<<< HEAD
-<<<<<<< HEAD
     "jsx": "react-jsx",
     "downlevelIteration": true,
     "noImplicitAny": false,
@@ -42,12 +40,6 @@
       "@types/*": ["src/types/*"],
       "@themes/*": ["src/themes/*"]
     }
-=======
-    "jsx": "react-jsx"
->>>>>>> parent of 5badfa4 (version 4.0.0)
-=======
-    "jsx": "react-jsx"
->>>>>>> parent of 5badfa4 (version 4.0.0)
   },
   "include": [
     "src/**/*.ts",
@@ -67,4 +59,4 @@
     "**/__tests__/**/*",
     "node_modules"
   ]
-} 
+}
