@@ -181,17 +181,23 @@ const InfoPanel = styled.div`
   padding: 1rem;
   background-color: ${props => props.theme.colors.card};
 <<<<<<< HEAD
+<<<<<<< HEAD
   transition: all 0.3s ease;
   border-radius: ${props => props.theme.borderRadius};
   border: 1px solid ${({ theme }) => theme.colors.border};
   margin-bottom: 1rem;
   box-shadow: ${props => props.theme.shadows.sm};
 =======
+=======
+>>>>>>> parent of 5badfa4 (version 4.0.0)
   border-radius: 0.5rem;
   border: 1px solid ${props => props.theme.colors.border};
   margin-bottom: 2rem;
   max-width: 800px;
   width: 100%;
+<<<<<<< HEAD
+>>>>>>> parent of 5badfa4 (version 4.0.0)
+=======
 >>>>>>> parent of 5badfa4 (version 4.0.0)
 `;
 
@@ -655,6 +661,7 @@ function bfs(graph, startNode) {
   }
   
 <<<<<<< HEAD
+<<<<<<< HEAD
   // Legend items
   const legendItems = [
     { color: "#E2E8F0", label: "Unvisited" },
@@ -712,6 +719,8 @@ function bfs(graph, startNode) {
     </>
   );
 =======
+=======
+>>>>>>> parent of 5badfa4 (version 4.0.0)
   return visited;
 }
 
@@ -729,6 +738,9 @@ const visitedOrder = bfs(graph, 0);
 console.log("BFS traversal order:", visitedOrder);
 // Output: BFS traversal order: [0, 1, 2, 3, 4, 5, 6]
 `;
+<<<<<<< HEAD
+>>>>>>> parent of 5badfa4 (version 4.0.0)
+=======
 >>>>>>> parent of 5badfa4 (version 4.0.0)
   
   return (

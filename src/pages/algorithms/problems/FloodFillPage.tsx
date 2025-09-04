@@ -105,6 +105,7 @@ const Grid = styled.div`
   grid-template-columns: repeat(10, 40px);
   grid-template-rows: repeat(10, 40px);
 <<<<<<< HEAD
+<<<<<<< HEAD
   gap: 2px;
   background-color: ${props => props.theme.colors.gray200};
   transition: all 0.3s ease;
@@ -112,6 +113,8 @@ const Grid = styled.div`
   border-radius: ${props => props.theme.borderRadius};
   border: 1px solid ${({ theme }) => theme.colors.border};
 =======
+=======
+>>>>>>> parent of 5badfa4 (version 4.0.0)
   gap: 1px;
   background-color: ${props => props.theme.colors.border};
   padding: 1px;
@@ -151,6 +154,9 @@ const InfoText = styled.p`
   margin-bottom: 0.5rem;
   line-height: 1.5;
   font-size: 0.9rem;
+<<<<<<< HEAD
+>>>>>>> parent of 5badfa4 (version 4.0.0)
+=======
 >>>>>>> parent of 5badfa4 (version 4.0.0)
 `;
 
@@ -160,8 +166,12 @@ const ColorPicker = styled.input`
   padding: 0;
   border: none;
 <<<<<<< HEAD
+<<<<<<< HEAD
   border-radius: ${props => props.theme.borderRadius};
   border: 1px solid ${({ theme }) => theme.colors.border};
+=======
+  border-radius: 4px;
+>>>>>>> parent of 5badfa4 (version 4.0.0)
 =======
   border-radius: 4px;
 >>>>>>> parent of 5badfa4 (version 4.0.0)

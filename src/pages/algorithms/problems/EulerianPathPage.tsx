@@ -2,6 +2,7 @@ import React from 'react';
 import ProblemPageTemplate from '../../../components/templates/ProblemPageTemplate';
 import { AlgorithmInfo } from '../../../types/algorithm';
 <<<<<<< HEAD
+<<<<<<< HEAD
 import GraphProblemVisualizer from '../../../components/visualization/GraphProblemVisualizer';
 import { Legend } from '../../../components/visualization/VisualizationComponents';
 
@@ -35,6 +36,8 @@ const InfoText = styled.p`
   color: ${props => props.theme.colors.textLight};
   margin-bottom: 0.5rem;
 `;
+=======
+>>>>>>> parent of 5badfa4 (version 4.0.0)
 =======
 >>>>>>> parent of 5badfa4 (version 4.0.0)
 

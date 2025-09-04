@@ -36,6 +36,7 @@ const GlobalStyle = createGlobalStyle`
     color: ${({ theme }) => theme.colors.text};
   }
   
+<<<<<<< HEAD
   p {
     margin: 0;
     color: ${({ theme }) => theme.colors.text};
@@ -83,6 +84,11 @@ const GlobalStyle = createGlobalStyle`
   ::-moz-selection {
     background: ${({ theme }) => theme.colors.primary};
     color: ${({ theme }) => theme.colors.card};
+=======
+  /* Ensure list items and strong text are black in dark mode */
+  li, li strong {
+    color: black !important;
+>>>>>>> parent of 5badfa4 (version 4.0.0)
   }
 `;
 

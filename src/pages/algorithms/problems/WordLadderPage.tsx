@@ -3,6 +3,7 @@ import ProblemPageTemplate from '../../../components/templates/ProblemPageTempla
 import { AlgorithmInfo } from '../../../types/algorithm';
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 // Styled components specific to WordLadder
 const InputContainer = styled.div`
   display: flex;
@@ -141,6 +142,8 @@ interface Step {
 }
 
 // Word Ladder Algorithm
+=======
+>>>>>>> parent of 5badfa4 (version 4.0.0)
 =======
 >>>>>>> parent of 5badfa4 (version 4.0.0)
 const wordLadderInfo: AlgorithmInfo = {

@@ -31,6 +31,7 @@ export const darkTheme = {
     secondaryLight: '#6EE7B7',
     secondaryDark: '#10B981',
 <<<<<<< HEAD
+<<<<<<< HEAD
     background: '#0D1117',
     foreground: '#F0F6FC',
     card: '#161B26',
@@ -42,6 +43,10 @@ export const darkTheme = {
     highlight: '#C084FC',
     accent: '#A78BFA',
     gray50: '#171923',
+=======
+    background: '#111827',
+    foreground: '#000000',
+>>>>>>> parent of 5badfa4 (version 4.0.0)
 =======
     background: '#111827',
     foreground: '#000000',

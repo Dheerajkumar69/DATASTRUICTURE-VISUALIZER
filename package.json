@@ -124,6 +124,9 @@
     "@types/react-syntax-highlighter": "^15.5.13",
     "typescript": "^4.9.5"
   },
+<<<<<<< HEAD
+>>>>>>> parent of 5badfa4 (version 4.0.0)
+=======
 >>>>>>> parent of 5badfa4 (version 4.0.0)
   "browserslist": {
     "production": [
