@@ -30,6 +30,7 @@ export const darkTheme = {
     secondary: '#34D399',
     secondaryLight: '#6EE7B7',
     secondaryDark: '#10B981',
+<<<<<<< HEAD
     background: '#0D1117',
     foreground: '#F0F6FC',
     card: '#161B26',
@@ -41,6 +42,10 @@ export const darkTheme = {
     highlight: '#C084FC',
     accent: '#A78BFA',
     gray50: '#171923',
+=======
+    background: '#111827',
+    foreground: '#000000',
+>>>>>>> parent of 5badfa4 (version 4.0.0)
     gray100: '#1F2937',
     gray200: '#374151',
     gray300: '#4B5563',
@@ -58,38 +63,16 @@ export const darkTheme = {
   fonts: {
     sans: "'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif",
     mono: "'Roboto Mono', monospace",
-    body: "'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif",
-    heading: "'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif",
-    code: "'Roboto Mono', monospace",
-  },
-  fontSizes: {
-    xs: '0.75rem',
-    sm: '0.875rem',
-    md: '1rem',
-    lg: '1.125rem',
-    xl: '1.25rem',
-    xxl: '1.5rem',
-  },
-  fontWeights: {
-    normal: 400,
-    medium: 500,
-    bold: 700,
-  },
-  lineHeights: {
-    body: 1.5,
-    heading: 1.2,
   },
   borderRadius: '8px',
   shadows: {
-    sm: '0 1px 2px 0 rgba(0, 0, 0, 0.4)',
-    md: '0 2px 4px 0 rgba(0, 0, 0, 0.4), 0 1px 2px 0 rgba(0, 0, 0, 0.3)',
-    lg: '0 4px 8px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -1px rgba(0, 0, 0, 0.4)',
-    xl: '0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.4)',
+    sm: '0 1px 2px 0 rgba(0, 0, 0, 0.25)',
+    md: '0 1px 3px 0 rgba(0, 0, 0, 0.3), 0 1px 2px 0 rgba(0, 0, 0, 0.26)',
+    lg: '0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.26)',
+    xl: '0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.25)',
   },
   transitions: {
     default: 'all 0.2s ease-in-out',
-    fast: 'all 0.1s ease-in-out',
-    slow: 'all 0.3s ease-in-out',
   },
   breakpoints: {
     xs: '480px',

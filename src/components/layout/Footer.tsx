@@ -7,75 +7,54 @@ const FooterContainer = styled.footer`
   flex-direction: column;
   align-items: center;
   padding: 2rem;
-  background-color: ${({ theme }) => theme.colors.card};
-  border-top: 1px solid ${({ theme }) => theme.colors.border};
-  transition: background-color 0.3s ease, border-color 0.3s ease;
+  background-color: ${({ theme }) => theme.colors.background};
+  border-top: 1px solid ${({ theme }) => theme.colors.gray200};
 `;
 
 const FooterContent = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  max-width: 800px;
+  max-width: 600px;
   text-align: center;
 `;
 
 const FooterText = styled.p`
-  color: ${({ theme }) => theme.colors.textLight};
+  color: ${({ theme }) => theme.colors.gray600};
   margin-bottom: 1rem;
-  transition: color 0.3s ease;
-  font-size: 0.95rem;
-  line-height: 1.5;
 `;
 
 const FooterLinks = styled.div`
   display: flex;
-  gap: 1.5rem;
-  margin-top: 1.5rem;
+  gap: 1rem;
+  margin-top: 1rem;
 `;
 
 const FooterLink = styled.a`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 42px;
-  height: 42px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
-  color: ${({ theme }) => theme.colors.textLight};
-  background-color: ${({ theme }) => theme.colors.gray200};
-  transition: all 0.2s ease-in-out;
+  color: ${({ theme }) => theme.colors.gray600};
+  transition: ${({ theme }) => theme.transitions.default};
   
   &:hover {
-    background-color: ${({ theme }) => theme.colors.gray300};
+    background-color: ${({ theme }) => theme.colors.gray100};
     color: ${({ theme }) => theme.colors.primary};
-    transform: translateY(-2px);
   }
 `;
 
 const HeartIcon = styled(FiHeart)`
-  color: ${({ theme }) => theme.colors.danger};
+  color: #FF0000; /* Bright red color */
   margin: 0 0.25rem;
-  fill: ${({ theme }) => theme.colors.danger};
-  stroke-width: 2px;
-  font-size: 1.2em;
-  animation: heartbeat 1.5s ease infinite;
-  
-  @keyframes heartbeat {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.15); }
-  }
-`;
-
-const Copyright = styled.div`
-  margin-top: 1.5rem;
-  font-size: 0.85rem;
-  color: ${({ theme }) => theme.colors.textLight};
-  opacity: 0.8;
+  fill: #FF0000; /* Fill the heart icon */
+  stroke-width: 2px; /* Make the outline thicker */
+  font-size: 1.2em; /* Make it slightly larger */
 `;
 
 const Footer: React.FC = () => {
-  const currentYear = new Date().getFullYear();
-  
   return (
     <FooterContainer>
       <FooterContent>
@@ -86,32 +65,16 @@ const Footer: React.FC = () => {
           Made with <HeartIcon /> by Dheeraj Kumar
         </FooterText>
         <FooterLinks>
-          <FooterLink 
-            href="https://github.com/dheerajkumargaur/DSA_Visualizer" 
-            target="_blank" 
-            rel="noopener noreferrer" 
-            aria-label="GitHub"
-          >
+          <FooterLink href="https://github.com" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
             <FiGithub size={20} />
           </FooterLink>
-          <FooterLink 
-            href="https://twitter.com" 
-            target="_blank" 
-            rel="noopener noreferrer" 
-            aria-label="Twitter"
-          >
+          <FooterLink href="https://twitter.com" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
             <FiTwitter size={20} />
           </FooterLink>
-          <FooterLink 
-            href="https://linkedin.com" 
-            target="_blank" 
-            rel="noopener noreferrer" 
-            aria-label="LinkedIn"
-          >
+          <FooterLink href="https://linkedin.com" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
             <FiLinkedin size={20} />
           </FooterLink>
         </FooterLinks>
-        <Copyright>© {currentYear} Data Structure Visualizer. All rights reserved.</Copyright>
       </FooterContent>
     </FooterContainer>
   );

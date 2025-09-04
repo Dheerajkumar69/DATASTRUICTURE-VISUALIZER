@@ -1,4 +1,4 @@
-import React, { useState, ReactNode } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { FaPlay, FaPause, FaUndo, FaStepForward } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
@@ -161,7 +161,7 @@ const VisualizationArea = styled.div`
 
 interface ProblemPageTemplateProps {
   algorithmInfo: AlgorithmInfo;
-  visualizationComponent: ReactNode;
+  visualizationComponent: React.ReactNode;
   problemDescription: string;
 }
 

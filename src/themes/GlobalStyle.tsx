@@ -41,6 +41,7 @@ const GlobalStyle = createGlobalStyle`
     color: ${({ theme }) => theme.colors.text};
   }
   
+<<<<<<< HEAD
   /* Custom scrollbar styling that respects the theme */
   ::-webkit-scrollbar {
     width: 8px;
@@ -60,6 +61,11 @@ const GlobalStyle = createGlobalStyle`
 
   ::-webkit-scrollbar-thumb:hover {
     background: ${({ theme }) => theme.colors.gray500};
+=======
+  /* Ensure list items and strong text are black in dark mode */
+  li, li strong {
+    color: black !important;
+>>>>>>> parent of 5badfa4 (version 4.0.0)
   }
   
   /* Fix scrollbar for Firefox */

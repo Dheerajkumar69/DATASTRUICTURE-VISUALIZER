@@ -6,6 +6,9 @@ import App from './App';
 import './index.css';
 import './sw-registration';
 
+// Set default theme to light mode
+localStorage.setItem('theme', 'light');
+
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );

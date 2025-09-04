@@ -4,8 +4,7 @@
     <meta charset="utf-8" />
     <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#F9FAFB" media="(prefers-color-scheme: light)">
-    <meta name="theme-color" content="#121620" media="(prefers-color-scheme: dark)">
+    <meta name="theme-color" content="#000000" />
     <meta
       name="description"
       content="Data Structure Visualizer - An interactive and responsive tool for visualizing data structures and algorithms"
@@ -14,19 +13,6 @@
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
     <title>Data Structure Visualizer</title>
-    <!-- Initial theme setup to prevent flash of wrong theme -->
-    <script>
-      (function() {
-        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-        const savedTheme = localStorage.getItem('theme');
-        if (savedTheme === 'dark' || (prefersDark && !savedTheme)) {
-          document.documentElement.classList.add('dark-mode');
-          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#121620');
-        } else {
-          document.documentElement.classList.add('light-mode');
-        }
-      })();
-    </script>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>

@@ -1,20 +1,29 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
+<<<<<<< HEAD
 import { FiSun, FiMoon, FiGithub, FiSettings } from 'react-icons/fi';
 import { useThemeContext } from '../../themes/ThemeContext';
 import { useAccessibility } from '../../hooks/useAccessibility';
+=======
+import { FiSun, FiMoon, FiGithub } from 'react-icons/fi';
+import { useTheme } from '../../themes/ThemeContext';
+>>>>>>> parent of 5badfa4 (version 4.0.0)
 
 const HeaderContainer = styled.header`
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 1rem 2rem;
+<<<<<<< HEAD
   background-color: ${({ theme }) => theme.cardBackground};
   border-bottom: 1px solid ${({ theme }) => theme.border};
+=======
+  background-color: ${({ theme }) => theme.colors.background};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.gray200};
+>>>>>>> parent of 5badfa4 (version 4.0.0)
   box-shadow: ${({ theme }) => theme.shadows.sm};
   z-index: 10;
-  transition: all 0.3s ease-in-out;
 `;
 
 const Logo = styled(Link)`
@@ -38,15 +47,22 @@ const LogoText = styled.div`
 const LogoTitle = styled.span`
   font-size: 1.5rem;
   font-weight: 700;
+<<<<<<< HEAD
   color: ${({ theme }) => theme.text};
   transition: color 0.3s ease;
+=======
+>>>>>>> parent of 5badfa4 (version 4.0.0)
 `;
 
 const LogoCredit = styled.span`
   font-size: 0.875rem;
   font-weight: 500;
+<<<<<<< HEAD
   color: ${({ theme }) => theme.textLight};
   transition: color 0.3s ease;
+=======
+  color: ${({ theme }) => theme.colors.gray600};
+>>>>>>> parent of 5badfa4 (version 4.0.0)
 `;
 
 const LogoIcon = styled.div`
@@ -61,7 +77,6 @@ const LogoIcon = styled.div`
   border-radius: ${({ theme }) => theme.borderRadius};
   font-weight: 700;
   font-size: 1.25rem;
-  transition: background-color 0.3s ease;
 `;
 
 const HeaderActions = styled.div`
@@ -70,6 +85,7 @@ const HeaderActions = styled.div`
   gap: 1rem;
 `;
 
+<<<<<<< HEAD
 const ThemeToggle = styled.button`
   display: flex;
   align-items: center;
@@ -91,6 +107,8 @@ const ThemeToggle = styled.button`
   }
 `;
 
+=======
+>>>>>>> parent of 5badfa4 (version 4.0.0)
 const IconButton = styled.button`
   display: flex;
   align-items: center;
@@ -103,13 +121,19 @@ const IconButton = styled.button`
   border: 1px solid transparent;
   
   &:hover {
+<<<<<<< HEAD
     background-color: ${({ theme }) => theme.hover};
     color: ${({ theme }) => theme.text};
     border-color: ${({ theme }) => theme.border};
+=======
+    background-color: ${({ theme }) => theme.colors.gray100};
+    color: ${({ theme }) => theme.colors.gray900};
+>>>>>>> parent of 5badfa4 (version 4.0.0)
   }
 `;
 
 const Header: React.FC = () => {
+<<<<<<< HEAD
   const { isDarkMode, toggleTheme } = useThemeContext();
   const { announceRef, announce } = useAccessibility();
 
@@ -117,6 +141,9 @@ const Header: React.FC = () => {
     toggleTheme();
     announce(`Switched to ${isDarkMode ? 'light' : 'dark'} theme`);
   };
+=======
+  const { isDarkMode, toggleTheme } = useTheme();
+>>>>>>> parent of 5badfa4 (version 4.0.0)
 
   return (
     <HeaderContainer role="banner">
@@ -128,6 +155,7 @@ const Header: React.FC = () => {
         </LogoText>
       </Logo>
       <HeaderActions>
+<<<<<<< HEAD
         <ThemeToggle 
           onClick={handleThemeToggle} 
           aria-label={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
@@ -153,6 +181,13 @@ const Header: React.FC = () => {
           title="View source code on GitHub"
         >
           <FiGithub size={20} aria-hidden="true" />
+=======
+        <IconButton onClick={toggleTheme} aria-label={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}>
+          {isDarkMode ? <FiSun size={20} /> : <FiMoon size={20} />}
+        </IconButton>
+        <IconButton as="a" href="https://github.com" target="_blank" rel="noopener noreferrer" aria-label="GitHub repository">
+          <FiGithub size={20} />
+>>>>>>> parent of 5badfa4 (version 4.0.0)
         </IconButton>
       </HeaderActions>
       

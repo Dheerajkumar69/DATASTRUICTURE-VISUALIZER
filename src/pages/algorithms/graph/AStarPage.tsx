@@ -2,10 +2,10 @@ import React, { useState, useEffect, useRef, lazy, Suspense } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { FaArrowLeft, FaPlay, FaPause, FaUndo, FaStepForward, FaStepBackward, FaRandom } from 'react-icons/fa';
-import { vs2015 } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 
 // Lazy load the SyntaxHighlighter for better performance
 const SyntaxHighlighter = lazy(() => import('react-syntax-highlighter'));
+import { vs2015 } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 
 // Styled components
 const PageContainer = styled.div`

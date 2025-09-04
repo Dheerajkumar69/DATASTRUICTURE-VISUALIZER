@@ -154,7 +154,7 @@ const generateBubbleSortSteps = (array: number[]): AnimationStep[] => {
     // If no swapping occurred in this pass, array is sorted
     if (!swapped) {
       // Mark all remaining elements as sorted
-      const remainingIndices: number[] = [];
+      const remainingIndices = [];
       for (let k = 0; k < n - i - 1; k++) {
         remainingIndices.push(k);
       }

@@ -4,11 +4,16 @@ import { FiPlay, FiPause, FiRefreshCw, FiChevronsLeft, FiChevronsRight } from 'r
 import { Link } from 'react-router-dom';
 import { FaArrowLeft } from 'react-icons/fa';
 import AlgorithmDropdown from '../../../components/algorithms/AlgorithmDropdown';
+<<<<<<< HEAD
 import { vs2015 } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import { motion } from 'framer-motion';
 
+=======
+>>>>>>> parent of 5badfa4 (version 4.0.0)
 // Lazy load only the syntax highlighter component
 const SyntaxHighlighter = lazy(() => import('react-syntax-highlighter'));
+// Import the style directly, as it's small
+import { vs2015 } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 
 // Styled Components
 const PageContainer = styled.div`
@@ -461,7 +466,7 @@ const ShellSortPage: React.FC = () => {
     
     // Calculate gap sequence for Shell sort
     // Using the sequence: N/2, N/4, ..., 1
-    const gaps: number[] = [];
+    const gaps = [];
     for (let gap = Math.floor(newArray.length / 2); gap > 0; gap = Math.floor(gap / 2)) {
       gaps.push(gap);
     }
