@@ -67,33 +67,7 @@ const HeaderActions = styled.div`
   gap: 1rem;
 `;
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-const ThemeToggle = styled.button`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.5rem 1rem;
-  border-radius: ${({ theme }) => theme.borderRadius};
-  background-color: ${({ theme }) => theme.hover};
-  color: ${({ theme }) => theme.text};
-  font-weight: 500;
-  font-size: 0.875rem;
-  gap: 0.5rem;
-  transition: all 0.2s ease-in-out;
-  border: 1px solid ${({ theme }) => theme.border};
-  
-  &:hover {
-    background-color: ${({ theme }) => theme.primary};
-    color: ${({ theme }) => theme.cardBackground};
-    border-color: ${({ theme }) => theme.primary};
-  }
-`;
-
-=======
->>>>>>> parent of 5badfa4 (version 4.0.0)
-=======
->>>>>>> parent of 5badfa4 (version 4.0.0)
+// cleaned merge remnants
 const IconButton = styled.button`
   display: flex;
   align-items: center;
