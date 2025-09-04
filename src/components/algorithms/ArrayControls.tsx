@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { FiPlus, FiRefreshCw } from 'react-icons/fi';
+import { FiPlus, FiRefreshCw, FiEdit2 } from 'react-icons/fi';
 
 interface ArrayControlsProps {
   onGenerateRandom: (size: number) => void;
@@ -124,17 +124,7 @@ const ErrorText = styled.p`
   margin: 0.25rem 0 0 0;
 `;
 
-interface ArrayControlsProps {
-  onGenerateRandom: (size: number) => void;
-  onCustomArray: (array: number[]) => void;
-  arraySize: number;
-  onSizeChange: (size: number) => void;
-  disabled?: boolean;
-  maxValue?: number;
-}
-
-=======
->>>>>>> parent of 5badfa4 (version 4.0.0)
+//
 const ArrayControls: React.FC<ArrayControlsProps> = ({
   onGenerateRandom,
   onCustomArray,
@@ -206,7 +196,7 @@ const ArrayControls: React.FC<ArrayControlsProps> = ({
   };
   
   return (
-    <Container>
+    <ControlsContainer>
       <ControlRow>
         <Button 
           primary 
@@ -264,7 +254,7 @@ const ArrayControls: React.FC<ArrayControlsProps> = ({
           {error && <ErrorText>{error}</ErrorText>}
         </ControlRow>
       )}
-    </Container>
+    </ControlsContainer>
   );
 };
 
