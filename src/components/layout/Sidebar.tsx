@@ -154,16 +154,9 @@ const NavItem = styled(NavLink)`
   }
   
   &.active {
-<<<<<<< HEAD
-<<<<<<< HEAD
-    background-color: ${({ theme }) => theme.colors.primaryDark};
-    color: ${({ theme }) => theme.colors.card};
-=======
-=======
->>>>>>> parent of 5badfa4 (version 4.0.0)
     background-color: ${({ theme }) => theme.colors.primaryLight};
     color: white;
->>>>>>> parent of 5badfa4 (version 4.0.0)
+    
     
     &:hover {
       background-color: ${({ theme }) => theme.colors.primary};
@@ -226,16 +219,9 @@ const NestedNavItem = styled(NavLink)`
   }
   
   &.active {
-<<<<<<< HEAD
-<<<<<<< HEAD
-    background-color: ${({ theme }) => theme.colors.primaryDark};
-    color: ${({ theme }) => theme.colors.card};
-=======
-=======
->>>>>>> parent of 5badfa4 (version 4.0.0)
     background-color: ${({ theme }) => theme.colors.primaryLight};
     color: white;
->>>>>>> parent of 5badfa4 (version 4.0.0)
+    
     
     &:hover {
       background-color: ${({ theme }) => theme.colors.primary};

@@ -195,10 +195,7 @@ const InfoPanel = styled.div`
   margin-bottom: 2rem;
   max-width: 800px;
   width: 100%;
-<<<<<<< HEAD
->>>>>>> parent of 5badfa4 (version 4.0.0)
-=======
->>>>>>> parent of 5badfa4 (version 4.0.0)
+// cleaned merge remnants
 `;
 
 const InfoTitle = styled.h3`
