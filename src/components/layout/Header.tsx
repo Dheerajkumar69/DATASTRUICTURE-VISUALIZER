@@ -1,36 +1,16 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-<<<<<<< HEAD
-<<<<<<< HEAD
 import { FiSun, FiMoon, FiGithub } from 'react-icons/fi';
 import { useTheme } from '../../themes/ThemeContext';
-=======
-import { FiSun, FiMoon, FiGithub } from 'react-icons/fi';
-import { useTheme } from '../../themes/ThemeContext';
->>>>>>> parent of 5badfa4 (version 4.0.0)
-=======
-import { FiSun, FiMoon, FiGithub } from 'react-icons/fi';
-import { useTheme } from '../../themes/ThemeContext';
->>>>>>> parent of 5badfa4 (version 4.0.0)
 
 const HeaderContainer = styled.header`
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 1rem 2rem;
-<<<<<<< HEAD
-<<<<<<< HEAD
-  background-color: ${({ theme }) => theme.cardBackground};
-  border-bottom: 1px solid ${({ theme }) => theme.border};
-=======
   background-color: ${({ theme }) => theme.colors.background};
   border-bottom: 1px solid ${({ theme }) => theme.colors.gray200};
->>>>>>> parent of 5badfa4 (version 4.0.0)
-=======
-  background-color: ${({ theme }) => theme.colors.background};
-  border-bottom: 1px solid ${({ theme }) => theme.colors.gray200};
->>>>>>> parent of 5badfa4 (version 4.0.0)
   box-shadow: ${({ theme }) => theme.shadows.sm};
   z-index: 10;
 `;
@@ -56,29 +36,15 @@ const LogoText = styled.div`
 const LogoTitle = styled.span`
   font-size: 1.5rem;
   font-weight: 700;
-<<<<<<< HEAD
-<<<<<<< HEAD
-  color: ${({ theme }) => theme.text};
+  color: ${({ theme }) => theme.colors.text};
   transition: color 0.3s ease;
-=======
->>>>>>> parent of 5badfa4 (version 4.0.0)
-=======
->>>>>>> parent of 5badfa4 (version 4.0.0)
 `;
 
 const LogoCredit = styled.span`
   font-size: 0.875rem;
   font-weight: 500;
-<<<<<<< HEAD
-<<<<<<< HEAD
-  color: ${({ theme }) => theme.textLight};
+  color: ${({ theme }) => theme.colors.gray600};
   transition: color 0.3s ease;
-=======
-  color: ${({ theme }) => theme.colors.gray600};
->>>>>>> parent of 5badfa4 (version 4.0.0)
-=======
-  color: ${({ theme }) => theme.colors.gray600};
->>>>>>> parent of 5badfa4 (version 4.0.0)
 `;
 
 const LogoIcon = styled.div`
@@ -135,24 +101,15 @@ const IconButton = styled.button`
   width: 40px;
   height: 40px;
   border-radius: ${({ theme }) => theme.borderRadius};
-  color: ${({ theme }) => theme.textLight};
+  color: ${({ theme }) => theme.colors.textLight};
   transition: ${({ theme }) => theme.transitions.default};
   border: 1px solid transparent;
   
   &:hover {
-<<<<<<< HEAD
-<<<<<<< HEAD
-    background-color: ${({ theme }) => theme.hover};
-    color: ${({ theme }) => theme.text};
-    border-color: ${({ theme }) => theme.border};
-=======
     background-color: ${({ theme }) => theme.colors.gray100};
     color: ${({ theme }) => theme.colors.gray900};
->>>>>>> parent of 5badfa4 (version 4.0.0)
-=======
-    background-color: ${({ theme }) => theme.colors.gray100};
-    color: ${({ theme }) => theme.colors.gray900};
->>>>>>> parent of 5badfa4 (version 4.0.0)
+    border-color: ${({ theme }) => theme.colors.border};
+    
   }
 `;
 
@@ -177,8 +134,8 @@ const Header: React.FC = () => {
         </IconButton>
       </HeaderActions>
       
-      {/* Screen reader announcements */}
-      <div ref={announceRef} aria-live="polite" aria-atomic="true" className="sr-only" />
+      {/* Screen reader announcements placeholder */}
+      <div aria-live="polite" aria-atomic="true" className="sr-only" />
     </HeaderContainer>
   );
 };
