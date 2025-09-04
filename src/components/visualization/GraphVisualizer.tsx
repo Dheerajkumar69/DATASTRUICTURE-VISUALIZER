@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { useTheme, Theme } from '../../themes/ThemeContext';
+import { useTheme } from '../../themes/ThemeContext';
 
 // Types
 export type VertexState = 'unvisited' | 'visiting' | 'visited' | 'highlighted' | 'processed';
@@ -65,7 +65,7 @@ const Canvas = styled.canvas`
 `;
 
 // Helper functions for rendering
-const getVertexColor = (state: VertexState, theme: Theme) => {
+const getVertexColor = (state: VertexState, theme: any) => {
   switch (state) {
     case 'visiting': return theme.colors.warning;
     case 'visited': return theme.colors.success;
@@ -75,7 +75,7 @@ const getVertexColor = (state: VertexState, theme: Theme) => {
   }
 };
 
-const getEdgeColor = (state: EdgeState, theme: Theme) => {
+const getEdgeColor = (state: EdgeState, theme: any) => {
   switch (state) {
     case 'discovery': return theme.colors.primary;
     case 'back': return theme.colors.warning;
