@@ -1,6 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
-import styled from 'styled-components';
-import { useTheme } from '../../themes/ThemeContext';
+import styled, { useTheme as useStyledTheme } from 'styled-components';
 
 // Types
 export type VertexState = 'unvisited' | 'visiting' | 'visited' | 'highlighted' | 'processed';
@@ -101,7 +100,7 @@ const GraphVisualizer: React.FC<GraphVisualizerProps> = ({
   onEdgeClick
 }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const theme = useTheme();
+  const theme = useStyledTheme();
   const [hoveredNode, setHoveredNode] = useState<number | null>(null);
   const [hoveredEdge, setHoveredEdge] = useState<{ from: number, to: number } | null>(null);
   
