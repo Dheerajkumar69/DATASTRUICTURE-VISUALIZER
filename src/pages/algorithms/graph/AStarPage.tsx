@@ -147,7 +147,6 @@ const Input = styled.input`
   padding: 0.5rem;
   border: 1px solid ${props => props.theme.colors.border};
   border-radius: ${props => props.theme.borderRadius};
-  border: 1px solid ${({ theme }) => theme.colors.border};
   background-color: ${props => props.theme.colors.card};
   color: ${props => props.theme.colors.text};
   width: 60px;
@@ -157,7 +156,6 @@ const Select = styled.select`
   padding: 0.5rem;
   border: 1px solid ${props => props.theme.colors.border};
   border-radius: ${props => props.theme.borderRadius};
-  border: 1px solid ${({ theme }) => theme.colors.border};
   background-color: ${props => props.theme.colors.card};
   color: ${props => props.theme.colors.text};
 `;
@@ -674,6 +672,7 @@ graph.set(5, [2]);
 graph.set(6, [4]);
 
 const visitedOrder = aStar(graph, 0, 6);
+console.log("A* Search traversal order:", visitedOrder);
 // Output: A* Search traversal order: [0, 1, 2, 3, 4, 5, 6]
 `;
   

@@ -1,18 +1,10 @@
 import React, { useState, useEffect, lazy, Suspense, memo } from 'react';
 import styled from 'styled-components';
+import { motion } from 'framer-motion';
 import { FiPlay, FiPause, FiRefreshCw, FiChevronsLeft, FiChevronsRight } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 import { FaArrowLeft } from 'react-icons/fa';
 import AlgorithmDropdown from '../../../components/algorithms/AlgorithmDropdown';
-<<<<<<< HEAD
-<<<<<<< HEAD
-import { vs2015 } from 'react-syntax-highlighter/dist/esm/styles/hljs';
-import { motion } from 'framer-motion';
-
-=======
->>>>>>> parent of 5badfa4 (version 4.0.0)
-=======
->>>>>>> parent of 5badfa4 (version 4.0.0)
 // Lazy load only the syntax highlighter component
 const SyntaxHighlighter = lazy(() => import('react-syntax-highlighter'));
 // Import the style directly, as it's small
@@ -90,7 +82,7 @@ const PageDescription = styled.p`
 `;
 
 const VisualizationContainer = styled.div`
-  background-color: ${({ theme }) => theme.colors.card};
+  background-color: white;
   border-radius: ${({ theme }) => theme.borderRadius};
   padding: 1rem;
   
@@ -121,7 +113,7 @@ const Button = styled.button<{ active?: boolean }>`
   padding: 0.5rem;
   border: 1px solid ${({ theme }) => theme.colors.gray200};
   border-radius: ${({ theme }) => theme.borderRadius};
-  background-color: ${({ theme }) => theme.colors.card};
+  background-color: white;
   color: ${({ theme, active }) => active ? theme.colors.primary : theme.colors.gray700};
   cursor: pointer;
   font-size: 0.8rem;
@@ -174,7 +166,7 @@ const SpeedSelect = styled.select`
   padding: 0.5rem;
   border: 1px solid ${({ theme }) => theme.colors.gray300};
   border-radius: ${({ theme }) => theme.borderRadius};
-  background-color: ${({ theme }) => theme.colors.card};
+  background-color: white;
   font-size: 0.8rem;
   
   @media (min-width: 768px) {
@@ -379,8 +371,8 @@ const CodeBlock = styled.div`
 
 const CodeTitle = styled.div`
   padding: 0.5rem 1rem;
-  background-color: ${({ theme }) => theme.colors.text};
-  color: ${({ theme }) => theme.colors.card};
+  background-color: #333;
+  color: white;
   font-family: ${({ theme }) => theme.fonts.mono};
   font-size: 0.8rem;
   
@@ -396,7 +388,7 @@ const LoadingPlaceholder = styled.div`
   justify-content: center;
   height: 200px;
   background-color: #1E1E1E;
-  color: ${({ theme }) => theme.colors.textLight};
+  color: #666;
   font-size: 0.9rem;
 `;
 

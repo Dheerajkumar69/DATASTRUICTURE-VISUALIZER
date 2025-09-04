@@ -18,44 +18,9 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx",
-    "downlevelIteration": true,
-    "noImplicitAny": false,
-    "noImplicitThis": false,
-    "noUnusedLocals": false,
-    "noUnusedParameters": false,
-    "typeRoots": [
-      "./node_modules/@types",
-      "./src/types"
-    ],
-    "strictNullChecks": false,
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["src/*"],
-      "@components/*": ["src/components/*"],
-      "@pages/*": ["src/pages/*"],
-      "@utils/*": ["src/utils/*"],
-      "@hooks/*": ["src/hooks/*"],
-      "@types/*": ["src/types/*"],
-      "@themes/*": ["src/themes/*"]
-    }
+    "jsx": "react-jsx"
   },
   "include": [
-    "src/**/*.ts",
-    "src/**/*.tsx",
-    "src/types"
-  ],
-  "exclude": [
-    "**/*.test.ts",
-    "**/*.test.tsx",
-    "**/*.spec.ts",
-    "**/*.spec.tsx",
-    "src/tests",
-    "src/setupTests.ts",
-    "src/test-utils",
-    "src/test-utils/**/*",
-    "src/**/test-utils/**/*",
-    "**/__tests__/**/*",
-    "node_modules"
+    "src"
   ]
-}
+} 

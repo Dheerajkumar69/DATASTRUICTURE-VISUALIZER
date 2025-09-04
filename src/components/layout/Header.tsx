@@ -1,39 +1,30 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-<<<<<<< HEAD
-<<<<<<< HEAD
-import { FiSun, FiMoon, FiGithub, FiSettings } from 'react-icons/fi';
-import { useThemeContext } from '../../themes/ThemeContext';
-import { useAccessibility } from '../../hooks/useAccessibility';
-=======
-import { FiSun, FiMoon, FiGithub } from 'react-icons/fi';
+import { FiGithub } from 'react-icons/fi';
+import { Expand } from "@theme-toggles/react";
 import { useTheme } from '../../themes/ThemeContext';
->>>>>>> parent of 5badfa4 (version 4.0.0)
-=======
-import { FiSun, FiMoon, FiGithub } from 'react-icons/fi';
-import { useTheme } from '../../themes/ThemeContext';
->>>>>>> parent of 5badfa4 (version 4.0.0)
 
 const HeaderContainer = styled.header`
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 1rem 2rem;
-<<<<<<< HEAD
-<<<<<<< HEAD
-  background-color: ${({ theme }) => theme.cardBackground};
-  border-bottom: 1px solid ${({ theme }) => theme.border};
-=======
-  background-color: ${({ theme }) => theme.colors.background};
-  border-bottom: 1px solid ${({ theme }) => theme.colors.gray200};
->>>>>>> parent of 5badfa4 (version 4.0.0)
-=======
-  background-color: ${({ theme }) => theme.colors.background};
-  border-bottom: 1px solid ${({ theme }) => theme.colors.gray200};
->>>>>>> parent of 5badfa4 (version 4.0.0)
+  background-color: ${({ theme }) => theme.colors.card};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.border};
   box-shadow: ${({ theme }) => theme.shadows.sm};
-  z-index: 10;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  transition: ${({ theme }) => theme.transitions.default};
+
+  ${({ theme }) => theme.media.tablet} {
+    padding: 0.75rem 1rem;
+  }
+
+  ${({ theme }) => theme.media.mobile} {
+    padding: 0.5rem 1rem;
+  }
 `;
 
 const Logo = styled(Link)`
@@ -41,11 +32,11 @@ const Logo = styled(Link)`
   align-items: center;
   font-size: 1.5rem;
   font-weight: 700;
-  color: ${({ theme }) => theme.primary};
+  color: ${({ theme }) => theme.colors.primary};
   transition: ${({ theme }) => theme.transitions.default};
 
   &:hover {
-    color: ${({ theme }) => theme.primaryDark};
+    color: ${({ theme }) => theme.colors.primaryDark};
   }
 `;
 
@@ -57,29 +48,27 @@ const LogoText = styled.div`
 const LogoTitle = styled.span`
   font-size: 1.5rem;
   font-weight: 700;
-<<<<<<< HEAD
-<<<<<<< HEAD
-  color: ${({ theme }) => theme.text};
+  color: ${({ theme }) => theme.colors.text};
   transition: color 0.3s ease;
-=======
->>>>>>> parent of 5badfa4 (version 4.0.0)
-=======
->>>>>>> parent of 5badfa4 (version 4.0.0)
+
+  ${({ theme }) => theme.media.tablet} {
+    font-size: 1.25rem;
+  }
+
+  ${({ theme }) => theme.media.mobile} {
+    font-size: 1.125rem;
+  }
 `;
 
 const LogoCredit = styled.span`
   font-size: 0.875rem;
   font-weight: 500;
-<<<<<<< HEAD
-<<<<<<< HEAD
-  color: ${({ theme }) => theme.textLight};
+  color: ${({ theme }) => theme.colors.textLight};
   transition: color 0.3s ease;
-=======
-  color: ${({ theme }) => theme.colors.gray600};
->>>>>>> parent of 5badfa4 (version 4.0.0)
-=======
-  color: ${({ theme }) => theme.colors.gray600};
->>>>>>> parent of 5badfa4 (version 4.0.0)
+
+  ${({ theme }) => theme.media.mobile} {
+    display: none;
+  }
 `;
 
 const LogoIcon = styled.div`
@@ -89,11 +78,26 @@ const LogoIcon = styled.div`
   width: 40px;
   height: 40px;
   margin-right: 0.75rem;
-  background-color: ${({ theme }) => theme.primary};
-  color: ${({ theme }) => theme.cardBackground};
+  background-color: ${({ theme }) => theme.colors.primary};
+  color: white;
   border-radius: ${({ theme }) => theme.borderRadius};
   font-weight: 700;
   font-size: 1.25rem;
+  transition: background-color 0.3s ease;
+
+  ${({ theme }) => theme.media.tablet} {
+    width: 36px;
+    height: 36px;
+    font-size: 1.125rem;
+    margin-right: 0.5rem;
+  }
+
+  ${({ theme }) => theme.media.mobile} {
+    width: 32px;
+    height: 32px;
+    font-size: 1rem;
+    margin-right: 0.5rem;
+  }
 `;
 
 const HeaderActions = styled.div`
@@ -102,33 +106,20 @@ const HeaderActions = styled.div`
   gap: 1rem;
 `;
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-const ThemeToggle = styled.button`
+const ThemeToggleWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0.5rem 1rem;
-  border-radius: ${({ theme }) => theme.borderRadius};
-  background-color: ${({ theme }) => theme.hover};
-  color: ${({ theme }) => theme.text};
-  font-weight: 500;
-  font-size: 0.875rem;
-  gap: 0.5rem;
-  transition: all 0.2s ease-in-out;
-  border: 1px solid ${({ theme }) => theme.border};
   
-  &:hover {
-    background-color: ${({ theme }) => theme.primary};
-    color: ${({ theme }) => theme.cardBackground};
-    border-color: ${({ theme }) => theme.primary};
+  button {
+    color: ${({ theme }) => theme.colors.text} !important;
+    
+    &:hover {
+      background-color: ${({ theme }) => theme.colors.gray200} !important;
+    }
   }
 `;
 
-=======
->>>>>>> parent of 5badfa4 (version 4.0.0)
-=======
->>>>>>> parent of 5badfa4 (version 4.0.0)
 const IconButton = styled.button`
   display: flex;
   align-items: center;
@@ -136,46 +127,20 @@ const IconButton = styled.button`
   width: 40px;
   height: 40px;
   border-radius: ${({ theme }) => theme.borderRadius};
-  color: ${({ theme }) => theme.textLight};
+  color: ${({ theme }) => theme.colors.gray600};
   transition: ${({ theme }) => theme.transitions.default};
-  border: 1px solid transparent;
   
   &:hover {
-<<<<<<< HEAD
-<<<<<<< HEAD
-    background-color: ${({ theme }) => theme.hover};
-    color: ${({ theme }) => theme.text};
-    border-color: ${({ theme }) => theme.border};
-=======
-    background-color: ${({ theme }) => theme.colors.gray100};
-    color: ${({ theme }) => theme.colors.gray900};
->>>>>>> parent of 5badfa4 (version 4.0.0)
-=======
-    background-color: ${({ theme }) => theme.colors.gray100};
-    color: ${({ theme }) => theme.colors.gray900};
->>>>>>> parent of 5badfa4 (version 4.0.0)
+    background-color: ${({ theme }) => theme.colors.gray200};
+    color: ${({ theme }) => theme.colors.text};
   }
 `;
 
 const Header: React.FC = () => {
-<<<<<<< HEAD
-<<<<<<< HEAD
-  const { isDarkMode, toggleTheme } = useThemeContext();
-  const { announceRef, announce } = useAccessibility();
-
-  const handleThemeToggle = () => {
-    toggleTheme();
-    announce(`Switched to ${isDarkMode ? 'light' : 'dark'} theme`);
-  };
-=======
   const { isDarkMode, toggleTheme } = useTheme();
->>>>>>> parent of 5badfa4 (version 4.0.0)
-=======
-  const { isDarkMode, toggleTheme } = useTheme();
->>>>>>> parent of 5badfa4 (version 4.0.0)
 
   return (
-    <HeaderContainer role="banner">
+    <HeaderContainer>
       <Logo to="/">
         <LogoIcon>DS</LogoIcon>
         <LogoText>
@@ -184,47 +149,24 @@ const Header: React.FC = () => {
         </LogoText>
       </Logo>
       <HeaderActions>
-<<<<<<< HEAD
-<<<<<<< HEAD
-        <ThemeToggle 
-          onClick={handleThemeToggle} 
-          aria-label={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
-          title={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
-        >
-          {isDarkMode ? (
-            <>
-              <FiSun size={16} aria-hidden="true" /> Light Mode
-            </>
-          ) : (
-            <>
-              <FiMoon size={16} aria-hidden="true" /> Dark Mode
-            </>
-          )}
-        </ThemeToggle>
-        
-        <IconButton
+        <ThemeToggleWrapper>
+          <Expand 
+            duration={750} 
+            toggled={isDarkMode}
+            toggle={toggleTheme}
+            {...({} as any)}
+          />
+        </ThemeToggleWrapper>
+        <IconButton 
           as="a" 
           href="https://github.com/dheerajkumargaur/DSA_Visualizer" 
           target="_blank" 
           rel="noopener noreferrer" 
-          aria-label="View source code on GitHub (opens in new tab)"
-          title="View source code on GitHub"
+          aria-label="GitHub repository"
         >
-          <FiGithub size={20} aria-hidden="true" />
-=======
-=======
->>>>>>> parent of 5badfa4 (version 4.0.0)
-        <IconButton onClick={toggleTheme} aria-label={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}>
-          {isDarkMode ? <FiSun size={20} /> : <FiMoon size={20} />}
-        </IconButton>
-        <IconButton as="a" href="https://github.com" target="_blank" rel="noopener noreferrer" aria-label="GitHub repository">
           <FiGithub size={20} />
->>>>>>> parent of 5badfa4 (version 4.0.0)
         </IconButton>
       </HeaderActions>
-      
-      {/* Screen reader announcements */}
-      <div ref={announceRef} aria-live="polite" aria-atomic="true" className="sr-only" />
     </HeaderContainer>
   );
 };

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import { motion } from 'framer-motion';
 import { FiPlay, FiPause, FiRefreshCw, FiChevronsRight, FiChevronsLeft, FiClock, FiArrowRight, FiChevronDown } from 'react-icons/fi';
 import { Link, useNavigate } from 'react-router-dom';
 import SyntaxHighlighter from 'react-syntax-highlighter';
@@ -25,7 +26,7 @@ const PageTitle = styled.h1`
 `;
 
 const PageDescription = styled.p`
-  color: ${({ theme }) => theme.colors.textLight};
+  color: ${({ theme }) => theme.colors.gray600};
   max-width: 800px;
   line-height: 1.6;
 `;
@@ -36,7 +37,7 @@ const AlgorithmsContainer = styled.div`
   align-items: center;
   justify-content: center;
   padding: 2rem;
-  background-color: ${({ theme }) => theme.colors.card};
+  background-color: white;
   border-radius: ${({ theme }) => theme.borderRadius};
   box-shadow: ${({ theme }) => theme.shadows.md};
 `;
@@ -52,7 +53,7 @@ const AlgorithmCard = styled(Link)`
   display: flex;
   flex-direction: column;
   padding: 1.5rem;
-  background-color: ${({ theme }) => theme.colors.card};
+  background-color: white;
   border-radius: ${({ theme }) => theme.borderRadius};
   box-shadow: ${({ theme }) => theme.shadows.sm};
   border: 1px solid ${({ theme }) => theme.colors.gray200};
@@ -74,7 +75,7 @@ const AlgorithmTitle = styled.h3`
 `;
 
 const AlgorithmDescription = styled.p`
-  color: ${({ theme }) => theme.colors.textLight};
+  color: ${({ theme }) => theme.colors.gray600};
   font-size: 0.875rem;
   margin-bottom: 1rem;
   flex-grow: 1;
@@ -123,7 +124,7 @@ const DropdownButton = styled.button`
   width: 100%;
   padding: 0.75rem 1rem;
   background-color: ${({ theme }) => theme.colors.primary};
-  color: ${({ theme }) => theme.colors.card};
+  color: white;
   border: none;
   border-radius: ${({ theme }) => theme.borderRadius};
   font-size: 1rem;
@@ -142,7 +143,7 @@ const DropdownContent = styled.div<{ isOpen: boolean }>`
   width: 100%;
   max-height: ${({ isOpen }) => (isOpen ? '300px' : '0')};
   overflow-y: auto;
-  background-color: ${({ theme }) => theme.colors.card};
+  background-color: white;
   border-radius: 0 0 ${({ theme }) => theme.borderRadius} ${({ theme }) => theme.borderRadius};
   box-shadow: ${({ theme }) => theme.shadows.md};
   z-index: 10;

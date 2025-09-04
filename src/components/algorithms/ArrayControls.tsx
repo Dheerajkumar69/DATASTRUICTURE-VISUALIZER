@@ -1,18 +1,8 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { FiPlus, FiRefreshCw } from 'react-icons/fi';
+import { FiRefreshCw, FiEdit2 } from 'react-icons/fi';
 
-interface ArrayControlsProps {
-  onGenerateRandom: (size: number) => void;
-  onCustomArray: (array: number[]) => void;
-  arraySize: number;
-  onSizeChange: (size: number) => void;
-  disabled?: boolean;
-  maxValue?: number;
-}
-
-// Styled components
-const ControlsContainer = styled.div`
+const Container = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -30,11 +20,13 @@ const Button = styled.button<{ primary?: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0.75rem 1rem;
-  background-color: ${props => props.primary ? props.theme.colors.primary : props.theme.colors.card};
-  color: ${props => props.primary ? '#ffffff' : props.theme.colors.text};
-  border: 1px solid ${props => props.theme.colors.border};
-  border-radius: ${props => props.theme.borderRadius};
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background-color: ${({ primary, theme }) => primary ? theme.colors.primary : 'white'};
+  color: ${({ primary, theme }) => primary ? 'white' : theme.colors.gray700};
+  border: 1px solid ${({ theme, primary }) => primary ? theme.colors.primary : theme.colors.gray300};
+  border-radius: ${({ theme }) => theme.borderRadius};
+  font-size: 0.9rem;
   cursor: pointer;
   transition: all 0.2s;
   
@@ -49,9 +41,12 @@ const Button = styled.button<{ primary?: boolean }>`
   }
 `;
 
-const ButtonGroup = styled.div`
-  display: flex;
-  gap: 0.5rem;
+const Input = styled.input`
+  padding: 0.5rem;
+  border: 1px solid ${({ theme }) => theme.colors.gray300};
+  border-radius: ${({ theme }) => theme.borderRadius};
+  font-size: 0.9rem;
+  width: 60px;
 `;
 
 const SliderContainer = styled.div`
@@ -89,33 +84,16 @@ const Slider = styled.input`
 
 const Label = styled.label`
   font-size: 0.9rem;
-  color: ${props => props.theme.colors.textLight};
-`;
-
-const Input = styled.input`
-  padding: 0.5rem;
-  border: 1px solid ${props => props.theme.colors.border};
-  border-radius: ${props => props.theme.borderRadius};
-  background-color: ${props => props.theme.colors.card};
-  color: ${props => props.theme.colors.text};
-  
-  &:focus {
-    outline: none;
-    border-color: ${props => props.theme.colors.primary};
-  }
+  color: ${({ theme }) => theme.colors.gray700};
 `;
 
 const CustomArrayInput = styled.input`
   padding: 0.5rem;
-  border: 1px solid ${props => props.theme.colors.border};
-  border-radius: ${props => props.theme.borderRadius};
-  background-color: ${props => props.theme.colors.card};
-  color: ${props => props.theme.colors.text};
-  
-  &:focus {
-    outline: none;
-    border-color: ${props => props.theme.colors.primary};
-  }
+  border: 1px solid ${({ theme }) => theme.colors.gray300};
+  border-radius: ${({ theme }) => theme.borderRadius};
+  font-size: 0.9rem;
+  flex: 1;
+  min-width: 200px;
 `;
 
 const ErrorText = styled.p`
@@ -133,8 +111,6 @@ interface ArrayControlsProps {
   maxValue?: number;
 }
 
-=======
->>>>>>> parent of 5badfa4 (version 4.0.0)
 const ArrayControls: React.FC<ArrayControlsProps> = ({
   onGenerateRandom,
   onCustomArray,

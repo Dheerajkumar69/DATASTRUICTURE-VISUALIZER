@@ -27,7 +27,7 @@ const Title = styled.h1`
 
 const Description = styled.p`
   font-size: 1.1rem;
-  color: ${({ theme }) => theme.colors.textLight};
+  color: ${({ theme }) => theme.colors.gray600};
   max-width: 600px;
   line-height: 1.6;
 `;

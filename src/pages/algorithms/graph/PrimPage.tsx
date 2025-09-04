@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback, memo, lazy, Suspense } from 'r
 import styled, { keyframes, css } from 'styled-components';
 import { FaArrowLeft, FaPlay, FaPause, FaUndo, FaStepForward, FaCode, FaRandom } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import CustomGraphInput from '../../../components/graph/CustomGraphInput';
 
 // Lazy load the SyntaxHighlighter to improve initial load time

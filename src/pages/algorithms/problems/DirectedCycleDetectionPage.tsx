@@ -125,18 +125,6 @@ const Canvas = styled.canvas`
 `;
 
 const InfoPanel = styled.div`
-<<<<<<< HEAD
-<<<<<<< HEAD
-  margin-top: 2rem;
-  padding: 1rem;
-  background-color: ${props => props.theme.colors.card};
-  transition: all 0.3s ease;
-  border-radius: ${props => props.theme.borderRadius};
-  border: 1px solid ${({ theme }) => theme.colors.border};
-  width: 100%;
-=======
-=======
->>>>>>> parent of 5badfa4 (version 4.0.0)
   flex: 1;
   min-width: 300px;
   max-width: 100%;
@@ -144,10 +132,6 @@ const InfoPanel = styled.div`
   border-radius: 8px;
   padding: 16px;
   border: 1px solid #e2e8f0;
-<<<<<<< HEAD
->>>>>>> parent of 5badfa4 (version 4.0.0)
-=======
->>>>>>> parent of 5badfa4 (version 4.0.0)
 `;
 
 const InfoTitle = styled.h3`

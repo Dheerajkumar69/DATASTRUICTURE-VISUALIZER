@@ -15,7 +15,7 @@ const PageContainer = styled.div`
 const StickyHeader = styled.div`
   position: sticky;
   top: 0;
-  background: ${({ theme }) => theme.colors.card};
+  background: white;
   padding: 1rem 0;
   z-index: 100;
 `;
@@ -30,7 +30,7 @@ const BackButton = styled(Link)`
   display: flex;
   align-items: center;
   text-decoration: none;
-  color: ${({ theme }) => theme.colors.text};
+  color: #333;
   font-size: 0.9rem;
   margin-right: 1rem;
   
@@ -42,7 +42,7 @@ const BackButton = styled(Link)`
 const PageHeader = styled.h1`
   margin: 0;
   font-size: 2rem;
-  color: ${({ theme }) => theme.colors.text};
+  color: #333;
 `;
 
 const ContentContainer = styled.div`
@@ -57,7 +57,7 @@ const ContentContainer = styled.div`
 `;
 
 const VisualizationContainer = styled.div`
-  background: ${({ theme }) => theme.colors.gray100};
+  background: #f8f9fa;
   border-radius: 8px;
   padding: 1.5rem;
   min-height: 400px;
@@ -75,13 +75,13 @@ const Button = styled.button`
   padding: 0.5rem 1rem;
   border: none;
   border-radius: 4px;
-  background: ${({ theme }) => theme.colors.primary};
-  color: ${({ theme }) => theme.colors.card};
+  background: #007bff;
+  color: white;
   cursor: pointer;
   transition: background 0.3s ease;
   
   &:hover {
-    background: ${({ theme }) => theme.colors.primaryDark};
+    background: #0056b3;
   }
   
   &:disabled {
@@ -97,7 +97,7 @@ const ButtonContainer = styled.div`
 `;
 
 const CodeContainer = styled.div`
-  background: ${({ theme }) => theme.colors.gray100};
+  background: #f8f9fa;
   border-radius: 8px;
   padding: 1.5rem;
   overflow: auto;
@@ -113,12 +113,12 @@ const InfoSection = styled.div`
 
 const InfoTitle = styled.h3`
   margin: 0 0 0.5rem 0;
-  color: ${({ theme }) => theme.colors.text};
+  color: #333;
 `;
 
 const InfoText = styled.p`
   margin: 0;
-  color: ${({ theme }) => theme.colors.textLight};
+  color: #666;
   line-height: 1.5;
 `;
 
@@ -134,20 +134,20 @@ const TimeComplexityContainer = styled.div`
 `;
 
 const TimeComplexityItem = styled.div`
-  background: ${({ theme }) => theme.colors.gray100};
+  background: #f8f9fa;
   padding: 1rem;
   border-radius: 4px;
 `;
 
 const TimeComplexityLabel = styled.div`
   font-size: 0.8rem;
-  color: ${({ theme }) => theme.colors.textLight};
+  color: #666;
   margin-bottom: 0.5rem;
 `;
 
 const TimeComplexityValue = styled.div`
   font-weight: bold;
-  color: ${({ theme }) => theme.colors.text};
+  color: #333;
 `;
 
 const VisualizationArea = styled.div`

@@ -1,95 +1,158 @@
 import { createGlobalStyle } from 'styled-components';
 
 const GlobalStyle = createGlobalStyle`
-  body {
+  * {
     margin: 0;
     padding: 0;
-    background-color: ${({ theme }) => theme.colors.background};
-    color: ${({ theme }) => theme.colors.foreground};
-    font-family: ${({ theme }) => theme.fonts.sans};
-    transition: all 0.3s ease-in-out;
+    box-sizing: border-box;
   }
 
-  * {
-    box-sizing: border-box;
+  html {
+    font-size: 16px;
+    
+    ${({ theme }) => theme.media.tablet} {
+      font-size: 15px;
+    }
+
+    ${({ theme }) => theme.media.mobile} {
+      font-size: 14px;
+    }
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+      'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+      sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-color: ${({ theme }) => theme.colors.background};
+    color: ${({ theme }) => theme.colors.text};
+    line-height: 1.6;
+    overflow-x: hidden;
+    
+    /* Prevent zoom on iOS */
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+  }
+
+  code {
+    font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+      monospace;
   }
 
   a {
     text-decoration: none;
     color: inherit;
+    -webkit-tap-highlight-color: transparent;
   }
 
   button {
-    background: none;
     border: none;
+    background: none;
     cursor: pointer;
     font-family: inherit;
-    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    
+    &:focus {
+      outline: 2px solid ${({ theme }) => theme.colors.primary};
+      outline-offset: 2px;
+    }
   }
 
-  input, button, textarea, select {
-    font: inherit;
+  ul, ol {
+    list-style: none;
+  }
+
+  input, textarea {
+    font-family: inherit;
+    border: none;
+    outline: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    
+    &:focus {
+      outline: 2px solid ${({ theme }) => theme.colors.primary};
+      outline-offset: 2px;
+    }
   }
 
   h1, h2, h3, h4, h5, h6 {
-    margin: 0;
-    color: ${({ theme }) => theme.colors.text};
+    font-weight: 600;
+    line-height: 1.2;
   }
-  
-<<<<<<< HEAD
+
+  h1 {
+    ${({ theme }) => theme.media.mobile} {
+      font-size: 1.75rem;
+    }
+  }
+
+  h2 {
+    ${({ theme }) => theme.media.mobile} {
+      font-size: 1.5rem;
+    }
+  }
+
+  h3 {
+    ${({ theme }) => theme.media.mobile} {
+      font-size: 1.25rem;
+    }
+  }
+
   p {
-    margin: 0;
-    color: ${({ theme }) => theme.colors.text};
+    margin-bottom: 1rem;
   }
-  
-<<<<<<< HEAD
-  /* Custom scrollbar styling that respects the theme */
+
+  /* Touch-friendly tap targets */
+  button, a, [role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+    
+    ${({ theme }) => theme.media.mobile} {
+      min-height: 48px;
+      min-width: 48px;
+    }
+  }
+
+  /* Scrollbar styling */
   ::-webkit-scrollbar {
     width: 8px;
-    height: 8px;
+    
+    ${({ theme }) => theme.media.mobile} {
+      width: 4px;
+    }
   }
 
   ::-webkit-scrollbar-track {
     background: ${({ theme }) => theme.colors.gray100};
-    border-radius: 4px;
   }
 
   ::-webkit-scrollbar-thumb {
-    background: ${({ theme }) => theme.colors.gray400};
+    background: ${({ theme }) => theme.colors.gray300};
     border-radius: 4px;
-    transition: background-color 0.2s ease;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: ${({ theme }) => theme.colors.gray500};
-=======
-  /* Ensure list items and strong text are black in dark mode */
-  li, li strong {
-    color: black !important;
->>>>>>> parent of 5badfa4 (version 4.0.0)
+    background: ${({ theme }) => theme.colors.gray400};
   }
-  
-  /* Fix scrollbar for Firefox */
-  * {
-    scrollbar-width: thin;
-    scrollbar-color: ${({ theme }) => theme.colors.gray400} ${({ theme }) => theme.colors.gray100};
+
+  /* Smooth scrolling */
+  html {
+    scroll-behavior: smooth;
   }
-  
-  /* Handle selection colors */
-  ::selection {
-    background: ${({ theme }) => theme.colors.primary};
-    color: ${({ theme }) => theme.colors.card};
+
+  /* Focus styles for accessibility */
+  *:focus {
+    outline: 2px solid ${({ theme }) => theme.colors.primary};
+    outline-offset: 2px;
   }
-  
-  ::-moz-selection {
-    background: ${({ theme }) => theme.colors.primary};
-    color: ${({ theme }) => theme.colors.card};
-=======
-  /* Ensure list items and strong text are black in dark mode */
-  li, li strong {
-    color: black !important;
->>>>>>> parent of 5badfa4 (version 4.0.0)
+
+  /* Remove focus outline for mouse users */
+  .js-focus-visible *:focus:not(.focus-visible) {
+    outline: none;
   }
 `;
 
-export default GlobalStyle; 
+export default GlobalStyle;

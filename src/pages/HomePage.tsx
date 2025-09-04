@@ -2,16 +2,11 @@ import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { FiArrowRight, FiDatabase, FiBarChart2, FiCode, FiLayers, FiGrid, FiLink, FiGitBranch, FiServer, FiList, FiHash, FiPieChart, FiSearch, FiAlignLeft } from 'react-icons/fi';
-import { MobileGrid, MobileCard, TouchButton, responsive } from '../components/mobile/MobileOptimizations';
 
 const HomeContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 3rem;
-  
-  ${responsive.mobile(`
-    gap: 2rem;
-  `)}
 `;
 
 const HeroSection = styled.section`
@@ -20,15 +15,10 @@ const HeroSection = styled.section`
   align-items: center;
   text-align: center;
   padding: 2rem 1rem;
-  background: linear-gradient(135deg, ${({ theme }) => theme.primary}, ${({ theme }) => theme.primaryDark});
+  background: linear-gradient(135deg, ${({ theme }) => theme.colors.primary}, ${({ theme }) => theme.colors.primaryDark});
   border-radius: ${({ theme }) => theme.borderRadius};
-  color: ${({ theme }) => theme.cardBackground};
+  color: white;
   margin-bottom: 2rem;
-  
-  ${responsive.mobile(`
-    padding: 1.5rem 1rem;
-    margin-bottom: 1.5rem;
-  `)}
 `;
 
 const HeroTitle = styled.h1`
@@ -36,54 +26,48 @@ const HeroTitle = styled.h1`
   font-weight: 700;
   margin-bottom: 1rem;
   
-  @media (min-width: ${({ theme }) => theme.breakpoints.md}) {
-    font-size: 3rem;
-  }
-  
-  ${responsive.mobile(`
+  ${({ theme }) => theme.media.tablet} {
     font-size: 2rem;
-    margin-bottom: 0.75rem;
-  `)}
+  }
+
+  ${({ theme }) => theme.media.mobile} {
+    font-size: 1.75rem;
+  }
 `;
 
 const HeroSubtitle = styled.p`
   font-size: 1.25rem;
   max-width: 800px;
   margin-bottom: 2rem;
-  
-  ${responsive.mobile(`
-    font-size: 1.1rem;
-    margin-bottom: 1.5rem;
-    padding: 0 0.5rem;
-  `)}
+
+  ${({ theme }) => theme.media.tablet} {
+    font-size: 1.125rem;
+  }
+
+  ${({ theme }) => theme.media.mobile} {
+    font-size: 1rem;
+    padding: 0 1rem;
+  }
 `;
 
 const CTAButton = styled(Link)`
   display: inline-flex;
   align-items: center;
   padding: 0.75rem 1.5rem;
-  background-color: ${({ theme }) => theme.cardBackground};
-  color: ${({ theme }) => theme.primary};
+  background-color: white;
+  color: ${({ theme }) => theme.colors.primary};
   font-weight: 600;
   border-radius: ${({ theme }) => theme.borderRadius};
   transition: ${({ theme }) => theme.transitions.default};
-  min-height: 44px;
-  touch-action: manipulation;
-  text-decoration: none;
   
   svg {
     margin-left: 0.5rem;
   }
   
   &:hover {
-    background-color: ${({ theme }) => theme.hover};
+    background-color: ${({ theme }) => theme.colors.gray100};
     transform: translateY(-2px);
   }
-  
-  ${responsive.mobile(`
-    padding: 1rem 2rem;
-    font-size: 1.1rem;
-  `)}
 `;
 
 const FeaturesSection = styled.section`
@@ -91,24 +75,28 @@ const FeaturesSection = styled.section`
   grid-template-columns: 1fr;
   gap: 2rem;
   
-  @media (min-width: ${({ theme }) => theme.breakpoints.md}) {
+  ${({ theme }) => theme.media.tablet} {
     grid-template-columns: repeat(2, 1fr);
   }
   
-  @media (min-width: ${({ theme }) => theme.breakpoints.lg}) {
+  ${({ theme }) => theme.media.desktop} {
     grid-template-columns: repeat(3, 1fr);
   }
 `;
 
-const FeatureCard = styled(MobileCard)`
+const FeatureCard = styled.div`
   display: flex;
   flex-direction: column;
   padding: 1.5rem;
-  color: ${({ theme }) => theme.text};
+  background-color: white;
+  border-radius: ${({ theme }) => theme.borderRadius};
+  box-shadow: ${({ theme }) => theme.shadows.md};
+  transition: ${({ theme }) => theme.transitions.default};
   
-  ${responsive.mobile(`
-    padding: 1.25rem;
-  `)}
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: ${({ theme }) => theme.shadows.lg};
+  }
 `;
 
 const FeatureIcon = styled.div`
@@ -117,8 +105,8 @@ const FeatureIcon = styled.div`
   justify-content: center;
   width: 48px;
   height: 48px;
-  background-color: ${({ theme }) => theme.primary};
-  color: ${({ theme }) => theme.cardBackground};
+  background-color: ${({ theme }) => theme.colors.primary};
+  color: white;
   border-radius: ${({ theme }) => theme.borderRadius};
   margin-bottom: 1rem;
 `;
@@ -127,11 +115,10 @@ const FeatureTitle = styled.h3`
   font-size: 1.25rem;
   font-weight: 600;
   margin-bottom: 0.5rem;
-  color: ${({ theme }) => theme.text};
 `;
 
 const FeatureDescription = styled.p`
-  color: ${({ theme }) => theme.textLight};
+  color: ${({ theme }) => theme.colors.gray600};
   line-height: 1.6;
 `;
 
@@ -143,7 +130,7 @@ const SectionTitle = styled.h2`
   font-size: 1.75rem;
   font-weight: 600;
   margin-bottom: 1.5rem;
-  color: ${({ theme }) => theme.text};
+  color: ${({ theme }) => theme.colors.gray800};
 `;
 
 const DataStructureGrid = styled.div`
@@ -151,11 +138,15 @@ const DataStructureGrid = styled.div`
   grid-template-columns: 1fr;
   gap: 1rem;
   
-  @media (min-width: ${({ theme }) => theme.breakpoints.sm}) {
+  ${({ theme }) => theme.media.tablet} {
     grid-template-columns: repeat(2, 1fr);
   }
   
-  @media (min-width: ${({ theme }) => theme.breakpoints.lg}) {
+  ${({ theme }) => theme.media.desktop} {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  ${({ theme }) => theme.media.wide} {
     grid-template-columns: repeat(4, 1fr);
   }
 `;
@@ -165,43 +156,29 @@ const DataStructureCard = styled(Link)`
   flex-direction: column;
   align-items: center;
   padding: 1.5rem;
-  background-color: ${({ theme }) => theme.cardBackground};
-  border: 1px solid ${({ theme }) => theme.border};
+  background-color: white;
   border-radius: ${({ theme }) => theme.borderRadius};
   box-shadow: ${({ theme }) => theme.shadows.sm};
   transition: ${({ theme }) => theme.transitions.default};
   position: relative;
-  color: ${({ theme }) => theme.text};
-  text-decoration: none;
-  min-height: 44px;
-  touch-action: manipulation;
   
   &:hover {
-    background-color: ${({ theme }) => theme.primary};
-    color: ${({ theme }) => theme.cardBackground};
+    background-color: ${({ theme }) => theme.colors.primary};
+    color: white;
     transform: translateY(-3px);
-    box-shadow: ${({ theme }) => theme.shadows.lg};
-    
-    h3, p {
-      color: ${({ theme }) => theme.cardBackground};
-    }
     
     p {
-      color: white !important;
+      color: rgba(255, 255, 255, 0.8);
     }
   }
-  
-  ${responsive.mobile(`
-    padding: 1.25rem;
-  `)}
 `;
 
 const ComingSoonBadge = styled.div`
   position: absolute;
   top: 10px;
   right: 10px;
-  background-color: ${({ theme }) => theme.secondary};
-  color: ${({ theme }) => theme.cardBackground};
+  background-color: ${({ theme }) => theme.colors.secondary};
+  color: white;
   font-size: 0.7rem;
   font-weight: 600;
   padding: 0.25rem 0.5rem;
@@ -217,18 +194,16 @@ const DataStructureIcon = styled.div`
   height: 48px;
   margin-bottom: 1rem;
   font-size: 1.5rem;
-  color: ${({ theme }) => theme.primary};
 `;
 
 const DataStructureName = styled.h3`
   font-size: 1.25rem;
   font-weight: 600;
   margin-bottom: 0.5rem;
-  color: ${({ theme }) => theme.text};
 `;
 
 const DataStructureDescription = styled.p`
-  color: ${({ theme }) => theme.textLight};
+  color: ${({ theme }) => theme.colors.gray600};
   text-align: center;
   font-size: 0.875rem;
 `;

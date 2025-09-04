@@ -65,7 +65,7 @@ const PageTitle = styled.h1`
 `;
 
 const Description = styled.p`
-  color: ${({ theme }) => theme.colors.textLight};
+  color: #666;
   line-height: 1.5;
 `;
 
@@ -80,7 +80,6 @@ const ControlsContainer = styled.div`
 const Button = styled.button<{ primary?: boolean }>`
   padding: 8px 16px;
   background-color: ${props => (props.primary ? '#3182ce' : '#e2e8f0')};
-  transition: all 0.3s ease;
   color: ${props => (props.primary ? 'white' : '#4a5568')};
   border: none;
   border-radius: 4px;
@@ -91,7 +90,6 @@ const Button = styled.button<{ primary?: boolean }>`
   
   &:hover {
     background-color: ${props => (props.primary ? '#2c5282' : '#cbd5e0')};
-  transition: all 0.3s ease;
   }
   
   &:disabled {
@@ -128,7 +126,6 @@ const InfoPanel = styled.div`
   min-width: 300px;
   max-width: 100%;
   background-color: #f8fafc;
-  transition: all 0.3s ease;
   border-radius: 8px;
   padding: 16px;
   border: 1px solid #e2e8f0;
@@ -151,8 +148,7 @@ const Select = styled.select`
   padding: 8px;
   border-radius: 4px;
   border: 1px solid #e2e8f0;
-  background-color: ${({ theme }) => theme.colors.card};
-  transition: all 0.3s ease;
+  background-color: white;
   color: #4a5568;
 `;
 
@@ -160,7 +156,6 @@ const RemovedEdgesContainer = styled.div`
   margin-top: 10px;
   padding: 10px;
   background-color: #FEF2F2;
-  transition: all 0.3s ease;
   border-radius: 4px;
   border: 1px solid #FCA5A5;
 `;
@@ -170,7 +165,6 @@ const RemovedEdge = styled.div`
   padding: 2px 6px;
   margin: 2px;
   background-color: #FEE2E2;
-  transition: all 0.3s ease;
   border-radius: 4px;
   font-weight: 500;
 `;
@@ -271,7 +265,7 @@ const MinimumEdgesFeedbackArcPage: React.FC = () => {
     // Make copies to avoid modifying state directly
     let verticesCopy: Vertex[] = JSON.parse(JSON.stringify(vertices));
     let edgesCopy: Edge[] = JSON.parse(JSON.stringify(edges));
-    const adjListCopy: number[][] = JSON.parse(JSON.stringify(adjList));
+    let adjListCopy: number[][] = JSON.parse(JSON.stringify(adjList));
     
     const steps: Step[] = [{
       vertices: [...verticesCopy],

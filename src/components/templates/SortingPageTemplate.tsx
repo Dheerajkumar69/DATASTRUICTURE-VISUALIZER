@@ -62,7 +62,7 @@ const PageTitle = styled.h1`
 `;
 
 const PageDescription = styled.p`
-  color: ${({ theme }) => theme.colors.textLight};
+  color: ${({ theme }) => theme.colors.gray600};
   max-width: 800px;
   line-height: 1.6;
 `;
@@ -78,14 +78,14 @@ const ContentContainer = styled.div`
 `;
 
 const VisualizationContainer = styled.div`
-  background-color: ${({ theme }) => theme.colors.card};
+  background-color: white;
   border-radius: ${({ theme }) => theme.borderRadius};
   padding: 2rem;
   box-shadow: ${({ theme }) => theme.shadows.md};
 `;
 
 const CodeContainer = styled.div`
-  background-color: ${({ theme }) => theme.colors.card};
+  background-color: white;
   border-radius: ${({ theme }) => theme.borderRadius};
   padding: 2rem;
   box-shadow: ${({ theme }) => theme.shadows.md};
@@ -140,7 +140,7 @@ const SpeedSelect = styled.select`
   padding: 0.5rem;
   border: 1px solid ${({ theme }) => theme.colors.gray300};
   border-radius: ${({ theme }) => theme.borderRadius};
-  background-color: ${({ theme }) => theme.colors.card};
+  background-color: white;
   font-size: 0.9rem;
 `;
 
@@ -242,8 +242,8 @@ const CodeBlock = styled.div`
 
 const CodeTitle = styled.div`
   padding: 0.75rem 1rem;
-  background-color: ${({ theme }) => theme.colors.text};
-  color: ${({ theme }) => theme.colors.card};
+  background-color: #333;
+  color: white;
   font-family: ${({ theme }) => theme.fonts.mono};
   font-size: 0.875rem;
 `;
@@ -268,8 +268,8 @@ const Tab = styled.button<{ active: boolean }>`
   font-size: 0.85rem;
   
   &:hover {
-    background-color: ${({ theme }) => theme.colors.text};
-    color: ${({ theme }) => theme.colors.card};
+    background-color: #333;
+    color: white;
   }
 `;
 
