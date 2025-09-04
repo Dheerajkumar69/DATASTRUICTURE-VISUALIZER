@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
 import { FaPlay, FaPause, FaRedo, FaStepForward, FaStepBackward, FaRandom } from 'react-icons/fa';
-import EnhancedGraphVisualizer from './EnhancedGraphVisualizer';
-import { Vertex, Edge, GraphData } from './GraphVisualizer';
+import GraphVisualizer, { Vertex, Edge, GraphData } from './GraphVisualizer';
 import * as GraphUtils from './GraphUtils';
 
 // Types
@@ -392,18 +391,16 @@ const EnhancedGraphProblemVisualizer: React.FC<EnhancedGraphProblemVisualizerPro
       )}
       
       <GraphContainer containerHeight={height}>
-        <EnhancedGraphVisualizer 
+        <GraphVisualizer 
           data={currentGraphData}
-          width={width}
-          height="100%"
+          width={width as number | string}
+          height={"100%"}
           nodeRadius={nodeRadius}
           showWeights={showEdgeWeights}
           highlightPath={
             currentGraphData.cyclePath || 
             (steps[currentStep]?.path as number[] | undefined)
           }
-          autoFit={autoFit}
-          allowZoomPan={allowZoomPan}
         />
       </GraphContainer>
       
