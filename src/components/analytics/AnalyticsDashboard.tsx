@@ -18,7 +18,7 @@ interface AnalyticsTool {
 
 const DashboardContainer = styled(motion.div)`
   min-height: 100vh;
-  background: ${({ theme }) => theme.background};
+  background: ${({ theme }) => theme.colors.background};
   padding: 24px;
 `;
 
@@ -27,7 +27,7 @@ const Header = styled.div`
   margin-bottom: 40px;
   
   h1 {
-    color: ${({ theme }) => theme.text};
+    color: ${({ theme }) => theme.colors.text};
     font-size: 3rem;
     font-weight: 700;
     margin: 0 0 16px 0;
@@ -38,7 +38,7 @@ const Header = styled.div`
   }
   
   p {
-    color: ${({ theme }) => theme.textSecondary};
+    color: ${({ theme }) => theme.colors.textSecondary};
     font-size: 1.2rem;
     max-width: 600px;
     margin: 0 auto;
@@ -85,7 +85,7 @@ const NavButton = styled(motion.button)<{ isActive: boolean; category: string }>
     return 'transparent';
   }};
   
-  color: ${({ isActive, theme }) => isActive ? 'white' : theme.textSecondary};
+  color: ${({ isActive, theme }) => isActive ? 'white' : theme.colors.textSecondary};
   
   border: ${({ isActive, theme, category }) => {
     if (!isActive) {
@@ -95,7 +95,7 @@ const NavButton = styled(motion.button)<{ isActive: boolean; category: string }>
         case 'memory': return '2px solid #4facfe40';
         case 'profiling': return '2px solid #43e97b40';
         case 'visualization': return '2px solid #fa709a40';
-        default: return `2px solid ${theme.border}`;
+        default: return `2px solid ${theme.colors.border}`;
       }
     }
     return 'none';
@@ -123,13 +123,13 @@ const ToolGrid = styled.div`
 `;
 
 const ToolCard = styled(motion.div)<{ category: string }>`
-  background: ${({ theme }) => theme.cardBackground};
+  background: ${({ theme }) => theme.colors.card};
   border-radius: 16px;
   padding: 24px;
   cursor: pointer;
   position: relative;
   overflow: hidden;
-  border: 1px solid ${({ theme }) => theme.border};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   
   &::before {
     content: '';
@@ -170,13 +170,13 @@ const ToolHeader = styled.div`
   .title {
     font-size: 1.3rem;
     font-weight: 600;
-    color: ${({ theme }) => theme.text};
+    color: ${({ theme }) => theme.colors.text};
     margin: 0;
   }
 `;
 
 const ToolDescription = styled.p`
-  color: ${({ theme }) => theme.textSecondary};
+  color: ${({ theme }) => theme.colors.textSecondary};
   line-height: 1.6;
   margin: 0;
   font-size: 0.95rem;
@@ -207,7 +207,7 @@ const FilterButton = styled(motion.button)<{ isActive: boolean }>`
     isActive ? theme.primary : theme.cardBackground
   };
   color: ${({ isActive, theme }) => 
-    isActive ? 'white' : theme.textSecondary
+    isActive ? 'white' : theme.colors.textSecondary
   };
   border: ${({ isActive, theme }) => 
     isActive ? 'none' : `1px solid ${theme.border}`

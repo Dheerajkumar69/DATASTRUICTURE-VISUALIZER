@@ -24,7 +24,7 @@ const PerformanceContainer = styled(motion.div)`
   padding: 24px;
   margin: 16px 0;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  border: 1px solid ${({ theme }) => theme.border};
+  border: 1px solid ${({ theme }) => theme.colors.border};
 `;
 
 const Header = styled.div`
@@ -51,7 +51,7 @@ const ConfigurationPanel = styled.div`
   padding: 20px;
   background: ${({ theme }) => theme.cardBackground};
   border-radius: 8px;
-  border: 1px solid ${({ theme }) => theme.border};
+  border: 1px solid ${({ theme }) => theme.colors.border};
 `;
 
 const ConfigGroup = styled.div`
@@ -68,7 +68,7 @@ const ConfigGroup = styled.div`
 
 const Input = styled.input`
   padding: 8px 12px;
-  border: 1px solid ${({ theme }) => theme.border};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: 6px;
   background: ${({ theme }) => theme.background};
   color: ${({ theme }) => theme.text};
@@ -83,7 +83,7 @@ const Input = styled.input`
 
 const Select = styled.select`
   padding: 8px 12px;
-  border: 1px solid ${({ theme }) => theme.border};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: 6px;
   background: ${({ theme }) => theme.background};
   color: ${({ theme }) => theme.text};
@@ -130,7 +130,7 @@ const ResultCard = styled(motion.div)<{ rank: number }>`
       case 1: return '#ffd700';
       case 2: return '#c0c0c0';
       case 3: return '#cd7f32';
-      default: return theme.border;
+      default: return theme.colors.border;
     }
   }};
   position: relative;
@@ -204,7 +204,7 @@ const MetricItem = styled.div`
   
   .label {
     font-size: 0.8rem;
-    color: ${({ theme }) => theme.textSecondary};
+    color: ${({ theme }) => theme.colors.textSecondary};
     margin-top: 4px;
   }
 `;
@@ -213,7 +213,7 @@ const ComparisonChart = styled.div`
   background: ${({ theme }) => theme.cardBackground};
   border-radius: 8px;
   padding: 20px;
-  border: 1px solid ${({ theme }) => theme.border};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   margin-top: 24px;
 `;
 

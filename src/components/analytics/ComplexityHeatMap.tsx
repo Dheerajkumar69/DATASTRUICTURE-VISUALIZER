@@ -29,12 +29,12 @@ interface AlgorithmMetrics {
 }
 
 const HeatMapContainer = styled(motion.div)`
-  background: ${({ theme }) => theme.background};
+  background: ${({ theme }) => theme.colors.background};
   border-radius: 12px;
   padding: 24px;
   margin: 16px 0;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  border: 1px solid ${({ theme }) => theme.border};
+  border: 1px solid ${({ theme }) => theme.colors.border};
 `;
 
 const Header = styled.div`
@@ -61,7 +61,7 @@ const ControlPanel = styled.div`
   padding: 20px;
   background: ${({ theme }) => theme.cardBackground};
   border-radius: 8px;
-  border: 1px solid ${({ theme }) => theme.border};
+  border: 1px solid ${({ theme }) => theme.colors.border};
 `;
 
 const ControlGroup = styled.div`
@@ -78,10 +78,10 @@ const ControlGroup = styled.div`
 
 const Select = styled.select`
   padding: 10px 12px;
-  border: 1px solid ${({ theme }) => theme.border};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: 6px;
-  background: ${({ theme }) => theme.background};
-  color: ${({ theme }) => theme.text};
+  background: ${({ theme }) => theme.colors.background};
+  color: ${({ theme }) => theme.colors.text};
   font-size: 0.9rem;
   cursor: pointer;
   
@@ -100,7 +100,7 @@ const RangeInput = styled.input`
     appearance: none;
     height: 6px;
     border-radius: 3px;
-    background: ${({ theme }) => theme.border};
+    background: ${({ theme }) => theme.colors.border};
     outline: none;
     
     &::-webkit-slider-thumb {
@@ -127,7 +127,7 @@ const RangeLabel = styled.div`
   display: flex;
   justify-content: space-between;
   font-size: 0.8rem;
-  color: ${({ theme }) => theme.textSecondary};
+  color: ${({ theme }) => theme.colors.textSecondary};
 `;
 
 const Button = styled(motion.button)<{ variant?: 'primary' | 'secondary' }>`
@@ -147,7 +147,7 @@ const Button = styled(motion.button)<{ variant?: 'primary' | 'secondary' }>`
     variant === 'primary' ? 'white' : theme.text
   };
   border: ${({ variant, theme }) => 
-    variant === 'secondary' ? `1px solid ${theme.border}` : 'none'
+    variant === 'secondary' ? `1px solid ${theme.colors.border}` : 'none'
   };
   
   &:hover {
@@ -170,7 +170,7 @@ const HeatMapGrid = styled.div<{ rows: number; cols: number }>`
   background: ${({ theme }) => theme.cardBackground};
   border-radius: 8px;
   padding: 20px;
-  border: 1px solid ${({ theme }) => theme.border};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   margin-bottom: 24px;
   aspect-ratio: 1.4;
   max-height: 500px;
@@ -266,7 +266,7 @@ const ColorScale = styled.div`
     justify-content: space-between;
     margin-top: 8px;
     font-size: 0.8rem;
-    color: ${({ theme }) => theme.textSecondary};
+    color: ${({ theme }) => theme.colors.textSecondary};
   }
 `;
 
@@ -282,7 +282,7 @@ const AlgorithmLegend = styled.div`
     padding: 8px 12px;
     background: ${({ theme }) => theme.cardBackground};
     border-radius: 6px;
-    border: 1px solid ${({ theme }) => theme.border};
+    border: 1px solid ${({ theme }) => theme.colors.border};
     
     .color-indicator {
       width: 16px;
@@ -298,7 +298,7 @@ const AlgorithmLegend = styled.div`
       
       .complexity {
         font-size: 0.8rem;
-        color: ${({ theme }) => theme.textSecondary};
+        color: ${({ theme }) => theme.colors.textSecondary};
         font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
       }
     }
@@ -316,7 +316,7 @@ const XAxisLabels = styled.div<{ cols: number }>`
   grid-template-columns: repeat(${({ cols }) => cols}, 1fr);
   gap: 2px;
   font-size: 0.8rem;
-  color: ${({ theme }) => theme.textSecondary};
+  color: ${({ theme }) => theme.colors.textSecondary};
   text-align: center;
   margin-bottom: 8px;
 `;
@@ -326,7 +326,7 @@ const YAxisLabels = styled.div<{ rows: number }>`
   grid-template-rows: repeat(${({ rows }) => rows}, 1fr);
   gap: 2px;
   font-size: 0.8rem;
-  color: ${({ theme }) => theme.textSecondary};
+  color: ${({ theme }) => theme.colors.textSecondary};
   text-align: right;
   padding-right: 8px;
   justify-items: end;
@@ -363,7 +363,7 @@ const StatCard = styled.div`
   
   .label {
     font-size: 0.85rem;
-    color: ${({ theme }) => theme.textSecondary};
+    color: ${({ theme }) => theme.colors.textSecondary};
   }
 `;
 

@@ -322,4 +322,4 @@ const SortingPage: React.FC = () => {
   );
 };
 
-export default SortingPage; 
+export default SortingPage;

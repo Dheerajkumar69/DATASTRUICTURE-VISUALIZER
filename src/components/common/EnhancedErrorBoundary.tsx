@@ -27,7 +27,7 @@ const ErrorContainer = styled.div`
   padding: 2rem;
   text-align: center;
   background-color: ${({ theme }) => theme.colors.card};
-  border-radius: ${({ theme }) => theme.borderRadius};
+  border-radius: ${({ theme }) => theme.borderRadius.md};
   box-shadow: ${({ theme }) => theme.shadows.lg};
   margin: 2rem;
 `;
@@ -65,10 +65,10 @@ const ErrorButton = styled.button<{ variant?: 'primary' | 'secondary' }>`
   gap: 0.5rem;
   padding: 0.75rem 1.5rem;
   border: none;
-  border-radius: ${({ theme }) => theme.borderRadius};
+  border-radius: ${({ theme }) => theme.borderRadius.md};
   font-weight: 500;
   cursor: pointer;
-  transition: ${({ theme }) => theme.transitions.default};
+  transition: ${({ theme }) => theme.transitions.normal};
   min-height: 44px;
   
   background-color: ${({ variant, theme }) => 
@@ -87,7 +87,7 @@ const ErrorDetails = styled.details`
   margin-top: 2rem;
   padding: 1rem;
   background-color: ${({ theme }) => theme.colors.gray100};
-  border-radius: ${({ theme }) => theme.borderRadius};
+  border-radius: ${({ theme }) => theme.borderRadius.md};
   max-width: 800px;
   text-align: left;
 `;
@@ -119,7 +119,7 @@ const RetryInfo = styled.div`
   padding: 1rem;
   background-color: ${({ theme }) => theme.colors.warning}20;
   border: 1px solid ${({ theme }) => theme.colors.warning};
-  border-radius: ${({ theme }) => theme.borderRadius};
+  border-radius: ${({ theme }) => theme.borderRadius.md};
   color: ${({ theme }) => theme.colors.text};
 `;
 

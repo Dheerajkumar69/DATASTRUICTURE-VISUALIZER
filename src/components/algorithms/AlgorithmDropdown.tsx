@@ -115,4 +115,4 @@ const AlgorithmDropdown: React.FC<AlgorithmDropdownProps> = ({
   );
 };
 
-export default AlgorithmDropdown; 
+export default AlgorithmDropdown;

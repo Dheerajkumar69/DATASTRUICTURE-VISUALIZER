@@ -164,16 +164,16 @@ const PulseElement = styled.div<{ $size: string }>`
 
 const LoadingMessage = styled(motion.p)<{ $size: string }>`
   color: ${({ theme }) => theme.colors.text};
-  font-size: ${({ $size, theme }) => {
+  font-size: ${({ $size }) => {
     switch ($size) {
-      case 'sm': return theme.fontSizes.sm;
-      case 'md': return theme.fontSizes.md;
-      case 'lg': return theme.fontSizes.lg;
-      case 'xl': return theme.fontSizes.xl;
-      default: return theme.fontSizes.md;
+      case 'sm': return '0.875rem';
+      case 'md': return '1rem';
+      case 'lg': return '1.125rem';
+      case 'xl': return '1.25rem';
+      default: return '1rem';
     }
   }};
-  font-weight: ${({ theme }) => theme.fontWeights.medium};
+  font-weight: 500;
   text-align: center;
   margin: 0;
 `;

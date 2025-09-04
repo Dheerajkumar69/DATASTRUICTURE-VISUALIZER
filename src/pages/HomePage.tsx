@@ -20,9 +20,9 @@ const HeroSection = styled.section`
   align-items: center;
   text-align: center;
   padding: 2rem 1rem;
-  background: linear-gradient(135deg, ${({ theme }) => theme.primary}, ${({ theme }) => theme.primaryDark});
+  background: linear-gradient(135deg, ${({ theme }) => theme.colors.primary}, ${({ theme }) => theme.colors.primaryDark});
   border-radius: ${({ theme }) => theme.borderRadius};
-  color: ${({ theme }) => theme.cardBackground};
+  color: ${({ theme }) => theme.colors.card};
   margin-bottom: 2rem;
   
   ${responsive.mobile(`
@@ -62,8 +62,8 @@ const CTAButton = styled(Link)`
   display: inline-flex;
   align-items: center;
   padding: 0.75rem 1.5rem;
-  background-color: ${({ theme }) => theme.cardBackground};
-  color: ${({ theme }) => theme.primary};
+  background-color: ${({ theme }) => theme.colors.card};
+  color: ${({ theme }) => theme.colors.primary};
   font-weight: 600;
   border-radius: ${({ theme }) => theme.borderRadius};
   transition: ${({ theme }) => theme.transitions.default};
@@ -76,7 +76,7 @@ const CTAButton = styled(Link)`
   }
   
   &:hover {
-    background-color: ${({ theme }) => theme.hover};
+    background-color: ${({ theme }) => theme.colors.hover};
     transform: translateY(-2px);
   }
   
@@ -104,7 +104,7 @@ const FeatureCard = styled(MobileCard)`
   display: flex;
   flex-direction: column;
   padding: 1.5rem;
-  color: ${({ theme }) => theme.text};
+  color: ${({ theme }) => theme.colors.text};
   
   ${responsive.mobile(`
     padding: 1.25rem;
@@ -117,8 +117,8 @@ const FeatureIcon = styled.div`
   justify-content: center;
   width: 48px;
   height: 48px;
-  background-color: ${({ theme }) => theme.primary};
-  color: ${({ theme }) => theme.cardBackground};
+  background-color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.card};
   border-radius: ${({ theme }) => theme.borderRadius};
   margin-bottom: 1rem;
 `;
@@ -127,11 +127,11 @@ const FeatureTitle = styled.h3`
   font-size: 1.25rem;
   font-weight: 600;
   margin-bottom: 0.5rem;
-  color: ${({ theme }) => theme.text};
+  color: ${({ theme }) => theme.colors.text};
 `;
 
 const FeatureDescription = styled.p`
-  color: ${({ theme }) => theme.textLight};
+  color: ${({ theme }) => theme.colors.textLight};
   line-height: 1.6;
 `;
 
@@ -165,8 +165,8 @@ const DataStructureCard = styled(Link)`
   flex-direction: column;
   align-items: center;
   padding: 1.5rem;
-  background-color: ${({ theme }) => theme.cardBackground};
-  border: 1px solid ${({ theme }) => theme.border};
+  background-color: ${({ theme }) => theme.colors.card};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: ${({ theme }) => theme.borderRadius};
   box-shadow: ${({ theme }) => theme.shadows.sm};
   transition: ${({ theme }) => theme.transitions.default};
@@ -177,13 +177,13 @@ const DataStructureCard = styled(Link)`
   touch-action: manipulation;
   
   &:hover {
-    background-color: ${({ theme }) => theme.primary};
-    color: ${({ theme }) => theme.cardBackground};
+    background-color: ${({ theme }) => theme.colors.primary};
+    color: ${({ theme }) => theme.colors.card};
     transform: translateY(-3px);
     box-shadow: ${({ theme }) => theme.shadows.lg};
     
     h3, p {
-      color: ${({ theme }) => theme.cardBackground};
+      color: ${({ theme }) => theme.colors.card};
     }
     
     p {
@@ -200,8 +200,8 @@ const ComingSoonBadge = styled.div`
   position: absolute;
   top: 10px;
   right: 10px;
-  background-color: ${({ theme }) => theme.secondary};
-  color: ${({ theme }) => theme.cardBackground};
+  background-color: ${({ theme }) => theme.colors.secondary};
+  color: ${({ theme }) => theme.colors.card};
   font-size: 0.7rem;
   font-weight: 600;
   padding: 0.25rem 0.5rem;
@@ -217,7 +217,7 @@ const DataStructureIcon = styled.div`
   height: 48px;
   margin-bottom: 1rem;
   font-size: 1.5rem;
-  color: ${({ theme }) => theme.primary};
+  color: ${({ theme }) => theme.colors.primary};
 `;
 
 const DataStructureName = styled.h3`
@@ -228,7 +228,7 @@ const DataStructureName = styled.h3`
 `;
 
 const DataStructureDescription = styled.p`
-  color: ${({ theme }) => theme.textLight};
+  color: ${({ theme }) => theme.colors.textLight};
   text-align: center;
   font-size: 0.875rem;
 `;
@@ -412,4 +412,4 @@ const HomePage: React.FC = () => {
   );
 };
 
-export default HomePage; 
+export default HomePage;

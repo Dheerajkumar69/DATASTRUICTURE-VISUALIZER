@@ -18,12 +18,12 @@ interface AlgorithmComplexity {
 }
 
 const BigOContainer = styled(motion.div)`
-  background: ${({ theme }) => theme.background};
+  background: ${({ theme }) => theme.colors.background};
   border-radius: 12px;
   padding: 24px;
   margin: 16px 0;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  border: 1px solid ${({ theme }) => theme.border};
+  border: 1px solid ${({ theme }) => theme.colors.border};
 `;
 
 const Header = styled.div`
@@ -33,7 +33,7 @@ const Header = styled.div`
   margin-bottom: 24px;
   
   h2 {
-    color: ${({ theme }) => theme.text};
+    color: ${({ theme }) => theme.colors.text};
     font-size: 1.5rem;
     margin: 0;
     display: flex;
@@ -55,10 +55,10 @@ const SelectionContainer = styled.div`
 
 const Select = styled.select`
   padding: 12px;
-  border: 1px solid ${({ theme }) => theme.border};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: 8px;
   background: ${({ theme }) => theme.cardBackground};
-  color: ${({ theme }) => theme.text};
+  color: ${({ theme }) => theme.colors.text};
   font-size: 1rem;
   cursor: pointer;
   
@@ -80,11 +80,11 @@ const ComplexityCard = styled(motion.div)`
   background: ${({ theme }) => theme.cardBackground};
   border-radius: 8px;
   padding: 16px;
-  border: 1px solid ${({ theme }) => theme.border};
+  border: 1px solid ${({ theme }) => theme.colors.border};
 `;
 
 const ComplexityTitle = styled.h3`
-  color: ${({ theme }) => theme.text};
+  color: ${({ theme }) => theme.colors.text};
   font-size: 1.1rem;
   margin: 0 0 12px 0;
   display: flex;
@@ -106,13 +106,13 @@ const ComplexityValue = styled.span<{ complexity: string }>`
       case 'O(n³)': return '#dc2626';
       case 'O(2^n)': return '#991b1b';
       case 'O(n!)': return '#7f1d1d';
-      default: return theme.text;
+      default: return theme.colors.text;
     }
   }};
 `;
 
 const Description = styled.p`
-  color: ${({ theme }) => theme.textSecondary};
+  color: ${({ theme }) => theme.colors.textSecondary};
   font-size: 0.9rem;
   margin: 12px 0 0 0;
   line-height: 1.5;
@@ -122,7 +122,7 @@ const ComplexityChart = styled.div`
   background: ${({ theme }) => theme.cardBackground};
   border-radius: 8px;
   padding: 20px;
-  border: 1px solid ${({ theme }) => theme.border};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   margin-top: 24px;
 `;
 

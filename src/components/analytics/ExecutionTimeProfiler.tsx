@@ -50,7 +50,7 @@ const ProfilerContainer = styled(motion.div)`
   padding: 24px;
   margin: 16px 0;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  border: 1px solid ${({ theme }) => theme.border};
+  border: 1px solid ${({ theme }) => theme.colors.border};
 `;
 
 const Header = styled.div`
@@ -112,7 +112,7 @@ const Button = styled(motion.button)<{ variant?: 'primary' | 'secondary' | 'dang
   }};
   
   border: ${({ variant, theme }) => 
-    variant === 'secondary' ? `1px solid ${theme.border}` : 'none'
+    variant === 'secondary' ? `1px solid ${theme.colors.border}` : 'none'
   };
   
   &:hover {
@@ -154,14 +154,14 @@ const TabContainer = styled.div`
   display: flex;
   gap: 4px;
   margin-bottom: 24px;
-  border-bottom: 1px solid ${({ theme }) => theme.border};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.border};
 `;
 
 const Tab = styled(motion.button)<{ isActive: boolean }>`
   padding: 12px 20px;
   border: none;
   background: none;
-  color: ${({ theme, isActive }) => isActive ? theme.primary : theme.textSecondary};
+  color: ${({ theme, isActive }) => isActive ? theme.colors.primary : theme.colors.textSecondary};
   font-weight: ${({ isActive }) => isActive ? '600' : '400'};
   cursor: pointer;
   position: relative;
@@ -181,7 +181,7 @@ const HotSpotsSection = styled.div`
   background: ${({ theme }) => theme.cardBackground};
   border-radius: 8px;
   padding: 20px;
-  border: 1px solid ${({ theme }) => theme.border};
+  border: 1px solid ${({ theme }) => theme.colors.border};
 `;
 
 const HotSpotsList = styled.div`
@@ -226,7 +226,7 @@ const HotSpotInfo = styled.div`
     display: flex;
     gap: 16px;
     font-size: 0.85rem;
-    color: ${({ theme }) => theme.textSecondary};
+    color: ${({ theme }) => theme.colors.textSecondary};
   }
 `;
 
@@ -244,13 +244,13 @@ const TimelineSection = styled.div`
   background: ${({ theme }) => theme.cardBackground};
   border-radius: 8px;
   padding: 20px;
-  border: 1px solid ${({ theme }) => theme.border};
+  border: 1px solid ${({ theme }) => theme.colors.border};
 `;
 
 const TimelineChart = styled.div`
   position: relative;
   height: 400px;
-  border: 1px solid ${({ theme }) => theme.border};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: 4px;
   margin: 16px 0;
   overflow: hidden;
@@ -302,9 +302,9 @@ const StatsTable = styled.div`
   
   .cell {
     padding: 12px 8px;
-    color: ${({ theme }) => theme.textSecondary};
+    color: ${({ theme }) => theme.colors.textSecondary};
     font-size: 0.85rem;
-    border-bottom: 1px solid ${({ theme }) => theme.border};
+    border-bottom: 1px solid ${({ theme }) => theme.colors.border};
     display: flex;
     align-items: center;
   }
@@ -328,7 +328,7 @@ const CallGraphNode = styled(motion.div)<{ depth: number }>`
   padding: 8px 12px;
   margin: 4px 0;
   border-radius: 4px;
-  border: 1px solid ${({ theme }) => theme.border};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   background: ${({ theme }) => theme.background};
   display: flex;
   align-items: center;
@@ -384,7 +384,7 @@ const InsightItem = styled.div`
     
     .description {
       font-size: 0.9rem;
-      color: ${({ theme }) => theme.textSecondary};
+      color: ${({ theme }) => theme.colors.textSecondary};
     }
   }
 `;

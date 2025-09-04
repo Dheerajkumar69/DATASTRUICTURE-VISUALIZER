@@ -37,7 +37,7 @@ const MemoryContainer = styled(motion.div)`
   padding: 24px;
   margin: 16px 0;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  border: 1px solid ${({ theme }) => theme.border};
+  border: 1px solid ${({ theme }) => theme.colors.border};
 `;
 
 const Header = styled.div`
@@ -92,7 +92,7 @@ const Button = styled(motion.button)<{ variant?: 'primary' | 'secondary' | 'dang
   }};
   
   border: ${({ variant, theme }) => 
-    variant === 'secondary' ? `1px solid ${theme.border}` : 'none'
+    variant === 'secondary' ? `1px solid ${theme.colors.border}` : 'none'
   };
   
   &:hover {
@@ -116,7 +116,7 @@ const StatCard = styled(motion.div)`
   background: ${({ theme }) => theme.cardBackground};
   border-radius: 8px;
   padding: 16px;
-  border: 1px solid ${({ theme }) => theme.border};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   text-align: center;
   
   .value {
@@ -128,7 +128,7 @@ const StatCard = styled(motion.div)`
   }
   
   .label {
-    color: ${({ theme }) => theme.textSecondary};
+    color: ${({ theme }) => theme.colors.textSecondary};
     font-size: 0.9rem;
   }
   
@@ -146,14 +146,14 @@ const MemoryVisualization = styled.div`
   background: ${({ theme }) => theme.cardBackground};
   border-radius: 8px;
   padding: 20px;
-  border: 1px solid ${({ theme }) => theme.border};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   margin-bottom: 24px;
 `;
 
 const MemoryGraph = styled.div`
   position: relative;
   height: 300px;
-  border: 1px solid ${({ theme }) => theme.border};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: 4px;
   margin: 16px 0;
   overflow: hidden;
@@ -186,7 +186,7 @@ const MemoryBlockVisualization = styled.div`
   background: ${({ theme }) => theme.cardBackground};
   border-radius: 8px;
   padding: 20px;
-  border: 1px solid ${({ theme }) => theme.border};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   margin-bottom: 24px;
 `;
 
@@ -195,7 +195,7 @@ const BlockContainer = styled.div`
   flex-wrap: wrap;
   gap: 2px;
   min-height: 200px;
-  border: 1px solid ${({ theme }) => theme.border};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: 4px;
   padding: 8px;
   margin: 16px 0;
@@ -203,8 +203,8 @@ const BlockContainer = styled.div`
     45deg,
     transparent,
     transparent 10px,
-    ${({ theme }) => theme.border}20 10px,
-    ${({ theme }) => theme.border}20 20px
+    ${({ theme }) => theme.colors.border}20 10px,
+  ${({ theme }) => theme.colors.border}20 20px
   );
 `;
 
