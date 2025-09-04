@@ -9,6 +9,15 @@ interface AnimationContextType {
   resumeAllAnimations: () => void;
   resetAllAnimations: () => void;
   getActiveAnimations: () => string[];
+  // Enhanced features
+  speed: number;
+  setSpeed: (speed: number) => void;
+  isLoading: boolean;
+  setIsLoading: (loading: boolean) => void;
+  loadingMessage: string;
+  setLoadingMessage: (message: string) => void;
+  progress: number;
+  setProgress: (progress: number) => void;
 }
 
 // Create the context with a default value
@@ -22,6 +31,15 @@ const AnimationContext = createContext<AnimationContextType>({
   resumeAllAnimations: () => {/* placeholder implementation */},
   resetAllAnimations: () => {/* placeholder implementation */},
   getActiveAnimations: () => [],
+  // Enhanced features defaults
+  speed: 1.0,
+  setSpeed: () => {/* placeholder implementation */},
+  isLoading: false,
+  setIsLoading: () => {/* placeholder implementation */},
+  loadingMessage: '',
+  setLoadingMessage: () => {/* placeholder implementation */},
+  progress: 0,
+  setProgress: () => {/* placeholder implementation */},
 });
 
 // Custom hook for using the animation context
@@ -35,6 +53,12 @@ interface AnimationProviderProps {
 export const AnimationProvider: React.FC<AnimationProviderProps> = ({ children }) => {
   const [globalAnimationRunning, setGlobalAnimationRunning] = useState<boolean>(false);
   const [activeAnimations, setActiveAnimations] = useState<Set<string>>(new Set());
+  
+  // Enhanced features state
+  const [speed, setSpeed] = useState<number>(1.0);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [loadingMessage, setLoadingMessage] = useState<string>('');
+  const [progress, setProgress] = useState<number>(0);
 
   // Register a new animation
   const registerAnimation = useCallback((id: string) => {
@@ -84,7 +108,16 @@ export const AnimationProvider: React.FC<AnimationProviderProps> = ({ children }
     pauseAllAnimations,
     resumeAllAnimations,
     resetAllAnimations,
-    getActiveAnimations
+    getActiveAnimations,
+    // Enhanced features
+    speed,
+    setSpeed,
+    isLoading,
+    setIsLoading,
+    loadingMessage,
+    setLoadingMessage,
+    progress,
+    setProgress
   };
 
   return (

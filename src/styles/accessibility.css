@@ -1,0 +1,189 @@
+/* Screen reader only utility */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Skip to main content link */
+.skip-to-main {
+  position: absolute;
+  top: -40px;
+  left: 6px;
+  background: var(--primary);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 4px;
+  text-decoration: none;
+  z-index: 1000;
+  transition: top 0.3s ease;
+}
+
+.skip-to-main:focus {
+  top: 6px;
+}
+
+/* High contrast mode styles */
+.high-contrast {
+  --primary: #0000FF;
+  --primary-light: #4444FF;
+  --primary-dark: #000080;
+  --secondary: #008000;
+  --background: #FFFFFF;
+  --foreground: #000000;
+  --card: #FFFFFF;
+  --text: #000000;
+  --text-light: #333333;
+  --border: #000000;
+  --hover: #E0E0E0;
+  --gray-50: #F5F5F5;
+  --gray-100: #E0E0E0;
+  --gray-200: #CCCCCC;
+  --gray-300: #999999;
+  --gray-400: #666666;
+  --gray-500: #333333;
+  --gray-600: #000000;
+  --danger: #FF0000;
+  --warning: #FF8800;
+  --success: #008000;
+  --info: #0000FF;
+}
+
+.high-contrast * {
+  border-color: var(--border) !important;
+  outline: 2px solid transparent;
+}
+
+.high-contrast *:focus {
+  outline: 3px solid var(--primary) !important;
+  outline-offset: 2px;
+}
+
+/* Reduced motion support */
+.reduced-motion *,
+.reduced-motion *::before,
+.reduced-motion *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  transition-delay: 0ms !important;
+}
+
+/* Focus styles */
+*:focus {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* Remove focus outline for mouse users */
+.js-focus-visible *:focus:not(.focus-visible) {
+  outline: none;
+}
+
+/* Enhanced focus for keyboard users */
+.js-focus-visible *:focus.focus-visible {
+  outline: 3px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* Button focus styles */
+button:focus {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* Link focus styles */
+a:focus {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+  text-decoration: underline;
+}
+
+/* Improve text contrast */
+@media (prefers-contrast: high) {
+  :root {
+    --text: #000000;
+    --text-light: #333333;
+    --border: #000000;
+  }
+}
+
+/* Respect reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
+  }
+}
+
+/* Ensure minimum touch targets on mobile */
+@media (max-width: 768px) {
+  button, 
+  input[type="button"], 
+  input[type="submit"], 
+  input[type="reset"],
+  a {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* Improve form accessibility */
+input, textarea, select {
+  border-radius: 4px;
+  border: 2px solid var(--border);
+  padding: 8px 12px;
+  transition: border-color 0.2s ease;
+}
+
+input:focus, 
+textarea:focus, 
+select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+  outline: none;
+}
+
+/* Error state styles */
+input[aria-invalid="true"],
+textarea[aria-invalid="true"],
+select[aria-invalid="true"] {
+  border-color: var(--danger);
+}
+
+/* ARIA live region styles */
+[aria-live] {
+  position: relative;
+}
+
+/* Tooltip styles */
+[data-tooltip] {
+  position: relative;
+}
+
+[data-tooltip]:hover::after,
+[data-tooltip]:focus::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--gray-800);
+  color: var(--card);
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  white-space: nowrap;
+  z-index: 1000;
+  pointer-events: none;
+}

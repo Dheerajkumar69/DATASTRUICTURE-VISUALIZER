@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { motion } from 'framer-motion';
 import { FiPlay, FiPause, FiRefreshCw, FiChevronsLeft, FiChevronsRight } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 import { FaArrowLeft } from 'react-icons/fa';
 import AlgorithmDropdown from '../../../components/algorithms/AlgorithmDropdown';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { vs2015 } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+import { motion } from 'framer-motion';
 
 const PageContainer = styled.div`
   padding: 2rem;
@@ -51,7 +51,7 @@ const PageDescription = styled.p`
 `;
 
 const VisualizationContainer = styled.div`
-  background-color: white;
+  background-color: ${({ theme }) => theme.colors.card};
   border-radius: ${({ theme }) => theme.borderRadius};
   padding: 2rem;
 `;
@@ -70,7 +70,7 @@ const Button = styled.button<{ active?: boolean }>`
   padding: 0.5rem 1rem;
   border: 1px solid ${({ theme }) => theme.colors.gray200};
   border-radius: ${({ theme }) => theme.borderRadius};
-  background-color: white;
+  background-color: ${({ theme }) => theme.colors.card};
   color: ${({ theme, active }) => active ? theme.colors.primary : theme.colors.gray700};
   cursor: pointer;
   font-size: 0.9rem;
@@ -105,7 +105,7 @@ const SpeedSelect = styled.select`
   padding: 0.5rem;
   border: 1px solid ${({ theme }) => theme.colors.gray300};
   border-radius: ${({ theme }) => theme.borderRadius};
-  background-color: white;
+  background-color: ${({ theme }) => theme.colors.card};
   font-size: 0.9rem;
 `;
 
@@ -161,7 +161,7 @@ const Bar = styled(motion.div)<BarProps>`
       left: 50%;
       transform: translateX(-50%);
       font-size: 0.75rem;
-      color: white;
+      color: ${({ theme }) => theme.colors.card};
       background-color: rgba(0, 0, 0, 0.5);
       padding: 2px 4px;
       border-radius: 4px;
@@ -269,8 +269,8 @@ const CodeBlock = styled.div`
 
 const CodeTitle = styled.div`
   padding: 0.75rem 1rem;
-  background-color: #333;
-  color: white;
+  background-color: ${({ theme }) => theme.colors.text};
+  color: ${({ theme }) => theme.colors.card};
   font-family: ${({ theme }) => theme.fonts.mono};
   font-size: 0.875rem;
 `;

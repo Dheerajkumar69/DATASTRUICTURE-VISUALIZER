@@ -1,6 +1,7 @@
 import React, { lazy, Suspense } from 'react';
 import styled from 'styled-components';
-import { vs2015 } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+import { useTheme } from '../../themes/ThemeContext';
+import { getSyntaxHighlighterStyle, getCustomSyntaxStyle } from '../../utils/syntaxHighlighterThemes';
 
 // Lazy load the SyntaxHighlighter for better performance
 const SyntaxHighlighter = lazy(() => import('react-syntax-highlighter'));
@@ -8,6 +9,7 @@ const SyntaxHighlighter = lazy(() => import('react-syntax-highlighter'));
 const Container = styled.div`
   position: relative;
   border-radius: ${props => props.theme.borderRadius};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   overflow: hidden;
   font-family: ${props => props.theme.fonts.mono};
   box-shadow: ${props => props.theme.shadows.sm};
@@ -59,6 +61,7 @@ interface CodeBlockProps {
 
 const CodeBlock: React.FC<CodeBlockProps> = ({ code, language }) => {
   const [copied, setCopied] = React.useState(false);
+  const { isDarkMode } = useTheme();
   
   const handleCopy = () => {
     navigator.clipboard.writeText(code);
@@ -94,14 +97,8 @@ const CodeBlock: React.FC<CodeBlockProps> = ({ code, language }) => {
       <Suspense fallback={<LoadingPlaceholder>Loading code...</LoadingPlaceholder>}>
         <SyntaxHighlighter
           language={language.toLowerCase()}
-          style={vs2015}
-          customStyle={{
-            margin: 0,
-            padding: '1rem',
-            borderRadius: 0,
-            fontSize: '0.9rem',
-            lineHeight: 1.5
-          }}
+          style={getSyntaxHighlighterStyle(isDarkMode)}
+          customStyle={getCustomSyntaxStyle(isDarkMode)}
         >
           {code}
         </SyntaxHighlighter>

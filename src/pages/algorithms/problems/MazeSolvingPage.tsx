@@ -129,7 +129,7 @@ const Cell = styled.div<{ isWall: boolean; isPath: boolean; isStart: boolean; is
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    color: white;
+    color: ${({ theme }) => theme.colors.card};
     font-weight: bold;
   }
 `;
@@ -161,6 +161,7 @@ const Select = styled.select`
   padding: 0.5rem;
   border: 1px solid ${props => props.theme.colors.border};
   border-radius: ${props => props.theme.borderRadius};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   background-color: ${props => props.theme.colors.card};
   color: ${props => props.theme.colors.text};
 `;

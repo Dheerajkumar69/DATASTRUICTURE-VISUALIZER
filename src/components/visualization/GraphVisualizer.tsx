@@ -1,6 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
-import styled from 'styled-components';
-import { useTheme, Theme } from '../../themes/ThemeContext';
+import styled, { useTheme as useStyledTheme } from 'styled-components';
 
 // Types
 export type VertexState = 'unvisited' | 'visiting' | 'visited' | 'highlighted' | 'processed';
@@ -51,6 +50,7 @@ const CanvasContainer = styled.div<{ width: number | string, height: number | st
   position: relative;
   border: 1px solid ${props => props.theme.colors.border};
   border-radius: ${props => props.theme.borderRadius};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   overflow: hidden;
 `;
 
@@ -64,7 +64,7 @@ const Canvas = styled.canvas`
 `;
 
 // Helper functions for rendering
-const getVertexColor = (state: VertexState, theme: Theme) => {
+const getVertexColor = (state: VertexState, theme: any) => {
   switch (state) {
     case 'visiting': return theme.colors.warning;
     case 'visited': return theme.colors.success;
@@ -74,7 +74,7 @@ const getVertexColor = (state: VertexState, theme: Theme) => {
   }
 };
 
-const getEdgeColor = (state: EdgeState, theme: Theme) => {
+const getEdgeColor = (state: EdgeState, theme: any) => {
   switch (state) {
     case 'discovery': return theme.colors.primary;
     case 'back': return theme.colors.warning;
@@ -100,7 +100,7 @@ const GraphVisualizer: React.FC<GraphVisualizerProps> = ({
   onEdgeClick
 }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const theme = useTheme();
+  const theme = useStyledTheme();
   const [hoveredNode, setHoveredNode] = useState<number | null>(null);
   const [hoveredEdge, setHoveredEdge] = useState<{ from: number, to: number } | null>(null);
   

@@ -1,17 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import { FaArrowLeft, FaRandom } from 'react-icons/fa';
-import { 
-  AnimatedGridCell, 
-  AnimationControls,
-  InfoPanel, 
-  InfoTitle, 
-  Button,
-  Select 
-} from '../../../components/utils/AnimatedComponents';
-import { useAlgorithmAnimation } from '../../../components/utils/useAlgorithmAnimation';
-import { AnimationStep, createAnimatedStep } from '../../../components/utils/AnimationUtils';
+import { FaArrowLeft, FaPlay, FaPause, FaUndo, FaStepForward, FaStepBackward, FaRandom } from 'react-icons/fa';
 
 // Styled components
 const PageContainer = styled.div`
@@ -68,12 +58,38 @@ const Description = styled.p`
 `;
 
 const ControlsContainer = styled.div`
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
   gap: 1rem;
   margin-bottom: 2rem;
   max-width: 800px;
+`;
+
+const Button = styled.button`
+  display: flex;
   align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1rem;
+  background-color: ${props => props.theme.colors.card};
+  color: ${props => props.theme.colors.text};
+  border: 1px solid ${props => props.theme.colors.border};
+  border-radius: 0.5rem;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    background-color: ${props => props.theme.colors.hover};
+  }
+  
+  svg {
+    margin-right: 0.5rem;
+  }
+  
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 `;
 
 const GridContainer = styled.div`
@@ -88,10 +104,47 @@ const Grid = styled.div`
   display: grid;
   grid-template-columns: repeat(10, 40px);
   grid-template-rows: repeat(10, 40px);
-  gap: 2px;
-  background-color: ${props => props.theme.colors.gray200};
-  padding: 2px;
+  gap: 1px;
+  background-color: ${props => props.theme.colors.border};
+  padding: 1px;
   border-radius: ${props => props.theme.borderRadius};
+  transition: all 0.3s ease;
+  border: 1px solid ${({ theme }) => theme.colors.border};
+`;
+
+const Cell = styled.div<{ color: string }>`
+  width: 40px;
+  height: 40px;
+  background-color: ${props => props.color};
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  
+  &:hover {
+    opacity: 0.8;
+  }
+`;
+
+const InfoPanel = styled.div`
+  padding: 1rem;
+  background-color: ${props => props.theme.colors.card};
+  border-radius: 0.5rem;
+  border: 1px solid ${props => props.theme.colors.border};
+  margin-bottom: 2rem;
+  max-width: 800px;
+  width: 100%;
+`;
+
+const InfoTitle = styled.h3`
+  margin-bottom: 0.5rem;
+  color: ${props => props.theme.colors.text};
+  font-size: 1.2rem;
+`;
+
+const InfoText = styled.p`
+  color: ${props => props.theme.colors.textLight};
+  margin-bottom: 0.5rem;
+  line-height: 1.5;
+  font-size: 0.9rem;
 `;
 
 const ColorPicker = styled.input`
@@ -100,53 +153,57 @@ const ColorPicker = styled.input`
   padding: 0;
   border: none;
   border-radius: ${props => props.theme.borderRadius};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   cursor: pointer;
   margin-right: 1rem;
 `;
 
-const InfoText = styled.p`
-  color: ${props => props.theme.colors.gray700};
-  margin-bottom: 0.5rem;
-  line-height: 1.5;
+const Select = styled.select`
+  padding: 0.5rem;
+  border: 1px solid ${props => props.theme.colors.border};
+  border-radius: ${props => props.theme.borderRadius};
+  background-color: ${props => props.theme.colors.card};
+  color: ${props => props.theme.colors.text};
 `;
 
-// Interface for the FloodFill algorithm state
-interface FloodFillState {
+interface Step {
   grid: string[][];
+  description: string;
   visited: number[][];
 }
 
 const FloodFillPage: React.FC = () => {
-  // Grid state and color selection
   const [grid, setGrid] = useState<string[][]>([]);
+  const [steps, setSteps] = useState<Step[]>([]);
+  const [currentStep, setCurrentStep] = useState<number>(0);
+  const [isAnimating, setIsAnimating] = useState<boolean>(false);
+  const [isPaused, setIsPaused] = useState<boolean>(false);
+  const [animationSpeed, setAnimationSpeed] = useState<number>(500);
   const [selectedColor, setSelectedColor] = useState<string>('#ff0000');
   const [startCell, setStartCell] = useState<{ row: number; col: number } | null>(null);
-  
-  // Initialize the animation hook
-  const {
-    currentState,
-    currentStep,
-    isAnimating,
-    isPaused,
-    animationSpeed,
-    currentDescription,
-    setSteps,
-    startAnimation,
-    pauseAnimation,
-    resetAnimation,
-    stepForward,
-    stepBackward,
-    setAnimationSpeed,
-    canStepForward,
-    canStepBackward
-  } = useAlgorithmAnimation<FloodFillState>({ 
-    initialState: { grid: [], visited: [] } 
-  });
+  const [targetColor, setTargetColor] = useState<string>('#ffffff');
   
   // Initialize the grid
   useEffect(() => {
     generateRandomGrid();
   }, []);
+  
+  // Animation timer
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    
+    if (isAnimating && !isPaused && currentStep < steps.length - 1) {
+      timer = setTimeout(() => {
+        setCurrentStep(prev => prev + 1);
+      }, animationSpeed);
+    } else if (currentStep >= steps.length - 1) {
+      setIsAnimating(false);
+    }
+    
+    return () => {
+      if (timer) clearTimeout(timer);
+    };
+  }, [isAnimating, isPaused, currentStep, steps, animationSpeed]);
   
   // Generate a random grid
   const generateRandomGrid = () => {
@@ -163,6 +220,7 @@ const FloodFillPage: React.FC = () => {
     
     setGrid(newGrid);
     setSteps([]);
+    setCurrentStep(0);
     setStartCell(null);
   };
   
@@ -178,7 +236,11 @@ const FloodFillPage: React.FC = () => {
   const runFloodFill = (startRow: number, startCol: number) => {
     if (grid.length === 0) return;
     
-    const animationSteps: AnimationStep<FloodFillState>[] = [];
+    setIsAnimating(false);
+    setIsPaused(false);
+    setCurrentStep(0);
+    
+    const steps: Step[] = [];
     const visited: number[][] = Array(10).fill(0).map(() => Array(10).fill(0));
     const queue: { row: number; col: number }[] = [{ row: startRow, col: startCol }];
     const targetColor = grid[startRow][startCol];
@@ -188,12 +250,11 @@ const FloodFillPage: React.FC = () => {
     initialGrid[startRow][startCol] = selectedColor;
     visited[startRow][startCol] = 1;
     
-    animationSteps.push(createAnimatedStep(
-      { grid: initialGrid, visited },
-      `Starting flood fill from cell (${startRow}, ${startCol}).`,
-      [startRow * 10 + startCol],
-      'highlight'
-    ));
+    steps.push({
+      grid: initialGrid,
+      description: `Starting flood fill from cell (${startRow}, ${startCol}).`,
+      visited: JSON.parse(JSON.stringify(visited))
+    });
     
     // Process queue
     while (queue.length > 0) {
@@ -221,40 +282,66 @@ const FloodFillPage: React.FC = () => {
           visited[newRow][newCol] = 1;
           
           // Create a new grid state
-          const newGrid = JSON.parse(JSON.stringify(animationSteps[animationSteps.length - 1].state.grid)) as string[][];
+          const newGrid = JSON.parse(JSON.stringify(steps[steps.length - 1].grid)) as string[][];
           newGrid[newRow][newCol] = selectedColor;
           
-          const newVisited = JSON.parse(JSON.stringify(visited)) as number[][];
-          
-          animationSteps.push(createAnimatedStep(
-            { grid: newGrid, visited: newVisited },
-            `Filling cell (${newRow}, ${newCol}).`,
-            [newRow * 10 + newCol],
-            'add'
-          ));
+          steps.push({
+            grid: newGrid,
+            description: `Filling cell (${newRow}, ${newCol}).`,
+            visited: JSON.parse(JSON.stringify(visited))
+          });
         }
       }
     }
     
     // Final step
-    if (animationSteps.length > 0) {
-      animationSteps.push(createAnimatedStep(
-        animationSteps[animationSteps.length - 1].state,
-        `Flood fill complete. Filled ${animationSteps.length - 1} cells.`,
-        [],
-        'default'
-      ));
-    }
+    steps.push({
+      grid: steps[steps.length - 1].grid,
+      description: `Flood fill complete. Filled ${steps.length - 1} cells.`,
+      visited: JSON.parse(JSON.stringify(visited))
+    });
     
-    setSteps(animationSteps);
+    setSteps(steps);
+    setCurrentStep(0);
   };
   
-  // Custom reset that also regenerates the grid
-  const handleReset = () => {
-    resetAnimation();
+  // Control methods
+  const startAnimation = () => {
+    if (steps.length === 0 && startCell) {
+      runFloodFill(startCell.row, startCell.col);
+    }
+    setIsAnimating(true);
+    setIsPaused(false);
+  };
+  
+  const pauseAnimation = () => {
+    setIsPaused(true);
+  };
+  
+  const resetAnimation = () => {
+    setIsAnimating(false);
+    setIsPaused(false);
+    setCurrentStep(0);
+    setStartCell(null);
     generateRandomGrid();
   };
-
+  
+  const stepForward = () => {
+    if (currentStep < steps.length - 1) {
+      setCurrentStep(prev => prev + 1);
+    }
+  };
+  
+  const stepBackward = () => {
+    if (currentStep > 0) {
+      setCurrentStep(prev => prev - 1);
+    }
+  };
+  
+  const handleSpeedChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setAnimationSpeed(parseInt(e.target.value, 10));
+  };
+  
   return (
     <PageContainer>
       <NavigationRow>
@@ -287,56 +374,73 @@ const FloodFillPage: React.FC = () => {
           disabled={isAnimating && !isPaused}
         />
         
-        <AnimationControls
-          isAnimating={isAnimating}
-          isPaused={isPaused}
-          onStart={startAnimation}
-          onPause={pauseAnimation}
-          onReset={handleReset}
-          onStepForward={stepForward}
-          onStepBackward={stepBackward}
-          onSpeedChange={setAnimationSpeed}
-          currentSpeed={animationSpeed}
-          canStepForward={canStepForward}
-          canStepBackward={canStepBackward}
-        />
+        <Select value={animationSpeed} onChange={handleSpeedChange}>
+          <option value="1000">Slow</option>
+          <option value="500">Medium</option>
+          <option value="200">Fast</option>
+        </Select>
         
-        <Button onClick={generateRandomGrid} disabled={isAnimating && !isPaused}>
-          <FaRandom /> New Grid
+        {!isAnimating || isPaused ? (
+          <Button onClick={startAnimation}>
+            <FaPlay /> {isPaused ? 'Resume' : 'Start'}
+          </Button>
+        ) : (
+          <Button onClick={pauseAnimation}>
+            <FaPause /> Pause
+          </Button>
+        )}
+        
+        <Button onClick={stepBackward} disabled={currentStep === 0 || (isAnimating && !isPaused)}>
+          <FaStepBackward /> Back
+        </Button>
+        
+        <Button onClick={stepForward} disabled={currentStep >= steps.length - 1 || (isAnimating && !isPaused)}>
+          <FaStepForward /> Forward
+        </Button>
+        
+        <Button onClick={resetAnimation} disabled={isAnimating && !isPaused}>
+          <FaUndo /> Reset
         </Button>
       </ControlsContainer>
       
-      {currentDescription && (
-        <InfoPanel>
-          <InfoText>{currentDescription}</InfoText>
-        </InfoPanel>
-      )}
-      
       <GridContainer>
         <Grid>
-          {(currentState?.grid.length > 0 ? currentState.grid : grid).map((row, rowIndex) => (
-            row.map((cell, colIndex) => {
-              const index = rowIndex * 10 + colIndex;
-              const isVisited = currentState?.visited[rowIndex]?.[colIndex] === 1;
-              const isStartCell = startCell?.row === rowIndex && startCell?.col === colIndex;
-              const isHighlighted = currentState?.grid && 
-                currentState?.grid[rowIndex]?.[colIndex] !== grid[rowIndex]?.[colIndex];
-                
-              return (
-                <AnimatedGridCell
-                  key={`${rowIndex}-${colIndex}`}
-                  style={{ backgroundColor: cell }}
-                  onClick={() => handleCellClick(rowIndex, colIndex)}
-                  isHighlighted={isHighlighted}
-                  isActive={isStartCell}
-                  isVisited={isVisited}
-                  animationType={isStartCell ? 'highlight' : isVisited ? 'add' : 'default'}
-                />
-              );
-            })
+          {(steps.length > 0 ? steps[currentStep].grid : grid).map((row, i) => (
+            row.map((color, j) => (
+              <Cell
+                key={`${i}-${j}`}
+                color={color}
+                onClick={() => handleCellClick(i, j)}
+              />
+            ))
           ))}
         </Grid>
       </GridContainer>
+      
+      {steps.length > 0 && currentStep < steps.length && (
+        <InfoPanel>
+          <InfoTitle>Current Step:</InfoTitle>
+          <InfoText>{steps[currentStep].description}</InfoText>
+        </InfoPanel>
+      )}
+      
+      <InfoPanel>
+        <InfoTitle>Time & Space Complexity:</InfoTitle>
+        <InfoText>
+          <strong>Time Complexity:</strong> O(R × C) where R is the number of rows and C is the number of columns.
+        </InfoText>
+        <InfoText>
+          <strong>Space Complexity:</strong> O(R × C) for the visited array and queue.
+        </InfoText>
+      </InfoPanel>
+      
+      <InfoPanel>
+        <InfoTitle>Applications of Flood Fill:</InfoTitle>
+        <InfoText>• Image editing tools (paint bucket tool)</InfoText>
+        <InfoText>• Game development (terrain generation)</InfoText>
+        <InfoText>• Computer vision (region detection)</InfoText>
+        <InfoText>• Maze solving</InfoText>
+      </InfoPanel>
     </PageContainer>
   );
 };

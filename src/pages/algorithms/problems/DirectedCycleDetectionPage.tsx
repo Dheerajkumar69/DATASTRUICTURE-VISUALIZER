@@ -1,22 +1,136 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
+import { FaArrowLeft, FaPlay, FaPause, FaStepForward, FaStepBackward, FaRedo } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
 import ProblemPageTemplate from '../../../components/templates/ProblemPageTemplate';
 import { AlgorithmInfo } from '../../../types/algorithm';
-import GraphProblemVisualizer from '../../../components/visualization/GraphProblemVisualizer';
-import { Legend } from '../../../components/visualization/VisualizationComponents';
+
+// Vertex and Edge Types
+type VertexState = 'unvisited' | 'visiting' | 'visited';
+type EdgeState = 'normal' | 'discovery' | 'back' | 'cross' | 'cycle';
+
+interface Vertex {
+  id: number;
+  x: number;
+  y: number;
+  name: string;
+  state: VertexState;
+}
+
+interface Edge {
+  from: number;
+  to: number;
+  state: EdgeState;
+}
+
+interface Step {
+  vertices: Vertex[];
+  edges: Edge[];
+  description: string;
+  cycleFound: boolean;
+  cyclePath: number[] | null;
+}
 
 // Styled Components
-const LegendContainer = styled.div`
-  margin-top: 1rem;
+const PageContainer = styled.div`
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+`;
+
+const NavigationRow = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+`;
+
+const BackButton = styled(Link)`
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: #3182ce;
+  margin-right: auto;
+  
+  &:hover {
+    text-decoration: underline;
+  }
+`;
+
+const PageHeader = styled.div`
+  margin-bottom: 20px;
+`;
+
+const PageTitle = styled.h1`
+  font-size: 2rem;
+  margin-bottom: 10px;
+`;
+
+const Description = styled.p`
+  color: #666;
+  line-height: 1.5;
+`;
+
+const ControlsContainer = styled.div`
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  align-items: center;
+`;
+
+const Button = styled.button<{ primary?: boolean }>`
+  padding: 8px 16px;
+  background-color: ${props => (props.primary ? '#3182ce' : '#e2e8f0')};
+  color: ${props => (props.primary ? 'white' : '#4a5568')};
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  
+  &:hover {
+    background-color: ${props => (props.primary ? '#2c5282' : '#cbd5e0')};
+  }
+  
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+`;
+
+const GraphContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  flex-wrap: wrap;
+`;
+
+const CanvasContainer = styled.div`
+  flex: 1;
+  min-width: 500px;
+  max-width: 100%;
+  min-height: 500px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  overflow: hidden;
+  position: relative;
+`;
+
+const Canvas = styled.canvas`
+  width: 100%;
+  height: 100%;
 `;
 
 const InfoPanel = styled.div`
   margin-top: 2rem;
   padding: 1rem;
   background-color: ${props => props.theme.colors.card};
+  transition: all 0.3s ease;
   border-radius: ${props => props.theme.borderRadius};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   width: 100%;
 `;
 
@@ -24,14 +138,21 @@ const InfoTitle = styled.h3`
   font-size: 1.2rem;
   margin-bottom: 10px;
   padding-bottom: 8px;
-  border-bottom: 1px solid ${props => props.theme.colors.border};
+  border-bottom: 1px solid #e2e8f0;
 `;
 
-const InfoText = styled.p`
+const InfoText = styled.div`
   font-size: 0.9rem;
   line-height: 1.5;
-  color: ${props => props.theme.colors.textLight};
-  margin-bottom: 0.5rem;
+  color: #4a5568;
+`;
+
+const Select = styled.select`
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #e2e8f0;
+  background-color: white;
+  color: #4a5568;
 `;
 
 const directedCycleDetectionInfo: AlgorithmInfo = {
@@ -191,67 +312,27 @@ bool dfs(vector<vector<int>>& graph, int vertex, vector<int>& state) {
 };
 
 const DirectedCycleDetectionPage: React.FC = () => {
-  // Legend items for the visualization
-  const legendItems = [
-    { color: "#E2E8F0", label: "Unvisited" },
-    { color: "#ECC94B", label: "Visiting" },
-    { color: "#48BB78", label: "Visited" },
-    { color: "#4299E1", label: "Discovery Edge" },
-    { color: "#F56565", label: "Cycle Edge" }
-  ];
-
-  const visualizationComponent = (
-    <>
-      <GraphProblemVisualizer
-        problemType="directed-cycle"
-        height="500px"
-        nodeRadius={25}
-      />
-      
-      <LegendContainer>
-      <Legend items={legendItems} />
-      </LegendContainer>
-      
-      <InfoPanel>
-        <InfoTitle>How Directed Cycle Detection Works:</InfoTitle>
-        <InfoText>
-          The algorithm uses a depth-first search with vertex coloring:
-        </InfoText>
-          <ul>
-            <li><strong>Unvisited:</strong> Vertex has not been processed.</li>
-            <li><strong>Visiting:</strong> Vertex is being processed (in the recursion stack).</li>
-            <li><strong>Visited:</strong> Vertex and all its descendants have been processed.</li>
-          </ul>
-        <InfoText>
-          A cycle is detected when we encounter a vertex that is currently in the 'visiting' state.
-        </InfoText>
-      </InfoPanel>
-      
-      <InfoPanel>
-        <InfoTitle>Applications:</InfoTitle>
-        <ul>
-          <li>Detecting deadlocks in operating systems</li>
-          <li>Finding circular dependencies in packages or modules</li>
-          <li>Checking for cyclic dependencies in build systems</li>
-          <li>Topological sorting (only possible on DAGs - directed acyclic graphs)</li>
-          <li>Detecting infinite loops in program flow analysis</li>
-        </ul>
-      </InfoPanel>
-    </>
-  );
-
   return (
     <ProblemPageTemplate 
       algorithmInfo={directedCycleDetectionInfo}
-      visualizationComponent={visualizationComponent}
+      visualizationComponent={
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+          <p>Graph visualization will be displayed here</p>
+        </div>
+      }
       problemDescription={`
 Given a directed graph, determine if it contains any cycles.
 
 A cycle in a directed graph is a path of vertices and edges such that, starting from some vertex v, it is possible to return to the same vertex v by following the edges in their direction.
 
-For example, in the graph A → B → C → A, there is a cycle involving vertices A, B, and C.
+For example, in a directed graph with vertices A, B, C, and edges A→B, B→C, and C→A, there is a cycle A → B → C → A.
 
-Cycle detection has many practical applications, including deadlock detection in operating systems, finding circular dependencies in packages, and more.
+The algorithm uses a depth-first search (DFS) traversal with three states for each vertex:
+- State 0: Not yet visited
+- State 1: Currently being visited (in the recursion stack)
+- State 2: Completely visited (all descendants have been processed)
+
+If during the DFS traversal, we encounter a vertex that is currently in state 1 (being visited), then we have found a cycle.
       `}
     />
   );

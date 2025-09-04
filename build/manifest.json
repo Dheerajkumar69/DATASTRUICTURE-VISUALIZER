@@ -1,6 +1,16 @@
 {
-  "short_name": "DS Visualizer",
   "name": "Data Structure Visualizer",
+  "short_name": "DS Visualizer",
+  "description": "Interactive visualization tool for data structures and algorithms",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "theme_color": "#6366F1",
+  "background_color": "#F9FAFB",
+  "scope": "/",
+  "lang": "en-US",
+  "dir": "ltr",
+  "categories": ["education", "productivity", "utilities"],
   "icons": [
     {
       "src": "favicon.ico",
@@ -9,17 +19,41 @@
     },
     {
       "src": "logo192.png",
+      "sizes": "192x192",
       "type": "image/png",
-      "sizes": "192x192"
+      "purpose": "maskable any"
     },
     {
       "src": "logo512.png",
+      "sizes": "512x512",
       "type": "image/png",
-      "sizes": "512x512"
+      "purpose": "maskable any"
     }
   ],
-  "start_url": ".",
-  "display": "standalone",
-  "theme_color": "#6366F1",
-  "background_color": "#F9FAFB"
-} 
+  "shortcuts": [
+    {
+      "name": "Data Structures",
+      "short_name": "Data Structures",
+      "description": "Explore various data structures",
+      "url": "/data-structures",
+      "icons": [{
+        "src": "logo192.png",
+        "sizes": "192x192",
+        "type": "image/png"
+      }]
+    },
+    {
+      "name": "Algorithms",
+      "short_name": "Algorithms",
+      "description": "Visualize sorting and search algorithms",
+      "url": "/algorithms",
+      "icons": [{
+        "src": "logo192.png",
+        "sizes": "192x192",
+        "type": "image/png"
+      }]
+    }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false
+}

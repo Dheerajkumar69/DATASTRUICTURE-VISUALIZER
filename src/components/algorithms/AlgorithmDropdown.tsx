@@ -1,7 +1,64 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { FiChevronDown, FiChevronUp } from 'react-icons/fi';
+import { FiChevronDown } from 'react-icons/fi';
+import { Link } from 'react-router-dom';
+
+const DropdownContainer = styled.div`
+  position: relative;
+  width: 250px;
+`;
+
+const DropdownButton = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0.5rem 1rem;
+  background-color: ${({ theme }) => theme.colors.primary};
+  color: white;
+  border: none;
+  border-radius: ${({ theme }) => theme.borderRadius};
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  
+  &:hover {
+    background-color: ${({ theme }) => theme.colors.primaryDark};
+  }
+`;
+
+const DropdownContent = styled.div<{ isOpen: boolean }>`
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  max-height: ${({ isOpen }) => (isOpen ? '300px' : '0')};
+  overflow-y: auto;
+  background-color: white;
+  border-radius: 0 0 ${({ theme }) => theme.borderRadius} ${({ theme }) => theme.borderRadius};
+  box-shadow: ${({ theme }) => theme.shadows.md};
+  z-index: 10;
+  transition: max-height 0.3s ease-in-out;
+  opacity: ${({ isOpen }) => (isOpen ? '1' : '0')};
+  visibility: ${({ isOpen }) => (isOpen ? 'visible' : 'hidden')};
+`;
+
+const DropdownItem = styled(Link)`
+  display: block;
+  padding: 0.5rem 1rem;
+  color: ${({ theme }) => theme.colors.gray800};
+  text-decoration: none;
+  transition: background-color 0.2s;
+  font-size: 0.9rem;
+  
+  &:hover {
+    background-color: ${({ theme }) => theme.colors.gray100};
+  }
+  
+  &:not(:last-child) {
+    border-bottom: 1px solid ${({ theme }) => theme.colors.gray200};
+  }
+`;
 
 interface AlgorithmOption {
   name: string;
@@ -13,68 +70,9 @@ interface AlgorithmDropdownProps {
   options: AlgorithmOption[];
 }
 
-// Styled components
-const DropdownContainer = styled.div`
-  position: relative;
-  display: inline-block;
-  width: 100%;
-`;
-
-const DropdownButton = styled.button`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  padding: 0.75rem 1rem;
-  background-color: ${props => props.theme.colors.card};
-  color: ${props => props.theme.colors.text};
-  border: 1px solid ${props => props.theme.colors.border};
-  border-radius: ${props => props.theme.borderRadius};
-  cursor: pointer;
-  font-weight: 500;
-  transition: all 0.2s ease;
-  
-  &:hover {
-    background-color: ${props => props.theme.colors.hover};
-  }
-  
-  svg {
-    margin-left: 0.5rem;
-  }
-`;
-
-const DropdownMenu = styled.div<{ isOpen: boolean }>`
-  position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
-  background-color: ${props => props.theme.colors.card};
-  border: 1px solid ${props => props.theme.colors.border};
-  border-radius: ${props => props.theme.borderRadius};
-  margin-top: 0.25rem;
-  max-height: ${props => (props.isOpen ? '300px' : '0')};
-  overflow-y: auto;
-  transition: all 0.2s ease;
-  z-index: 10;
-  opacity: ${props => (props.isOpen ? '1' : '0')};
-  visibility: ${props => (props.isOpen ? 'visible' : 'hidden')};
-`;
-
-const Option = styled(Link)`
-  display: block;
-  padding: 0.75rem 1rem;
-  color: ${props => props.theme.colors.text};
-  text-decoration: none;
-  transition: all 0.1s ease;
-  
-  &:hover {
-    background-color: ${props => props.theme.colors.hover};
-  }
-`;
-
-const AlgorithmDropdown: React.FC<AlgorithmDropdownProps> = ({
-  buttonText = 'Select Algorithm',
-  options
+const AlgorithmDropdown: React.FC<AlgorithmDropdownProps> = ({ 
+  buttonText = "Switch Algorithm", 
+  options 
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   
@@ -82,21 +80,39 @@ const AlgorithmDropdown: React.FC<AlgorithmDropdownProps> = ({
     setIsOpen(!isOpen);
   };
   
+  const handleClickOutside = (event: MouseEvent) => {
+    const target = event.target as HTMLElement;
+    if (!target.closest('.algorithm-dropdown')) {
+      setIsOpen(false);
+    }
+  };
+  
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+  
   return (
-    <DropdownContainer>
+    <DropdownContainer className="algorithm-dropdown">
       <DropdownButton onClick={toggleDropdown}>
-        {buttonText}
-        {isOpen ? <FiChevronUp /> : <FiChevronDown />}
+        <span>{buttonText}</span>
+        <FiChevronDown />
       </DropdownButton>
-      <DropdownMenu isOpen={isOpen}>
+      <DropdownContent isOpen={isOpen}>
         {options.map((option, index) => (
-          <Option key={index} to={option.path}>
+          <DropdownItem 
+            key={index} 
+            to={option.path}
+            onClick={() => setIsOpen(false)}
+          >
             {option.name}
-          </Option>
+          </DropdownItem>
         ))}
-      </DropdownMenu>
+      </DropdownContent>
     </DropdownContainer>
   );
 };
 
-export default AlgorithmDropdown; 
+export default AlgorithmDropdown;

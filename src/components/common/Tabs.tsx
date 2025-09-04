@@ -1,58 +1,8 @@
 import React, { useState, ReactNode } from 'react';
-import styled from 'styled-components';
-
-interface TabProps {
-  active: boolean;
-}
-
-const TabsContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-`;
-
-const TabHeader = styled.div`
-  display: flex;
-  overflow-x: auto;
-  scrollbar-width: none;
-  
-  &::-webkit-scrollbar {
-    display: none;
-  }
-  
-  @media (max-width: 768px) {
-    flex-wrap: wrap;
-  }
-`;
-
-const Tab = styled.button<TabProps>`
-  padding: 0.75rem 1.5rem;
-  font-weight: 500;
-  background-color: transparent;
-  border: none;
-  border-bottom: 2px solid ${props => props.active ? props.theme.colors.primary : 'transparent'};
-  color: ${props => props.active ? props.theme.colors.primary : props.theme.colors.textLight};
-  cursor: pointer;
-  transition: all 0.2s;
-  white-space: nowrap;
-  
-  &:hover {
-    color: ${props => props.theme.colors.primary};
-  }
-  
-  @media (max-width: 768px) {
-    padding: 0.5rem 1rem;
-    font-size: 0.9rem;
-  }
-`;
-
-const TabContentContainer = styled.div`
-  padding: 1rem 0;
-`;
 
 interface TabsProps {
   defaultTab: string;
-  children: ReactNode;
+  children: React.ReactNode;
 }
 
 interface TabContentProps {
@@ -62,40 +12,44 @@ interface TabContentProps {
 }
 
 export const Tabs: React.FC<TabsProps> = ({ defaultTab, children }) => {
-  const [activeTab, setActiveTab] = useState(defaultTab);
-  
-  // Extract tab labels and content
-  const tabs: { label: string; value: string; content: ReactNode }[] = [];
-  React.Children.forEach(children, (child) => {
-    if (React.isValidElement<TabContentProps>(child) && child.type === TabContent) {
-      tabs.push({
-        label: child.props.label,
-        value: child.props.value,
-        content: child.props.children
-      });
-    }
-  });
-  
+  const [active, setActive] = useState<string>(defaultTab);
+
+  const tabChildren = React.Children.toArray(children) as React.ReactElement<TabContentProps>[];
+  const labels = tabChildren.map(child => ({ label: child.props.label, value: child.props.value }));
+  const activeChild = tabChildren.find(child => child.props.value === active) || tabChildren[0];
+
   return (
-    <TabsContainer>
-      <TabHeader>
-        {tabs.map(tab => (
-          <Tab
-            key={tab.value}
-            active={activeTab === tab.value}
-            onClick={() => setActiveTab(tab.value)}
+    <div>
+      <div style={{ display: 'flex', gap: 8, marginBottom: 12, flexWrap: 'wrap' }}>
+        {labels.map(({ label, value }) => (
+          <button
+            key={value}
+            onClick={() => setActive(value)}
+            style={{
+              padding: '8px 12px',
+              borderRadius: 6,
+              border: '1px solid #ccc',
+              background: active === value ? '#1f6feb' : 'transparent',
+              color: active === value ? '#fff' : 'inherit',
+              cursor: 'pointer'
+            }}
+            aria-pressed={active === value}
           >
-            {tab.label}
-          </Tab>
+            {label}
+          </button>
         ))}
-      </TabHeader>
-      <TabContentContainer>
-        {tabs.find(tab => tab.value === activeTab)?.content}
-      </TabContentContainer>
-    </TabsContainer>
+      </div>
+      <div>
+        {activeChild}
+      </div>
+    </div>
   );
 };
 
 export const TabContent: React.FC<TabContentProps> = ({ children }) => {
   return <>{children}</>;
-}; 
+};
+
+export default Tabs;
+
+

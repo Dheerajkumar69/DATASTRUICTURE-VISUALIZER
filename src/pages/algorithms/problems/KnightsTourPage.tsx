@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import { FaArrowLeft, FaPlay, FaPause, FaUndo, FaStepForward, FaStepBackward } from 'react-icons/fa';
-import { useRobustAnimation } from '../../../hooks/useRobustAnimation';
-import { AnimationStep, createAnimatedStep, measureAnimationPerformance } from '../../../components/utils/AnimationUtils';
+import { FaArrowLeft, FaPlay, FaPause, FaUndo, FaStepForward, FaStepBackward, FaRandom } from 'react-icons/fa';
 
 // Styled components
 const PageContainer = styled.div`
@@ -67,13 +65,13 @@ const ControlsContainer = styled.div`
   max-width: 800px;
 `;
 
-const Button = styled.button<{ primary?: boolean }>`
+const Button = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 0.75rem 1rem;
-  background-color: ${props => props.primary ? props.theme.colors.primary : props.theme.colors.card};
-  color: ${props => props.primary ? '#ffffff' : props.theme.colors.text};
+  background-color: ${props => props.theme.colors.card};
+  color: ${props => props.theme.colors.text};
   border: 1px solid ${props => props.theme.colors.border};
   border-radius: 0.5rem;
   cursor: pointer;
@@ -81,7 +79,7 @@ const Button = styled.button<{ primary?: boolean }>`
   transition: all 0.2s ease;
   
   &:hover {
-    background-color: ${props => props.primary ? props.theme.colors.primaryDark : props.theme.colors.hover};
+    background-color: ${props => props.theme.colors.hover};
   }
   
   svg {
@@ -159,12 +157,12 @@ const Select = styled.select`
   padding: 0.5rem;
   border: 1px solid ${props => props.theme.colors.border};
   border-radius: ${props => props.theme.borderRadius};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   background-color: ${props => props.theme.colors.card};
   color: ${props => props.theme.colors.text};
 `;
 
-// Define the step interface
-interface StepData {
+interface Step {
   board: number[][];
   currentPosition: { row: number; col: number };
   moveNumber: number;
@@ -173,176 +171,172 @@ interface StepData {
 
 const KnightsTourPage: React.FC = () => {
   const [board, setBoard] = useState<number[][]>([]);
+  const [steps, setSteps] = useState<Step[]>([]);
+  const [currentStep, setCurrentStep] = useState<number>(0);
+  const [isAnimating, setIsAnimating] = useState<boolean>(false);
+  const [isPaused, setIsPaused] = useState<boolean>(false);
+  const [animationSpeed, setAnimationSpeed] = useState<number>(500);
   const [startPosition, setStartPosition] = useState<{ row: number; col: number }>({ row: 0, col: 0 });
-  
-  // Use our enhanced animation hook
-  const {
-    currentState: currentStepData,
-    currentStep,
-    isAnimating,
-    isPaused,
-    animationSpeed,
-    startAnimation: startAnimationBase,
-    pauseAnimation,
-    resetAnimation: resetAnimationBase,
-    stepForward,
-    stepBackward,
-    setAnimationSpeed,
-    setSteps,
-    hasError,
-    errorMessage
-  } = useRobustAnimation<StepData>({
-    initialState: {
-      board: Array(8).fill(0).map(() => Array(8).fill(0)),
-      currentPosition: { row: 0, col: 0 },
-      moveNumber: 0,
-      description: 'Click on any square to start the tour from that position.'
-    },
-    useRAF: true,
-    animationId: 'knights-tour-animation'
-  });
   
   // Initialize the board
   useEffect(() => {
     generateBoard();
   }, []);
   
+  // Animation timer
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    
+    if (isAnimating && !isPaused && currentStep < steps.length - 1) {
+      timer = setTimeout(() => {
+        setCurrentStep(prev => prev + 1);
+      }, animationSpeed);
+    } else if (currentStep >= steps.length - 1) {
+      setIsAnimating(false);
+    }
+    
+    return () => {
+      if (timer) clearTimeout(timer);
+    };
+  }, [isAnimating, isPaused, currentStep, steps, animationSpeed]);
+  
   // Generate the board
   const generateBoard = () => {
     const newBoard: number[][] = Array(8).fill(0).map(() => Array(8).fill(0));
     setBoard(newBoard);
     setSteps([]);
+    setCurrentStep(0);
   };
   
-  // Enhanced start animation with error handling
-  const startAnimation = () => {
-    try {
-      if (!currentStepData || currentStep === 0) {
-        runKnightsTour();
-      } else {
-        startAnimationBase();
-      }
-    } catch (error) {
-      console.error("Error starting Knight's Tour animation:", error);
-    }
-  };
-  
-  // Enhanced reset animation
-  const resetAnimation = () => {
-    try {
-      resetAnimationBase();
-      generateBoard();
-    } catch (error) {
-      console.error("Error resetting Knight's Tour:", error);
-    }
-  };
-  
-  // Run Knight's Tour algorithm with performance measurement
+  // Run Knight's Tour algorithm
   const runKnightsTour = () => {
     if (board.length === 0) return;
     
-    measureAnimationPerformance(() => {
-      try {
-        const stepsData: StepData[] = [];
-        const visited: number[][] = Array(8).fill(0).map(() => Array(8).fill(0));
-        const currentPos = { ...startPosition };
-        let moveNumber = 1;
+    setIsAnimating(false);
+    setIsPaused(false);
+    setCurrentStep(0);
+    
+    const steps: Step[] = [];
+    const visited: number[][] = Array(8).fill(0).map(() => Array(8).fill(0));
+    const currentPos = { ...startPosition };
+    let moveNumber = 1;
+    
+    // Initial step
+    visited[currentPos.row][currentPos.col] = moveNumber;
+    steps.push({
+      board: JSON.parse(JSON.stringify(visited)),
+      currentPosition: { ...currentPos },
+      moveNumber,
+      description: `Starting at position (${currentPos.row}, ${currentPos.col}).`
+    });
+    
+    // Possible moves for a knight
+    const moves = [
+      { dr: -2, dc: -1 }, { dr: -2, dc: 1 },
+      { dr: -1, dc: -2 }, { dr: -1, dc: 2 },
+      { dr: 1, dc: -2 },  { dr: 1, dc: 2 },
+      { dr: 2, dc: -1 },  { dr: 2, dc: 1 }
+    ];
+    
+    // Try to find a valid tour
+    while (moveNumber < 64) {
+      let nextMove = null;
+      let minMoves = 9; // Maximum possible moves from any position
+      
+      // Try each possible move
+      for (const { dr, dc } of moves) {
+        const newRow = currentPos.row + dr;
+        const newCol = currentPos.col + dc;
         
-        // Initial step
-        visited[currentPos.row][currentPos.col] = moveNumber;
-        stepsData.push({
-          board: JSON.parse(JSON.stringify(visited)),
-          currentPosition: { ...currentPos },
-          moveNumber,
-          description: `Starting at position (${currentPos.row}, ${currentPos.col}).`
-        });
-        
-        // Possible moves for a knight
-        const rowMoves = [-2, -2, -1, -1, 1, 1, 2, 2];
-        const colMoves = [-1, 1, -2, 2, -2, 2, -1, 1];
-        
-        // Try to find a valid tour
-        while (moveNumber < 64) {
-          // Find the move with minimum degree
-          let minMoves = Infinity;
-          let nextMove: { row: number; col: number } | null = null;
-          
-          for (let k = 0; k < 8; k++) {
-            const newRow = currentPos.row + rowMoves[k];
-            const newCol = currentPos.col + colMoves[k];
+        if (
+          newRow >= 0 && newRow < 8 &&
+          newCol >= 0 && newCol < 8 &&
+          !visited[newRow][newCol]
+        ) {
+          // Count available moves from this position
+          let availableMoves = 0;
+          for (const move of moves) {
+            const nextRow = newRow + move.dr;
+            const nextCol = newCol + move.dc;
             
             if (
-              newRow >= 0 && newRow < 8 &&
-              newCol >= 0 && newCol < 8 &&
-              !visited[newRow][newCol]
+              nextRow >= 0 && nextRow < 8 &&
+              nextCol >= 0 && nextCol < 8 &&
+              !visited[nextRow][nextCol]
             ) {
-              // Count future moves from this position (Warnsdorff's rule)
-              let availableMoves = 0;
-              
-              for (let m = 0; m < 8; m++) {
-                const nextRow = newRow + rowMoves[m];
-                const nextCol = newCol + colMoves[m];
-                
-                if (
-                  nextRow >= 0 && nextRow < 8 &&
-                  nextCol >= 0 && nextCol < 8 &&
-                  !visited[nextRow][nextCol]
-                ) {
-                  availableMoves++;
-                }
-              }
-              
-              // Update if this move has fewer available next moves
-              if (availableMoves < minMoves) {
-                minMoves = availableMoves;
-                nextMove = { row: newRow, col: newCol };
-              }
+              availableMoves++;
             }
           }
           
-          // If no valid move found, break
-          if (!nextMove) break;
-          
-          // Make the move
-          currentPos.row = (nextMove as { row: number; col: number }).row;
-          currentPos.col = (nextMove as { row: number; col: number }).col;
-          moveNumber++;
-          visited[currentPos.row][currentPos.col] = moveNumber;
-          
-          stepsData.push({
-            board: JSON.parse(JSON.stringify(visited)),
-            currentPosition: { ...currentPos },
-            moveNumber,
-            description: `Move ${moveNumber}: Knight moves to (${currentPos.row}, ${currentPos.col}).`
-          });
+          // Update if this move has fewer available next moves
+          if (availableMoves < minMoves) {
+            minMoves = availableMoves;
+            nextMove = { row: newRow, col: newCol };
+          }
         }
-        
-        // Final step
-        const finalDescription = moveNumber === 64 
-          ? 'Knight\'s Tour completed successfully!'
-          : 'No valid tour found from this starting position.';
-          
-        stepsData.push({
-          board: JSON.parse(JSON.stringify(visited)),
-          currentPosition: { ...currentPos },
-          moveNumber,
-          description: finalDescription
-        });
-        
-        // Convert to animation steps
-        const animationSteps = stepsData.map(data => createAnimatedStep(
-          data,
-          data.description,
-          [],
-          moveNumber === 64 ? 'complete' : 'move'
-        ));
-        
-        setSteps(animationSteps);
-        startAnimationBase();
-      } catch (error) {
-        console.error("Error running Knight's Tour algorithm:", error);
       }
-    }, "Knight's Tour Algorithm Performance");
+      
+      // If no valid move found, break
+      if (!nextMove) break;
+      
+      // Make the move
+      currentPos.row = nextMove.row;
+      currentPos.col = nextMove.col;
+      moveNumber++;
+      visited[currentPos.row][currentPos.col] = moveNumber;
+      
+      steps.push({
+        board: JSON.parse(JSON.stringify(visited)),
+        currentPosition: { ...currentPos },
+        moveNumber,
+        description: `Move ${moveNumber}: Knight moves to (${currentPos.row}, ${currentPos.col}).`
+      });
+    }
+    
+    // Final step
+    steps.push({
+      board: JSON.parse(JSON.stringify(visited)),
+      currentPosition: { ...currentPos },
+      moveNumber,
+      description: moveNumber === 64 
+        ? 'Knight\'s Tour completed successfully!'
+        : 'No valid tour found from this starting position.'
+    });
+    
+    setSteps(steps);
+    setCurrentStep(0);
+  };
+  
+  // Control methods
+  const startAnimation = () => {
+    if (steps.length === 0) {
+      runKnightsTour();
+    }
+    setIsAnimating(true);
+    setIsPaused(false);
+  };
+  
+  const pauseAnimation = () => {
+    setIsPaused(true);
+  };
+  
+  const resetAnimation = () => {
+    setIsAnimating(false);
+    setIsPaused(false);
+    setCurrentStep(0);
+    generateBoard();
+  };
+  
+  const stepForward = () => {
+    if (currentStep < steps.length - 1) {
+      setCurrentStep(prev => prev + 1);
+    }
+  };
+  
+  const stepBackward = () => {
+    if (currentStep > 0) {
+      setCurrentStep(prev => prev - 1);
+    }
   };
   
   const handleSpeedChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -355,27 +349,6 @@ const KnightsTourPage: React.FC = () => {
     setStartPosition({ row, col });
     generateBoard();
   };
-  
-  // Display error state
-  if (hasError) {
-    return (
-      <PageContainer>
-        <NavigationRow>
-          <BackButton to="/algorithms/problems">
-            <FaArrowLeft /> Back to Problems
-          </BackButton>
-        </NavigationRow>
-        
-        <PageHeader>
-          <PageTitle>Knight's Tour - Error</PageTitle>
-          <Description>
-            An error occurred during the animation: {errorMessage}
-          </Description>
-          <Button onClick={resetAnimation}>Reset</Button>
-        </PageHeader>
-      </PageContainer>
-    );
-  }
   
   return (
     <PageContainer>
@@ -408,39 +381,39 @@ const KnightsTourPage: React.FC = () => {
           <option value="200">Fast</option>
         </Select>
         
-        {isAnimating ? (
+        {!isAnimating || isPaused ? (
+          <Button onClick={startAnimation}>
+            <FaPlay /> {isPaused ? 'Resume' : 'Start'}
+          </Button>
+        ) : (
           <Button onClick={pauseAnimation}>
             <FaPause /> Pause
           </Button>
-        ) : (
-          <Button onClick={startAnimation}>
-            <FaPlay /> Start
-          </Button>
         )}
         
-        <Button onClick={stepBackward} disabled={currentStep === 0}>
+        <Button onClick={stepBackward} disabled={currentStep === 0 || (isAnimating && !isPaused)}>
           <FaStepBackward /> Back
         </Button>
         
-        <Button onClick={stepForward} disabled={!currentStepData || (currentStepData.moveNumber >= 64)}>
+        <Button onClick={stepForward} disabled={currentStep >= steps.length - 1 || (isAnimating && !isPaused)}>
           <FaStepForward /> Forward
         </Button>
         
-        <Button onClick={resetAnimation} disabled={isAnimating}>
+        <Button onClick={resetAnimation} disabled={isAnimating && !isPaused}>
           <FaUndo /> Reset
         </Button>
       </ControlsContainer>
       
       <BoardContainer>
         <Board>
-          {(currentStepData ? currentStepData.board : board).map((row, i) => (
+          {(steps.length > 0 ? steps[currentStep].board : board).map((row, i) => (
             row.map((value, j) => (
               <Cell
                 key={`${i}-${j}`}
                 isVisited={value > 0}
-                isCurrent={currentStepData && 
-                  currentStepData.currentPosition.row === i && 
-                  currentStepData.currentPosition.col === j}
+                isCurrent={steps.length > 0 && 
+                  steps[currentStep].currentPosition.row === i && 
+                  steps[currentStep].currentPosition.col === j}
                 onClick={() => handleCellClick(i, j)}
               >
                 {value > 0 && value}
@@ -450,13 +423,13 @@ const KnightsTourPage: React.FC = () => {
         </Board>
       </BoardContainer>
       
-      {currentStepData && (
+      {steps.length > 0 && currentStep < steps.length && (
         <InfoPanel>
           <InfoTitle>Current Step:</InfoTitle>
-          <InfoText>{currentStepData.description}</InfoText>
+          <InfoText>{steps[currentStep].description}</InfoText>
           <InfoText>
             <strong>Move Number: </strong>
-            {currentStepData.moveNumber}
+            {steps[currentStep].moveNumber}
           </InfoText>
         </InfoPanel>
       )}

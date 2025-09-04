@@ -114,7 +114,7 @@ const AlgorithmDescription = styled.p`
 
 const AlgorithmLink = styled(Link)`
   background-color: ${props => props.theme.colors.primary};
-  color: white;
+  color: ${({ theme }) => theme.colors.card};
   padding: 0.75rem 1.25rem;
   border-radius: 0.5rem;
   text-decoration: none;
@@ -149,7 +149,7 @@ const ProblemsPage: React.FC = () => {
           <AlgorithmDescription>
             Visualize how depth-first search (DFS) can be used to detect cycles in an undirected graph, a common problem in graph theory.
           </AlgorithmDescription>
-          <AlgorithmLink to="/algorithms/graph/undirected-cycle-detection">Visualize Cycle Detection</AlgorithmLink>
+          <AlgorithmLink to="/algorithms/problems/undirected-cycle-detection">Visualize Cycle Detection</AlgorithmLink>
         </AlgorithmCard>
 
         <AlgorithmCard>
@@ -162,7 +162,7 @@ const ProblemsPage: React.FC = () => {
           <AlgorithmDescription>
             Learn how to detect cycles in directed graphs, which is essential for identifying circular dependencies and potential deadlocks.
           </AlgorithmDescription>
-          <AlgorithmLink to="/algorithms/graph/directed-cycle-detection">Visualize Directed Cycle Detection</AlgorithmLink>
+          <AlgorithmLink to="/algorithms/problems/directed-cycle-detection">Visualize Directed Cycle Detection</AlgorithmLink>
         </AlgorithmCard>
 
         <AlgorithmCard>
@@ -175,7 +175,7 @@ const ProblemsPage: React.FC = () => {
           <AlgorithmDescription>
             Explore Eulerian paths and circuits, which visit every edge exactly once. This concept has applications in circuit design and network traversal.
           </AlgorithmDescription>
-          <AlgorithmLink to="/algorithms/graph/eulerian-path">Visualize Eulerian Path</AlgorithmLink>
+          <AlgorithmLink to="/algorithms/problems/eulerian-path">Visualize Eulerian Path</AlgorithmLink>
         </AlgorithmCard>
 
         <AlgorithmCard>

@@ -17,10 +17,16 @@ import {
   FiGitBranch,
   FiServer,
   FiAlignLeft,
+  FiShuffle,
   FiFilter,
+  FiArrowUp,
+  FiArrowDown,
   FiArrowUpCircle,
   FiArrowDownCircle,
   FiArrowUpRight,
+  FiArrowDownRight,
+  FiArrowUpLeft,
+  FiArrowDownLeft,
   FiArrowRightCircle,
   FiArrowLeftCircle,
   FiGitMerge,
@@ -46,12 +52,11 @@ import {
 
 const SidebarContainer = styled.aside<{ isOpen: boolean }>`
   width: 280px;
-  background-color: ${({ theme }) => theme.colors.card};
-  border-right: 1px solid ${({ theme }) => theme.colors.border};
+  background-color: ${({ theme }) => theme.colors.background};
+  border-right: 1px solid ${({ theme }) => theme.colors.gray200};
   height: 100%;
   overflow-y: auto;
-  transition: all 0.3s ease;
-  box-shadow: ${({ theme }) => theme.shadows.sm};
+  transition: transform 0.3s ease;
   
   @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
     position: fixed;
@@ -65,14 +70,13 @@ const SidebarHeader = styled.div`
   align-items: center;
   justify-content: space-between;
   padding: 1rem;
-  border-bottom: 1px solid ${({ theme }) => theme.colors.border};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.gray200};
 `;
 
 const SidebarTitle = styled.h2`
   font-size: 1.25rem;
   font-weight: 600;
-  color: ${({ theme }) => theme.colors.text};
-  transition: color 0.3s ease;
+  color: ${({ theme }) => theme.colors.gray800};
 `;
 
 const CloseButton = styled.button`
@@ -119,8 +123,7 @@ const SectionTitle = styled.h3`
   align-items: center;
   font-size: 1rem;
   font-weight: 600;
-  color: ${({ theme }) => theme.colors.text};
-  transition: color 0.3s ease;
+  color: ${({ theme }) => theme.colors.gray700};
   
   svg {
     margin-right: 0.5rem;
@@ -138,25 +141,26 @@ const NavItem = styled(NavLink)`
   align-items: center;
   padding: 0.5rem;
   border-radius: ${({ theme }) => theme.borderRadius};
-  color: ${({ theme }) => theme.colors.textLight};
-  transition: all 0.2s ease-in-out;
+  color: ${({ theme }) => theme.colors.gray600};
+  transition: ${({ theme }) => theme.transitions.default};
   
   svg {
     margin-right: 0.5rem;
   }
   
   &:hover {
-    background-color: ${({ theme }) => theme.colors.hover};
-    color: ${({ theme }) => theme.colors.text};
+    background-color: ${({ theme }) => theme.colors.gray100};
+    color: ${({ theme }) => theme.colors.gray900};
   }
   
   &.active {
-    background-color: ${({ theme }) => theme.colors.primaryDark};
+    background-color: ${({ theme }) => theme.colors.primaryLight};
     color: white;
+    
     
     &:hover {
       background-color: ${({ theme }) => theme.colors.primary};
-      color: white;
+      color: ${({ theme }) => theme.colors.card};
     }
   }
 `;
@@ -170,7 +174,7 @@ const MobileMenuButton = styled.button`
   height: 48px;
   border-radius: 50%;
   background-color: ${({ theme }) => theme.colors.primary};
-  color: white;
+  color: ${({ theme }) => theme.colors.card};
   align-items: center;
   justify-content: center;
   box-shadow: ${({ theme }) => theme.shadows.lg};
@@ -194,7 +198,6 @@ const CategoryLabel = styled.div`
   padding-left: 0.5rem;
   font-weight: 500;
   text-transform: uppercase;
-  transition: color 0.3s ease;
 `;
 
 const NestedNavItem = styled(NavLink)`
@@ -202,8 +205,8 @@ const NestedNavItem = styled(NavLink)`
   align-items: center;
   padding: 0.5rem;
   border-radius: ${({ theme }) => theme.borderRadius};
-  color: ${({ theme }) => theme.colors.textLight};
-  transition: all 0.2s ease-in-out;
+  color: ${({ theme }) => theme.colors.gray600};
+  transition: ${({ theme }) => theme.transitions.default};
   font-size: 0.9rem;
   
   svg {
@@ -211,17 +214,18 @@ const NestedNavItem = styled(NavLink)`
   }
   
   &:hover {
-    background-color: ${({ theme }) => theme.colors.hover};
-    color: ${({ theme }) => theme.colors.text};
+    background-color: ${({ theme }) => theme.colors.gray100};
+    color: ${({ theme }) => theme.colors.gray900};
   }
   
   &.active {
-    background-color: ${({ theme }) => theme.colors.primaryDark};
+    background-color: ${({ theme }) => theme.colors.primaryLight};
     color: white;
+    
     
     &:hover {
       background-color: ${({ theme }) => theme.colors.primary};
-      color: white;
+      color: ${({ theme }) => theme.colors.card};
     }
   }
 `;
@@ -262,30 +266,70 @@ const Sidebar: React.FC = () => {
     setIsOpen(!isOpen);
   };
 
+  // Keyboard navigation handler
+  const handleKeyDown = (event: React.KeyboardEvent) => {
+    const { key, currentTarget } = event;
+    
+    if (key === 'Escape' && window.innerWidth <= 768) {
+      setIsOpen(false);
+      return;
+    }
+
+    if (key === 'Enter' || key === ' ') {
+      if (currentTarget.getAttribute('role') === 'button') {
+        event.preventDefault();
+        (currentTarget as HTMLElement).click();
+      }
+    }
+  };
+
   return (
     <>
-      <SidebarContainer isOpen={isOpen}>
+      <SidebarContainer 
+        isOpen={isOpen}
+        role="navigation"
+        aria-label="Main navigation"
+        onKeyDown={handleKeyDown}
+      >
         <SidebarHeader>
-          <SidebarTitle>Navigation</SidebarTitle>
-          <CloseButton onClick={toggleSidebar}>
-            <FiX size={20} />
+          <SidebarTitle id="navigation-title">Navigation</SidebarTitle>
+          <CloseButton 
+            onClick={toggleSidebar}
+            aria-label="Close navigation menu"
+            title="Close navigation menu"
+          >
+            <FiX size={20} aria-hidden="true" />
           </CloseButton>
         </SidebarHeader>
-        <SidebarContent>
+        <SidebarContent role="menu" aria-labelledby="navigation-title">
           <SidebarSection>
             <SectionHeader 
               isOpen={dataStructuresOpen} 
               onClick={() => setDataStructuresOpen(!dataStructuresOpen)}
+              role="button"
+              tabIndex={0}
+              aria-expanded={dataStructuresOpen}
+              aria-controls="data-structures-menu"
+              aria-label="Toggle data structures section"
+              onKeyDown={handleKeyDown}
             >
               <SectionTitle>
-                <FiDatabase size={18} />
+                <FiDatabase size={18} aria-hidden="true" />
                 Data Structures
               </SectionTitle>
-              {dataStructuresOpen ? <FiChevronDown size={18} /> : <FiChevronRight size={18} />}
+              {dataStructuresOpen ? 
+                <FiChevronDown size={18} aria-hidden="true" /> : 
+                <FiChevronRight size={18} aria-hidden="true" />
+              }
             </SectionHeader>
-            <SectionItems isOpen={dataStructuresOpen}>
-              <NavItem to="/data-structures/array">
-                <FiList size={16} />
+            <SectionItems 
+              isOpen={dataStructuresOpen} 
+              id="data-structures-menu"
+              role="group"
+              aria-labelledby="data-structures-title"
+            >
+              <NavItem to="/data-structures/array" aria-label="Navigate to Array data structure">
+                <FiList size={16} aria-hidden="true" />
                 Array
               </NavItem>
               <NavItem to="/data-structures/linked-list">
@@ -489,15 +533,15 @@ const Sidebar: React.FC = () => {
                 </NestedNavItem>
                 
                 <CategoryLabel>Graph Problems</CategoryLabel>
-                <NestedNavItem to="/algorithms/graph/undirected-cycle-detection">
+                <NestedNavItem to="/algorithms/problems/undirected-cycle-detection">
                   <FaProjectDiagram size={14} />
                   Undirected Cycle Detection
                 </NestedNavItem>
-                <NestedNavItem to="/algorithms/graph/directed-cycle-detection">
+                <NestedNavItem to="/algorithms/problems/directed-cycle-detection">
                   <FaProjectDiagram size={14} />
                   Directed Cycle Detection
                 </NestedNavItem>
-                <NestedNavItem to="/algorithms/graph/eulerian-path">
+                <NestedNavItem to="/algorithms/problems/eulerian-path">
                   <FaRoute size={14} />
                   Eulerian Path
                 </NestedNavItem>
@@ -557,11 +601,17 @@ const Sidebar: React.FC = () => {
         </SidebarContent>
       </SidebarContainer>
       
-      <MobileMenuButton onClick={toggleSidebar}>
-        <FiMenu size={24} />
+      <MobileMenuButton 
+        onClick={toggleSidebar}
+        aria-label={isOpen ? "Close navigation menu" : "Open navigation menu"}
+        aria-expanded={isOpen}
+        aria-controls="navigation-sidebar"
+        title={isOpen ? "Close navigation menu" : "Open navigation menu"}
+      >
+        <FiMenu size={24} aria-hidden="true" />
       </MobileMenuButton>
     </>
   );
 };
 
-export default Sidebar; 
+export default Sidebar;

@@ -259,6 +259,7 @@ const Select = styled.select`
   padding: 0.5rem;
   border: 1px solid ${props => props.theme.colors.border};
   border-radius: ${props => props.theme.borderRadius};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   background-color: ${props => props.theme.colors.card};
   color: ${props => props.theme.colors.text};
 `;
@@ -344,7 +345,7 @@ const MinimumKnightMovesPage: React.FC = () => {
     const steps: Step[] = [];
     
     // Make a deep copy of the grid
-    let gridCopy: Cell[][] = JSON.parse(JSON.stringify(grid));
+    const gridCopy: Cell[][] = JSON.parse(JSON.stringify(grid));
     
     // Initial step
     steps.push({

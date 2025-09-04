@@ -25,7 +25,7 @@ const PageTitle = styled.h1`
 `;
 
 const PageDescription = styled.p`
-  color: ${({ theme }) => theme.colors.gray600};
+  color: ${({ theme }) => theme.colors.textLight};
   max-width: 800px;
   line-height: 1.6;
 `;
@@ -59,7 +59,7 @@ const ControlPanel = styled.div`
   flex-wrap: wrap;
   gap: 1rem;
   padding: 1rem;
-  background-color: white;
+  background-color: ${({ theme }) => theme.colors.card};
   border-radius: ${({ theme }) => theme.borderRadius};
   box-shadow: ${({ theme }) => theme.shadows.sm};
 `;
@@ -110,7 +110,7 @@ const StackContainer = styled.div`
   flex-direction: column;
   gap: 1rem;
   padding: 2rem;
-  background-color: white;
+  background-color: ${({ theme }) => theme.colors.card};
   border-radius: ${({ theme }) => theme.borderRadius};
   box-shadow: ${({ theme }) => theme.shadows.md};
   min-height: 400px;
@@ -180,15 +180,15 @@ const CodeBlock = styled.div`
 
 const CodeTitle = styled.div`
   padding: 0.75rem 1rem;
-  background-color: #333;
-  color: white;
+  background-color: ${({ theme }) => theme.colors.text};
+  color: ${({ theme }) => theme.colors.card};
   font-family: ${({ theme }) => theme.fonts.mono};
   font-size: 0.875rem;
 `;
 
 const InfoPanel = styled.div`
   padding: 1rem;
-  background-color: white;
+  background-color: ${({ theme }) => theme.colors.card};
   border-radius: ${({ theme }) => theme.borderRadius};
   box-shadow: ${({ theme }) => theme.shadows.sm};
 `;
@@ -201,7 +201,7 @@ const InfoTitle = styled.h3`
 `;
 
 const InfoContent = styled.div`
-  color: ${({ theme }) => theme.colors.gray600};
+  color: ${({ theme }) => theme.colors.textLight};
   line-height: 1.6;
   
   ul {

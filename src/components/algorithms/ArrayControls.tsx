@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { FiPlus, FiRefreshCw } from 'react-icons/fi';
+import { FiPlus, FiRefreshCw, FiEdit2 } from 'react-icons/fi';
 
 interface ArrayControlsProps {
   onGenerateRandom: (size: number) => void;
@@ -16,7 +16,14 @@ const ControlsContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
+`;
+
+const ControlRow = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
 `;
 
 const Button = styled.button<{ primary?: boolean }>`
@@ -29,15 +36,11 @@ const Button = styled.button<{ primary?: boolean }>`
   border: 1px solid ${props => props.theme.colors.border};
   border-radius: ${props => props.theme.borderRadius};
   cursor: pointer;
-  font-weight: 500;
-  transition: all 0.2s ease;
+  transition: all 0.2s;
   
   &:hover {
-    background-color: ${props => props.primary ? props.theme.colors.primaryDark : props.theme.colors.hover};
-  }
-  
-  svg {
-    margin-right: 0.5rem;
+    background-color: ${({ primary, theme }) => 
+      primary ? theme.colors.primaryDark : theme.colors.gray100};
   }
   
   &:disabled {
@@ -51,10 +54,37 @@ const ButtonGroup = styled.div`
   gap: 0.5rem;
 `;
 
-const InputGroup = styled.div`
+const SliderContainer = styled.div`
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 1rem;
+`;
+
+const Slider = styled.input`
+  -webkit-appearance: none;
+  width: 150px;
+  height: 8px;
+  background: ${({ theme }) => theme.colors.gray200};
+  outline: none;
+  border-radius: 4px;
+  
+  &::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    background: ${({ theme }) => theme.colors.primary};
+    cursor: pointer;
+    border-radius: 50%;
+  }
+  
+  &::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    background: ${({ theme }) => theme.colors.primary};
+    cursor: pointer;
+    border-radius: 50%;
+  }
 `;
 
 const Label = styled.label`
@@ -76,7 +106,6 @@ const Input = styled.input`
 `;
 
 const CustomArrayInput = styled.input`
-  flex: 1;
   padding: 0.5rem;
   border: 1px solid ${props => props.theme.colors.border};
   border-radius: ${props => props.theme.borderRadius};
@@ -89,12 +118,13 @@ const CustomArrayInput = styled.input`
   }
 `;
 
-const ErrorMessage = styled.div`
-  color: ${props => props.theme.colors.danger};
+const ErrorText = styled.p`
+  color: ${({ theme }) => theme.colors.error};
   font-size: 0.8rem;
-  margin-top: 0.25rem;
+  margin: 0.25rem 0 0 0;
 `;
 
+//
 const ArrayControls: React.FC<ArrayControlsProps> = ({
   onGenerateRandom,
   onCustomArray,
@@ -103,37 +133,59 @@ const ArrayControls: React.FC<ArrayControlsProps> = ({
   disabled = false,
   maxValue = 100
 }) => {
+  const [showCustomInput, setShowCustomInput] = useState(false);
   const [customArrayInput, setCustomArrayInput] = useState('');
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState('');
+  
+  const handleGenerateRandom = () => {
+    onGenerateRandom(arraySize);
+    setShowCustomInput(false);
+    setError('');
+  };
   
   const handleSizeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const size = parseInt(e.target.value, 10);
-    if (size >= 5 && size <= 100) {
-      onSizeChange(size);
+    const newSize = parseInt(e.target.value);
+    if (newSize >= 2 && newSize <= 50) {
+      onSizeChange(newSize);
     }
+  };
+  
+  const toggleCustomInput = () => {
+    setShowCustomInput(!showCustomInput);
+    setError('');
   };
   
   const handleCustomArraySubmit = () => {
     try {
       // Parse the input string to an array of numbers
-      const array = customArrayInput.split(',').map(item => {
-        const num = parseInt(item.trim(), 10);
-        if (isNaN(num)) {
-          throw new Error('All values must be numbers');
-        }
-        if (num < 1 || num > maxValue) {
-          throw new Error(`Values must be between 1 and ${maxValue}`);
-        }
-        return num;
-      });
+      const array = customArrayInput
+        .split(',')
+        .map(item => item.trim())
+        .filter(item => item !== '')
+        .map(item => {
+          const num = Number(item);
+          if (isNaN(num)) {
+            throw new Error(`"${item}" is not a valid number`);
+          }
+          if (num < 0) {
+            throw new Error(`Numbers cannot be negative`);
+          }
+          if (num > maxValue) {
+            throw new Error(`Numbers cannot exceed ${maxValue}`);
+          }
+          return num;
+        });
       
-      if (array.length < 5 || array.length > 100) {
-        setError(`Array length must be between 5 and 100`);
-        return;
+      if (array.length < 2) {
+        throw new Error('Please enter at least 2 numbers');
       }
       
-      setError(null);
+      if (array.length > 50) {
+        throw new Error('Array cannot exceed 50 elements');
+      }
+      
       onCustomArray(array);
+      setError('');
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message);
@@ -145,42 +197,63 @@ const ArrayControls: React.FC<ArrayControlsProps> = ({
   
   return (
     <ControlsContainer>
-      <InputGroup>
-        <Label>Array Size:</Label>
-        <Input
-          type="number"
-          min="5"
-          max="100"
-          value={arraySize}
-          onChange={handleSizeChange}
-          disabled={disabled}
-        />
-        <Button
-          onClick={() => onGenerateRandom(arraySize)}
+      <ControlRow>
+        <Button 
+          primary 
+          onClick={handleGenerateRandom}
           disabled={disabled}
         >
-          <FiRefreshCw /> Random Array
+          <FiRefreshCw />
+          Generate Random Array
         </Button>
-      </InputGroup>
-      
-      <InputGroup>
-        <CustomArrayInput
-          type="text"
-          placeholder="Custom array (comma-separated: 5,2,8,1,9...)"
-          value={customArrayInput}
-          onChange={(e) => setCustomArrayInput(e.target.value)}
+        
+        <Button 
+          onClick={toggleCustomInput}
           disabled={disabled}
-        />
-        <Button
-          onClick={handleCustomArraySubmit}
-          disabled={disabled}
-          primary
         >
-          <FiPlus /> Apply
+          <FiEdit2 />
+          {showCustomInput ? 'Hide Custom Input' : 'Custom Array'}
         </Button>
-      </InputGroup>
+        
+        <SliderContainer>
+          <Label>Size:</Label>
+          <Slider 
+            type="range" 
+            min="2" 
+            max="50" 
+            value={arraySize}
+            onChange={handleSizeChange}
+            disabled={disabled}
+          />
+          <Input 
+            type="number" 
+            min="2" 
+            max="50" 
+            value={arraySize}
+            onChange={handleSizeChange}
+            disabled={disabled}
+          />
+        </SliderContainer>
+      </ControlRow>
       
-      {error && <ErrorMessage>{error}</ErrorMessage>}
+      {showCustomInput && (
+        <ControlRow>
+          <CustomArrayInput 
+            placeholder="Enter numbers separated by commas (e.g., 5, 3, 8, 1, 2)"
+            value={customArrayInput}
+            onChange={(e) => setCustomArrayInput(e.target.value)}
+            disabled={disabled}
+          />
+          <Button 
+            primary
+            onClick={handleCustomArraySubmit}
+            disabled={disabled || !customArrayInput.trim()}
+          >
+            Apply
+          </Button>
+          {error && <ErrorText>{error}</ErrorText>}
+        </ControlRow>
+      )}
     </ControlsContainer>
   );
 };

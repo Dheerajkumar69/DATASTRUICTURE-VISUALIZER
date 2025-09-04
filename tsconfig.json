@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es2015",
+    "target": "es5",
     "lib": [
       "dom",
       "dom.iterable",
@@ -24,9 +24,44 @@
     "noImplicitThis": false,
     "noUnusedLocals": false,
     "noUnusedParameters": false,
-    "typeRoots": ["./node_modules/@types", "./src/types"]
+    "typeRoots": [
+      "./node_modules/@types",
+      "./src/types"
+    ],
+    "strictNullChecks": false,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"],
+      "@components/*": ["src/components/*"],
+      "@pages/*": ["src/pages/*"],
+      "@utils/*": ["src/utils/*"],
+      "@hooks/*": ["src/hooks/*"],
+      "@types/*": ["src/types/*"],
+      "@themes/*": ["src/themes/*"],
+      "@workers/*": ["src/workers/*"],
+      "@tests/*": ["src/tests/*"]
+    },
+    "incremental": true,
+    "sourceMap": true,
+    "declaration": true,
+    "declarationMap": true
   },
   "include": [
-    "src"
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "src/types"
+  ],
+  "exclude": [
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "**/*.spec.ts",
+    "**/*.spec.tsx",
+    "src/tests",
+    "src/setupTests.ts",
+    "src/test-utils",
+    "src/test-utils/**/*",
+    "src/**/test-utils/**/*",
+    "**/__tests__/**/*",
+    "node_modules"
   ]
 }

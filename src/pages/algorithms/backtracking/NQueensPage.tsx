@@ -2,10 +2,10 @@ import React, { useState, useEffect, useCallback, memo, lazy, Suspense } from 'r
 import styled, { keyframes, css } from 'styled-components';
 import { FaArrowLeft, FaPlay, FaPause, FaUndo, FaStepForward, FaStepBackward } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
-import { vs2015 } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 
 // Lazy load the SyntaxHighlighter to improve initial load time
 const SyntaxHighlighter = lazy(() => import('react-syntax-highlighter'));
+import { vs2015 } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 
 // Styled components
 const PageContainer = styled.div`
@@ -146,6 +146,7 @@ const SizeSelect = styled.select`
   padding: 0.5rem;
   border: 1px solid ${props => props.theme.colors.border};
   border-radius: ${props => props.theme.borderRadius};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   background-color: ${props => props.theme.colors.card};
   color: ${props => props.theme.colors.text};
 `;
@@ -665,11 +666,8 @@ function solveNQueens(n) {
 
 // Example: Print all solutions for 4-Queens
 const solutions = solveNQueens(4);
-console.log(\`Found \${solutions.length} solutions:\`);
 solutions.forEach((solution, index) => {
-  console.log(\`Solution \${index + 1}:\`);
   solution.forEach(row => console.log(row));
-  console.log('');
 });`;
   
   return (
@@ -692,7 +690,7 @@ solutions.forEach((solution, index) => {
       <InfoPanel>
         <InfoTitle>How to use this visualization:</InfoTitle>
         <InfoText>1. Select the board size (N) using the dropdown.</InfoText>
-        <InfoText>2. Click &ldquo;Start&rdquo; to begin the visualization of the backtracking algorithm.</InfoText>
+        <InfoText>2. Click "Start" to begin the visualization of the backtracking algorithm.</InfoText>
         <InfoText>3. Use the controls to pause, step forward/backward, or reset the visualization.</InfoText>
         <InfoText>4. Watch as the algorithm tries different queen placements and backtracks when necessary.</InfoText>
         <InfoText>5. A successful solution will show N queens placed on the board with no conflicts.</InfoText>

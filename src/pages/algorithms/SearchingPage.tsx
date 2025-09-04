@@ -25,7 +25,7 @@ const PageTitle = styled.h1`
 `;
 
 const PageDescription = styled.p`
-  color: ${({ theme }) => theme.colors.gray600};
+  color: ${({ theme }) => theme.colors.textLight};
   max-width: 800px;
   line-height: 1.6;
 `;
@@ -59,7 +59,7 @@ const ControlPanel = styled.div`
   flex-wrap: wrap;
   gap: 1rem;
   padding: 1rem;
-  background-color: white;
+  background-color: ${({ theme }) => theme.colors.card};
   border-radius: ${({ theme }) => theme.borderRadius};
   box-shadow: ${({ theme }) => theme.shadows.sm};
 `;
@@ -121,7 +121,7 @@ const VisualizerArea = styled.div`
   flex-direction: column;
   gap: 1rem;
   padding: 2rem;
-  background-color: white;
+  background-color: ${({ theme }) => theme.colors.card};
   border-radius: ${({ theme }) => theme.borderRadius};
   box-shadow: ${({ theme }) => theme.shadows.md};
   min-height: 400px;
@@ -192,15 +192,15 @@ const CodeBlock = styled.div`
 
 const CodeTitle = styled.div`
   padding: 0.75rem 1rem;
-  background-color: #333;
-  color: white;
+  background-color: ${({ theme }) => theme.colors.text};
+  color: ${({ theme }) => theme.colors.card};
   font-family: ${({ theme }) => theme.fonts.mono};
   font-size: 0.875rem;
 `;
 
 const InfoPanel = styled.div`
   padding: 1rem;
-  background-color: white;
+  background-color: ${({ theme }) => theme.colors.card};
   border-radius: ${({ theme }) => theme.borderRadius};
   box-shadow: ${({ theme }) => theme.shadows.sm};
 `;
@@ -213,7 +213,7 @@ const InfoTitle = styled.h3`
 `;
 
 const InfoContent = styled.div`
-  color: ${({ theme }) => theme.colors.gray600};
+  color: ${({ theme }) => theme.colors.textLight};
   line-height: 1.6;
   
   ul {
@@ -230,7 +230,7 @@ const Select = styled.select`
   padding: 0.5rem;
   border: 1px solid ${({ theme }) => theme.colors.gray300};
   border-radius: ${({ theme }) => theme.borderRadius};
-  background-color: white;
+  background-color: ${({ theme }) => theme.colors.card};
   font-family: ${({ theme }) => theme.fonts.sans};
   cursor: pointer;
 `;
@@ -335,12 +335,10 @@ const SearchingPage: React.FC = () => {
   
   // Start search animation
   const startSearch = () => {
-    console.log("Starting search...");
     const target = parseInt(targetValue);
     
     if (isNaN(target)) {
       setMessage('Please enter a valid number to search for');
-      console.log("Invalid target value");
       return;
     }
     
@@ -357,9 +355,6 @@ const SearchingPage: React.FC = () => {
     const steps = algorithm === 'linear' 
       ? generateLinearSearchSteps(target) 
       : generateBinarySearchSteps(target);
-    
-    console.log(`Generated ${steps.length} steps for ${algorithm} search of target ${target}`);
-    
     // Update state with the steps
     setSearchSteps(steps);
     setCurrentStep(0);
@@ -368,14 +363,11 @@ const SearchingPage: React.FC = () => {
     setArray(steps[0]);
     
     // Start animation with a slight delay to ensure state updates
-    console.log("Starting animation sequence...");
     setTimeout(() => {
       // Double-check that we're still in searching state
       if (steps.length > 1) {
-        console.log("Beginning animation from step 0");
         animateSearch(steps, 0);
       } else {
-        console.log("No steps to animate");
       }
     }, 100);
   };
@@ -435,11 +427,8 @@ const SearchingPage: React.FC = () => {
   // Animate search steps
   const animateSearch = (steps: ArrayItemState[][], startStep: number) => {
     // Log for debugging
-    console.log(`Animating step ${startStep} of ${steps.length}`, { isSearching });
-    
     // If not searching or beyond the last step, stop animation
     if (!isSearching || startStep >= steps.length) {
-      console.log("Animation stopped: not searching or beyond last step");
       return;
     }
     
@@ -461,12 +450,10 @@ const SearchingPage: React.FC = () => {
       
       // Set new timeout for next step
       searchTimeoutRef.current = setTimeout(() => {
-        console.log(`Executing scheduled step ${startStep + 1}`);
         animateSearch(steps, startStep + 1);
       }, searchSpeed);
     } else {
       // Last step reached
-      console.log("Animation complete - reached last step");
       setIsSearching(false);
     }
   };
@@ -684,7 +671,6 @@ function binarySearch(arr, target) {
               <Button 
                 variant="primary" 
                 onClick={() => {
-                  console.log("Search button clicked");
                   startSearch();
                 }}
               >

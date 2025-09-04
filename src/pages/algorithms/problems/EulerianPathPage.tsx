@@ -2,41 +2,21 @@ import React from 'react';
 import styled from 'styled-components';
 import ProblemPageTemplate from '../../../components/templates/ProblemPageTemplate';
 import { AlgorithmInfo } from '../../../types/algorithm';
-import GraphProblemVisualizer from '../../../components/visualization/GraphProblemVisualizer';
-import { Legend } from '../../../components/visualization/VisualizationComponents';
 
-// Styled Components
-const LegendContainer = styled.div`
-  margin-top: 1rem;
-  display: flex;
-  justify-content: center;
-`;
-
+// Styled Components (kept minimal here; visualization handled inside templates/visualizers)
 const InfoPanel = styled.div`
   margin-top: 2rem;
   padding: 1rem;
   background-color: ${props => props.theme.colors.card};
+  transition: all 0.3s ease;
   border-radius: ${props => props.theme.borderRadius};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   width: 100%;
 `;
 
-const InfoTitle = styled.h3`
-  font-size: 1.2rem;
-  margin-bottom: 10px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid ${props => props.theme.colors.border};
-`;
-
-const InfoText = styled.p`
-  font-size: 0.9rem;
-  line-height: 1.5;
-  color: ${props => props.theme.colors.textLight};
-  margin-bottom: 0.5rem;
-`;
-
 const eulerianPathInfo: AlgorithmInfo = {
-  name: "Eulerian Path",
-  description: "An Eulerian path is a path in a graph that visits every edge exactly once. An Eulerian circuit is an Eulerian path that starts and ends on the same vertex. This algorithm finds an Eulerian path if one exists.",
+  name: "Eulerian Path Detection",
+  description: "An Eulerian path in a graph is a path that visits every edge exactly once. A graph has an Eulerian path if and only if at most two vertices have an odd degree, and all other vertices have an even degree.",
   timeComplexity: {
     best: 'O(V + E)',
     average: 'O(V + E)',
@@ -44,371 +24,237 @@ const eulerianPathInfo: AlgorithmInfo = {
   },
   spaceComplexity: 'O(V + E)',
   implementations: {
-    javascript: `function findEulerianPath(graph) {
-  if (!graph.length) return [];
-  
-  // Count in-degrees and out-degrees
-  const inDegree = new Array(graph.length).fill(0);
-  const outDegree = new Array(graph.length).fill(0);
+    javascript: `function hasEulerianPath(graph) {
+  // Count vertices with odd degree
+  let oddCount = 0;
   
   for (let i = 0; i < graph.length; i++) {
-    outDegree[i] = graph[i].length;
-    for (const j of graph[i]) {
-      inDegree[j]++;
+    if (graph[i].length % 2 !== 0) {
+      oddCount++;
     }
   }
   
   // Check if Eulerian path exists
-  let startVertex = 0;
-  let endVertex = 0;
-  let startVertices = 0;
-  let endVertices = 0;
+  return oddCount === 0 || oddCount === 2;
+}
+
+function findEulerianPath(graph) {
+  if (!hasEulerianPath(graph)) return null;
   
+  // Find starting vertex (odd degree or any if all even)
+  let start = 0;
   for (let i = 0; i < graph.length; i++) {
-    if (outDegree[i] - inDegree[i] > 1 || inDegree[i] - outDegree[i] > 1) {
-      // No Eulerian path exists
-      return [];
-    }
-    
-    if (outDegree[i] - inDegree[i] === 1) {
-      startVertices++;
-      startVertex = i;
-    } else if (inDegree[i] - outDegree[i] === 1) {
-      endVertices++;
-      endVertex = i;
+    if (graph[i].length % 2 !== 0) {
+      start = i;
+      break;
     }
   }
   
-  // For Eulerian path, either:
-  // 1. All vertices have in-degree = out-degree (Eulerian circuit)
-  // 2. One vertex has out-degree - in-degree = 1 and another has in-degree - out-degree = 1
-  if (!(startVertices === 0 && endVertices === 0) && 
-      !(startVertices === 1 && endVertices === 1)) {
-    return [];
+  // Make a copy of the graph
+  const adjacencyList = [];
+  for (let i = 0; i < graph.length; i++) {
+    adjacencyList[i] = [...graph[i]];
   }
   
-  // Find Eulerian path using Hierholzer's algorithm
   const path = [];
-  const tempGraph = graph.map(arr => [...arr]); // Copy the graph
+  dfs(adjacencyList, start, path);
   
-  function dfs(vertex) {
-    while (tempGraph[vertex].length > 0) {
-      const next = tempGraph[vertex].pop();
-      dfs(next);
+  return path.reverse();
+}
+
+function dfs(graph, vertex, path) {
+  while (graph[vertex].length > 0) {
+    const next = graph[vertex].pop();
+    
+    // Remove the edge in the other direction as well
+    const index = graph[next].indexOf(vertex);
+    if (index !== -1) {
+      graph[next].splice(index, 1);
     }
-    path.push(vertex);
+    
+    dfs(graph, next, path);
   }
   
-  dfs(startVertex);
-  path.reverse(); // Reverse to get the correct order
-  
-  // Check if we've used all edges
-  for (let i = 0; i < tempGraph.length; i++) {
-    if (tempGraph[i].length > 0) {
-      return []; // Not all edges were traversed
-    }
-  }
-  
-  return path;
+  path.push(vertex);
 }`,
-    python: `def find_eulerian_path(graph):
-    if not graph:
-        return []
+    python: `def has_eulerian_path(graph):
+    # Count vertices with odd degree
+    odd_count = 0
     
-    # Count in-degrees and out-degrees
-    in_degree = [0] * len(graph)
-    out_degree = [0] * len(graph)
-    
-    for i in range(len(graph)):
-        out_degree[i] = len(graph[i])
-        for j in graph[i]:
-            in_degree[j] += 1
+    for edges in graph:
+        if len(edges) % 2 != 0:
+            odd_count += 1
     
     # Check if Eulerian path exists
-    start_vertex = 0
-    end_vertex = 0
-    start_vertices = 0
-    end_vertices = 0
+    return odd_count == 0 or odd_count == 2
+
+def find_eulerian_path(graph):
+    if not has_eulerian_path(graph):
+        return None
     
+    # Find starting vertex (odd degree or any if all even)
+    start = 0
     for i in range(len(graph)):
-        if out_degree[i] - in_degree[i] > 1 or in_degree[i] - out_degree[i] > 1:
-            # No Eulerian path exists
-            return []
-        
-        if out_degree[i] - in_degree[i] == 1:
-            start_vertices += 1
-            start_vertex = i
-        elif in_degree[i] - out_degree[i] == 1:
-            end_vertices += 1
-            end_vertex = i
+        if len(graph[i]) % 2 != 0:
+            start = i
+            break
     
-    # For Eulerian path, either:
-    # 1. All vertices have in-degree = out-degree (Eulerian circuit)
-    # 2. One vertex has out-degree - in-degree = 1 and another has in-degree - out-degree = 1
-    if not ((start_vertices == 0 and end_vertices == 0) or 
-           (start_vertices == 1 and end_vertices == 1)):
-        return []
+    # Make a copy of the graph
+    adjacency_list = [list(edges) for edges in graph]
     
-    # Find Eulerian path using Hierholzer's algorithm
     path = []
-    temp_graph = [list(edges) for edges in graph]  # Copy the graph
+    dfs(adjacency_list, start, path)
     
-    def dfs(vertex):
-        while temp_graph[vertex]:
-            next_vertex = temp_graph[vertex].pop()
-            dfs(next_vertex)
-        path.append(vertex)
+    return path[::-1]
+
+def dfs(graph, vertex, path):
+    while graph[vertex]:
+        next_vertex = graph[vertex].pop()
+        
+        # Remove the edge in the other direction as well
+        if vertex in graph[next_vertex]:
+            graph[next_vertex].remove(vertex)
+        
+        dfs(graph, next_vertex, path)
     
-    dfs(start_vertex)
-    path.reverse()  # Reverse to get the correct order
+    path.append(vertex)`,
+    java: `public boolean hasEulerianPath(List<List<Integer>> graph) {
+    // Count vertices with odd degree
+    int oddCount = 0;
     
-    # Check if we've used all edges
-    for edges in temp_graph:
-        if edges:
-            return []  # Not all edges were traversed
-    
-    return path`,
-    java: `public List<Integer> findEulerianPath(List<List<Integer>> graph) {
-    if (graph.isEmpty()) return new ArrayList<>();
-    
-    // Count in-degrees and out-degrees
-    int[] inDegree = new int[graph.size()];
-    int[] outDegree = new int[graph.size()];
-    
-    for (int i = 0; i < graph.size(); i++) {
-        outDegree[i] = graph.get(i).size();
-        for (int j : graph.get(i)) {
-            inDegree[j]++;
+    for (List<Integer> edges : graph) {
+        if (edges.size() % 2 != 0) {
+            oddCount++;
         }
     }
     
     // Check if Eulerian path exists
-    int startVertex = 0;
-    int endVertex = 0;
-    int startVertices = 0;
-    int endVertices = 0;
+    return oddCount == 0 || oddCount == 2;
+}
+
+public List<Integer> findEulerianPath(List<List<Integer>> graph) {
+    if (!hasEulerianPath(graph)) return null;
     
+    // Find starting vertex (odd degree or any if all even)
+    int start = 0;
     for (int i = 0; i < graph.size(); i++) {
-        if (outDegree[i] - inDegree[i] > 1 || inDegree[i] - outDegree[i] > 1) {
-            // No Eulerian path exists
-            return new ArrayList<>();
-        }
-        
-        if (outDegree[i] - inDegree[i] == 1) {
-            startVertices++;
-            startVertex = i;
-        } else if (inDegree[i] - outDegree[i] == 1) {
-            endVertices++;
-            endVertex = i;
+        if (graph.get(i).size() % 2 != 0) {
+            start = i;
+            break;
         }
     }
     
-    // For Eulerian path, either:
-    // 1. All vertices have in-degree = out-degree (Eulerian circuit)
-    // 2. One vertex has out-degree - in-degree = 1 and another has in-degree - out-degree = 1
-    if (!((startVertices == 0 && endVertices == 0) || 
-         (startVertices == 1 && endVertices == 1))) {
-        return new ArrayList<>();
-    }
-    
-    // Find Eulerian path using Hierholzer's algorithm
-    List<Integer> path = new ArrayList<>();
-    List<List<Integer>> tempGraph = new ArrayList<>();
-    
-    // Copy the graph
+    // Make a copy of the graph
+    List<List<Integer>> adjacencyList = new ArrayList<>();
     for (List<Integer> edges : graph) {
-        tempGraph.add(new ArrayList<>(edges));
+        adjacencyList.add(new ArrayList<>(edges));
     }
     
-    dfs(tempGraph, startVertex, path);
-    Collections.reverse(path); // Reverse to get the correct order
+    List<Integer> path = new ArrayList<>();
+    dfs(adjacencyList, start, path);
     
-    // Check if we've used all edges
-    for (List<Integer> edges : tempGraph) {
-        if (!edges.isEmpty()) {
-            return new ArrayList<>(); // Not all edges were traversed
-        }
-    }
-    
+    Collections.reverse(path);
     return path;
 }
 
 private void dfs(List<List<Integer>> graph, int vertex, List<Integer> path) {
     while (!graph.get(vertex).isEmpty()) {
-        int next = graph.get(vertex).remove(graph.get(vertex).size() - 1);
+        int next = graph.get(vertex).remove(0);
+        
+        // Remove the edge in the other direction as well
+        int index = graph.get(next).indexOf(vertex);
+        if (index != -1) {
+            graph.get(next).remove(index);
+        }
+        
         dfs(graph, next, path);
     }
+    
     path.add(vertex);
 }`,
-    cpp: `vector<int> findEulerianPath(vector<vector<int>>& graph) {
-    if (graph.empty()) return {};
+    cpp: `bool hasEulerianPath(vector<vector<int>>& graph) {
+    // Count vertices with odd degree
+    int oddCount = 0;
     
-    // Count in-degrees and out-degrees
-    vector<int> inDegree(graph.size(), 0);
-    vector<int> outDegree(graph.size(), 0);
-    
-    for (int i = 0; i < graph.size(); i++) {
-        outDegree[i] = graph[i].size();
-        for (int j : graph[i]) {
-            inDegree[j]++;
+    for (const auto& edges : graph) {
+        if (edges.size() % 2 != 0) {
+            oddCount++;
         }
     }
     
     // Check if Eulerian path exists
-    int startVertex = 0;
-    int endVertex = 0;
-    int startVertices = 0;
-    int endVertices = 0;
+    return oddCount == 0 || oddCount == 2;
+}
+
+vector<int> findEulerianPath(vector<vector<int>>& graph) {
+    if (!hasEulerianPath(graph)) return {};
     
+    // Find starting vertex (odd degree or any if all even)
+    int start = 0;
     for (int i = 0; i < graph.size(); i++) {
-        if (outDegree[i] - inDegree[i] > 1 || inDegree[i] - outDegree[i] > 1) {
-            // No Eulerian path exists
-            return {};
+        if (graph[i].size() % 2 != 0) {
+            start = i;
+            break;
+        }
+    }
+    
+    // Make a copy of the graph
+    vector<vector<int>> adjacencyList = graph;
+    
+    vector<int> path;
+    dfs(adjacencyList, start, path);
+    
+    reverse(path.begin(), path.end());
+    return path;
+}
+
+void dfs(vector<vector<int>>& graph, int vertex, vector<int>& path) {
+    while (!graph[vertex].empty()) {
+        int next = graph[vertex].back();
+        graph[vertex].pop_back();
+        
+        // Remove the edge in the other direction as well
+        auto it = find(graph[next].begin(), graph[next].end(), vertex);
+        if (it != graph[next].end()) {
+            graph[next].erase(it);
         }
         
-        if (outDegree[i] - inDegree[i] == 1) {
-            startVertices++;
-            startVertex = i;
-        } else if (inDegree[i] - outDegree[i] == 1) {
-            endVertices++;
-            endVertex = i;
-        }
+        dfs(graph, next, path);
     }
     
-    // For Eulerian path, either:
-    // 1. All vertices have in-degree = out-degree (Eulerian circuit)
-    // 2. One vertex has out-degree - in-degree = 1 and another has in-degree - out-degree = 1
-    if (!((startVertices == 0 && endVertices == 0) || 
-         (startVertices == 1 && endVertices == 1))) {
-        return {};
-    }
-    
-    // Find Eulerian path using Hierholzer's algorithm
-    vector<int> path;
-    vector<vector<int>> tempGraph = graph; // Copy the graph
-    
-    function<void(int)> dfs = [&](int vertex) {
-        while (!tempGraph[vertex].empty()) {
-            int next = tempGraph[vertex].back();
-            tempGraph[vertex].pop_back();
-            dfs(next);
-        }
-        path.push_back(vertex);
-    };
-    
-    dfs(startVertex);
-    reverse(path.begin(), path.end()); // Reverse to get the correct order
-    
-    // Check if we've used all edges
-    for (const auto& edges : tempGraph) {
-        if (!edges.empty()) {
-            return {}; // Not all edges were traversed
-        }
-    }
-    
-    return path;
+    path.push_back(vertex);
 }`
   }
 };
 
+const problemDescription = `
+Given an undirected graph, determine if it has an Eulerian path, and if so, find one.
+
+An Eulerian path is a path in a graph that visits every edge exactly once. For an undirected graph to have an Eulerian path:
+- Either all vertices have an even degree (number of edges connected to them), or
+- Exactly two vertices have an odd degree, and the rest have an even degree.
+
+If all vertices have an even degree, the graph has an Eulerian circuit (a closed path). If exactly two vertices have an odd degree, the Eulerian path must start at one of these vertices and end at the other.
+
+The algorithm works by:
+1. Checking if an Eulerian path exists by counting vertices with odd degrees
+2. Finding a starting vertex (one with an odd degree if any)
+3. Using a modified DFS to traverse the graph, removing edges as they are traversed
+4. Constructing the path by adding vertices in reverse order of the DFS completion
+`;
+
 const EulerianPathPage: React.FC = () => {
-  // Legend items for the visualization
-  const legendItems = [
-    { color: "#E2E8F0", label: "Unvisited" },
-    { color: "#ECC94B", label: "Visiting" },
-    { color: "#48BB78", label: "Visited" },
-    { color: "#4299E1", label: "Path Edge" },
-    { color: "#805AD5", label: "Highlighted Path" }
-  ];
-
   const visualizationComponent = (
-    <>
-      <GraphProblemVisualizer
-        problemType="eulerian-path"
-        height="500px"
-        nodeRadius={25}
-        showEdgeWeights={false}
-      />
-      
-      <LegendContainer>
-        <Legend items={legendItems} />
-      </LegendContainer>
-
-      <InfoPanel>
-        <InfoTitle>How Eulerian Path Detection Works:</InfoTitle>
-        <InfoText>
-          The algorithm uses Hierholzer's algorithm to find an Eulerian path:
-        </InfoText>
-        <ul>
-          <li>Check if an Eulerian path exists by analyzing in-degrees and out-degrees of all vertices.</li>
-          <li>For a directed graph to have an Eulerian path, one of these conditions must be met:
-            <ul>
-              <li>All vertices have equal in-degree and out-degree (Eulerian circuit)</li>
-              <li>One vertex has out-degree = in-degree + 1 (start vertex), and another has in-degree = out-degree + 1 (end vertex)</li>
-            </ul>
-          </li>
-          <li>Start from the start vertex and follow edges, removing them as they're traversed.</li>
-          <li>When stuck at a vertex with no outgoing edges, add it to the path.</li>
-          <li>The final path is found by reversing the constructed path.</li>
-        </ul>
-      </InfoPanel>
-      
-      <InfoPanel>
-        <InfoTitle>Conditions for Eulerian Path:</InfoTitle>
-        <InfoText>
-          <strong>Directed Graph:</strong>
-        </InfoText>
-        <ul>
-          <li>The graph must be connected (ignoring edge directions).</li>
-          <li>Either:
-            <ul>
-              <li>All vertices have equal in-degree and out-degree (for Eulerian circuit), or</li>
-              <li>Exactly one vertex has out-degree = in-degree + 1, and exactly one has in-degree = out-degree + 1 (for Eulerian path)</li>
-            </ul>
-          </li>
-        </ul>
-          <InfoText>
-          <strong>Undirected Graph:</strong>
-          </InfoText>
-        <ul>
-          <li>The graph must be connected.</li>
-          <li>Either:
-            <ul>
-              <li>All vertices have even degree (for Eulerian circuit), or</li>
-              <li>Exactly two vertices have odd degree (for Eulerian path)</li>
-            </ul>
-          </li>
-        </ul>
-      </InfoPanel>
-      
-      <InfoPanel>
-        <InfoTitle>Applications:</InfoTitle>
-        <ul>
-          <li>Solving the Chinese Postman Problem (route planning for mail delivery, garbage collection)</li>
-          <li>Genome assembly in bioinformatics</li>
-          <li>Circuit design in electronics</li>
-          <li>Network flow optimization</li>
-          <li>Drawing figures without lifting the pen or retracing edges</li>
-        </ul>
-      </InfoPanel>
-    </>
+    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+      <p>Graph visualization will be displayed here</p>
+    </div>
   );
 
   return (
     <ProblemPageTemplate 
       algorithmInfo={eulerianPathInfo}
       visualizationComponent={visualizationComponent}
-      problemDescription={`
-Given a directed graph, find an Eulerian path if one exists.
-
-An Eulerian path is a path in a graph that visits every edge exactly once. An Eulerian circuit is an Eulerian path that starts and ends at the same vertex.
-
-For a directed graph to have an Eulerian path:
-- The graph must be connected (when edge directions are ignored)
-- Either all vertices must have equal in-degree and out-degree (Eulerian circuit), or exactly one vertex has out-degree = in-degree + 1 (start vertex) and exactly one has in-degree = out-degree + 1 (end vertex)
-
-This problem has applications in route planning, genome assembly in bioinformatics, and circuit design.
-`}
+      problemDescription={problemDescription}
     />
   );
 };

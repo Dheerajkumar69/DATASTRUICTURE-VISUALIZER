@@ -23,15 +23,12 @@ interface CounterState {
  * Test the safe timeout functions
  */
 export async function testSafeTimeout() {
-  console.log('Testing safeTimeout...');
-  
   let timeoutId: NodeJS.Timeout | null = null;
   let testPassed = false;
   
   try {
     // Test successful callback
     await safeTimeout(() => {
-      console.log('Timeout callback executed successfully');
       testPassed = true;
     }, 100);
     
@@ -39,7 +36,6 @@ export async function testSafeTimeout() {
     
     // Test cleanup
     timeoutId = setTimeout(() => {
-      console.log('This should not execute');
     }, 1000);
     
     const cleanupSuccess = safeClearTimeout(timeoutId);
@@ -48,8 +44,6 @@ export async function testSafeTimeout() {
     // Test with null
     const cleanupNull = safeClearTimeout(null);
     console.assert(cleanupNull === false, 'safeClearTimeout should return false with null');
-    
-    console.log('safeTimeout tests passed!');
   } catch (error) {
     console.error('safeTimeout test failed:', error);
     if (timeoutId) {
@@ -62,15 +56,12 @@ export async function testSafeTimeout() {
  * Test the animation frame functions
  */
 export async function testAnimationFrame() {
-  console.log('Testing animation frame functions...');
-  
   let rafId: number | null = null;
   let testPassed = false;
   
   try {
     // Test requestAnimationFrame
     rafId = safeRequestAnimationFrame(() => {
-      console.log('Animation frame callback executed');
       testPassed = true;
     });
     
@@ -96,8 +87,6 @@ export async function testAnimationFrame() {
     // Test with null
     const cancelNull = safeCancelAnimationFrame(null);
     console.assert(cancelNull === false, 'safeCancelAnimationFrame should return false with null');
-    
-    console.log('Animation frame tests passed!');
   } catch (error) {
     console.error('Animation frame test failed:', error);
     if (rafId) {
@@ -110,8 +99,6 @@ export async function testAnimationFrame() {
  * Test animation step creation and cloning
  */
 export function testAnimationSteps() {
-  console.log('Testing animation step functions...');
-  
   try {
     // Create a step
     const step = createAnimatedStep<CounterState>(
@@ -140,8 +127,6 @@ export function testAnimationSteps() {
     console.assert(cloned.state.count === 5, 'Cloned step should have original state value');
     console.assert(cloned.highlightedIndices![0] === 1, 'Cloned step should have original highlights');
     console.assert(cloned.metadata!.extra === 'metadata', 'Cloned step should have original metadata');
-    
-    console.log('Animation step tests passed!');
   } catch (error) {
     console.error('Animation step test failed:', error);
   }
@@ -151,8 +136,6 @@ export function testAnimationSteps() {
  * Test performance monitoring
  */
 export function testPerformanceMonitoring() {
-  console.log('Testing performance monitoring...');
-  
   try {
     // Simple performance test
     measureAnimationPerformance(() => {
@@ -162,8 +145,6 @@ export function testPerformanceMonitoring() {
         sum += i;
       }
     }, 'Test computation');
-    
-    console.log('Performance monitoring test passed!');
   } catch (error) {
     console.error('Performance monitoring test failed:', error);
   }
@@ -173,14 +154,10 @@ export function testPerformanceMonitoring() {
  * Run all tests
  */
 export async function runAllTests() {
-  console.log('Running all animation system tests...');
-  
   await testSafeTimeout();
   await testAnimationFrame();
   testAnimationSteps();
   testPerformanceMonitoring();
-  
-  console.log('All tests completed!');
 }
 
 // Execute tests when in dev mode

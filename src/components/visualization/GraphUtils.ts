@@ -403,7 +403,7 @@ export function detectUndirectedCycle(adjacencyList: number[][]): {
   
   // For tracking steps
   let vertices: Vertex[] = [];
-  let edges: Edge[] = [];
+  const edges: Edge[] = [];
   const steps: Array<{
     vertices: Vertex[],
     edges: Edge[],
@@ -597,7 +597,7 @@ export function findEulerianPath(adjacencyList: number[][]): {
   
   // For tracking steps
   let vertices: Vertex[] = [];
-  let edges: Edge[] = [];
+  const edges: Edge[] = [];
   const steps: Array<{
     vertices: Vertex[],
     edges: Edge[],

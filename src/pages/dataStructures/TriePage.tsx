@@ -25,7 +25,7 @@ const PageTitle = styled.h1`
 `;
 
 const PageDescription = styled.p`
-  color: ${({ theme }) => theme.colors.gray600};
+  color: ${({ theme }) => theme.colors.textLight};
   max-width: 800px;
   line-height: 1.6;
 `;
@@ -59,7 +59,7 @@ const ControlPanel = styled.div`
   flex-wrap: wrap;
   gap: 1rem;
   padding: 1rem;
-  background-color: white;
+  background-color: ${({ theme }) => theme.colors.card};
   border-radius: ${({ theme }) => theme.borderRadius};
   box-shadow: ${({ theme }) => theme.shadows.sm};
 `;
@@ -110,7 +110,7 @@ const TrieContainer = styled.div`
   flex-direction: column;
   gap: 1rem;
   padding: 2rem;
-  background-color: white;
+  background-color: ${({ theme }) => theme.colors.card};
   border-radius: ${({ theme }) => theme.borderRadius};
   box-shadow: ${({ theme }) => theme.shadows.md};
   min-height: 500px;
@@ -185,7 +185,7 @@ const Edge = styled.line`
 const EdgeLabel = styled.text`
   font-family: ${({ theme }) => theme.fonts.mono};
   font-size: 0.75rem;
-  fill: ${({ theme }) => theme.colors.gray600};
+  fill: ${({ theme }) => theme.colors.textLight};
 `;
 
 const WordList = styled.div`
@@ -221,15 +221,15 @@ const CodeBlock = styled.div`
 
 const CodeTitle = styled.div`
   padding: 0.75rem 1rem;
-  background-color: #333;
-  color: white;
+  background-color: ${({ theme }) => theme.colors.text};
+  color: ${({ theme }) => theme.colors.card};
   font-family: ${({ theme }) => theme.fonts.mono};
   font-size: 0.875rem;
 `;
 
 const InfoPanel = styled.div`
   padding: 1rem;
-  background-color: white;
+  background-color: ${({ theme }) => theme.colors.card};
   border-radius: ${({ theme }) => theme.borderRadius};
   box-shadow: ${({ theme }) => theme.shadows.sm};
 `;
@@ -242,7 +242,7 @@ const InfoTitle = styled.h3`
 `;
 
 const InfoContent = styled.div`
-  color: ${({ theme }) => theme.colors.gray600};
+  color: ${({ theme }) => theme.colors.textLight};
   line-height: 1.6;
   
   ul {
@@ -482,20 +482,18 @@ const TriePage: React.FC = () => {
     highlightPath(prefix, false);
   };
   
-  const highlightPath = (str: string, requireEndOfWord = true) => {
-    if (!str) return;
-    
-    // Create a copy of nodes to avoid modifying state directly
+  const highlightPath = (str: string, requireEndOfWord: boolean = true) => {
+    // Reset all highlights
     const newNodes = nodes.map(node => ({
       ...node,
       isHighlighted: false
     }));
     
-    let found = true;
     let current = root;
-    const path: string[] = [];
+    let path = [];
+    let found = true;
     
-    // Follow the path in the trie
+    // Navigate through the trie following the string
     for (let i = 0; i < str.length; i++) {
       const char = str[i];
       
@@ -560,7 +558,7 @@ const TriePage: React.FC = () => {
       
       if (children.length > 0) {
         const totalWidth = (children.length - 1) * horizontalSpacing;
-        const startX = (node.x || 400) - totalWidth / 2;
+        let startX = (node.x || 400) - totalWidth / 2;
         
         children.forEach((child, index) => {
           child.level = level + 1;
@@ -798,8 +796,8 @@ function collectWords(node, prefix, result) {
             <InfoTitle>About Tries (Prefix Trees)</InfoTitle>
             <InfoContent>
               <p>
-                A trie (pronounced &ldquo;try&rdquo;) is a tree-like data structure used to store a dynamic set of strings.
-                Unlike a binary search tree, nodes in a trie do not store their associated key. Instead, a node&rsquo;s position in the tree defines the key with which it is associated.
+                A trie (pronounced "try") is a tree-like data structure used to store a dynamic set of strings.
+                Unlike a binary search tree, nodes in a trie do not store their associated key. Instead, a node's position in the tree defines the key with which it is associated.
               </p>
               <ul>
                 <li><strong>Insert:</strong> Add a word to the trie</li>

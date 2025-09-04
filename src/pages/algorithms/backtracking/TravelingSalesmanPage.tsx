@@ -2,10 +2,10 @@ import React, { useState, useEffect, useCallback, useRef, lazy, Suspense } from 
 import styled, { keyframes } from 'styled-components';
 import { FaArrowLeft, FaPlay, FaPause, FaUndo, FaStepForward, FaStepBackward } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
-import { vs2015 } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 
 // Lazy load the SyntaxHighlighter to improve initial load time
 const SyntaxHighlighter = lazy(() => import('react-syntax-highlighter'));
+import { vs2015 } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 
 // Styled components
 const PageContainer = styled.div`
@@ -146,6 +146,7 @@ const SizeSelect = styled.select`
   padding: 0.5rem;
   border: 1px solid ${props => props.theme.colors.border};
   border-radius: ${props => props.theme.borderRadius};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   background-color: ${props => props.theme.colors.card};
   color: ${props => props.theme.colors.text};
 `;
@@ -645,7 +646,6 @@ function solveTSP(distanceMatrix) {
       if (completeDistance < bestDistance) {
         bestDistance = completeDistance;
         bestPath = [...currentPath];
-        console.log(\`New best tour: \${bestDistance}\`);
       }
       return;
     }
@@ -692,7 +692,7 @@ const distances = [
 
 const { tour, distance } = solveTSP(distances);
 console.log(\`Best tour: \${tour.join(' → ')}\`);
-console.log(\`Tour distance: \${distance}\`);`;
+// console.log(\`Tour distance: \${distance}\`);`;
   
   return (
     <PageContainer>
@@ -705,8 +705,8 @@ console.log(\`Tour distance: \${distance}\`);`;
       <PageHeader>
         <PageTitle>Traveling Salesman Problem</PageTitle>
         <Description>
-          The Traveling Salesman Problem (TSP) asks: &ldquo;Given a list of cities and the distances between each pair of cities, 
-          what is the shortest possible route that visits each city exactly once and returns to the origin city?&rdquo; 
+          The Traveling Salesman Problem (TSP) asks: "Given a list of cities and the distances between each pair of cities, 
+          what is the shortest possible route that visits each city exactly once and returns to the origin city?" 
           This is an NP-hard problem in combinatorial optimization. This visualization shows how backtracking with pruning
           can be used to find the optimal solution.
         </Description>
@@ -715,8 +715,8 @@ console.log(\`Tour distance: \${distance}\`);`;
       <InfoPanel>
         <InfoTitle>How to use this visualization:</InfoTitle>
         <InfoText>1. Select the number of cities using the dropdown.</InfoText>
-        <InfoText>2. Click &ldquo;Regenerate&rdquo; to create a new random set of cities.</InfoText>
-        <InfoText>3. Click &ldquo;Start&rdquo; to begin the visualization of the backtracking algorithm.</InfoText>
+        <InfoText>2. Click "Regenerate" to create a new random set of cities.</InfoText>
+        <InfoText>3. Click "Start" to begin the visualization of the backtracking algorithm.</InfoText>
         <InfoText>4. Use the controls to pause, step forward/backward, or reset the visualization.</InfoText>
         <InfoText>5. The current path being explored is shown in orange, while the best path found so far is shown in green.</InfoText>
       </InfoPanel>

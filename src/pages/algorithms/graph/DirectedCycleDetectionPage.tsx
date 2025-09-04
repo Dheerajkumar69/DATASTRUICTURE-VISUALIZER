@@ -17,7 +17,9 @@ const LegendContainer = styled.div`
 const InfoPanel = styled.div`
   padding: 1rem;
   background-color: ${props => props.theme.colors.card};
+  transition: all 0.3s ease;
   border-radius: ${props => props.theme.borderRadius};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   margin-bottom: 1rem;
   box-shadow: ${props => props.theme.shadows.sm};
 `;
@@ -401,7 +403,7 @@ const DirectedCycleDetectionPage: React.FC = () => {
   
   // Legend items
   const legendItems = [
-    { color: "#D1D5DB", label: "Unvisited" },
+    { color: "#fff", label: "Unvisited" },
     { color: "#ECC94B", label: "Visiting (In DFS stack)" },
     { color: "#10B981", label: "Visited" },
     { color: "#6366F1", label: "Discovery Edge" },

@@ -29,7 +29,7 @@ const Input = styled.input`
 const Button = styled.button`
   padding: 0.5rem 1rem;
   background-color: ${({ theme }) => theme.colors.primary};
-  color: white;
+  color: ${({ theme }) => theme.colors.card};
   border: none;
   border-radius: ${({ theme }) => theme.borderRadius};
   cursor: pointer;
@@ -51,7 +51,7 @@ const ErrorMessage = styled.div`
 `;
 
 const InfoText = styled.div`
-  color: ${({ theme }) => theme.colors.gray600};
+  color: ${({ theme }) => theme.colors.textLight};
   font-size: 0.9rem;
 `;
 

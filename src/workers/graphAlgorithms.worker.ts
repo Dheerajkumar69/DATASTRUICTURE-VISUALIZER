@@ -6,47 +6,6 @@ type MessageData = {
 
 type AdjacencyList = number[][];
 
-// Find bridges in a graph (edges that when removed increase the number of connected components)
-const findBridges = (adjacencyList: AdjacencyList): [number, number][] => {
-  const n = adjacencyList.length;
-  const visited = new Array(n).fill(false);
-  const disc = new Array(n).fill(-1);
-  const low = new Array(n).fill(-1);
-  const parent = new Array(n).fill(-1);
-  const bridges: [number, number][] = [];
-  let time = 0;
-
-  // DFS function to find bridges
-  const bridgeDfs = (u: number) => {
-    visited[u] = true;
-    disc[u] = low[u] = ++time;
-
-    for (const v of adjacencyList[u]) {
-      if (!visited[v]) {
-        parent[v] = u;
-        bridgeDfs(v);
-
-        low[u] = Math.min(low[u], low[v]);
-
-        // Check if the edge u-v is a bridge
-        if (low[v] > disc[u]) {
-          bridges.push([u, v]);
-        }
-      } else if (v !== parent[u]) {
-        low[u] = Math.min(low[u], disc[v]);
-      }
-    }
-  };
-
-  // Check each unvisited vertex
-  for (let i = 0; i < n; i++) {
-    if (!visited[i]) {
-      bridgeDfs(i);
-    }
-  }
-
-  return bridges;
-};
 
 // Detect if a directed graph has cycles
 const detectCyclesDirected = (adjacencyList: AdjacencyList): { hasCycle: boolean; cyclePath: number[] | null } => {
@@ -338,12 +297,14 @@ const findWordLadder = (
 };
 
 // Message event handler
+// eslint-disable-next-line no-restricted-globals
 self.addEventListener('message', (event: MessageEvent<MessageData>) => {
   const { type, payload } = event.data;
   
   switch (type) {
     case 'FIND_EULERIAN_PATH':
       const eulerianResult = findEulerianPath(payload.adjacencyList);
+      // eslint-disable-next-line no-restricted-globals
       self.postMessage({
         type: 'EULERIAN_PATH_RESULT',
         payload: eulerianResult
@@ -352,6 +313,7 @@ self.addEventListener('message', (event: MessageEvent<MessageData>) => {
       
     case 'DETECT_CYCLES_DIRECTED':
       const directedResult = detectCyclesDirected(payload.adjacencyList);
+      // eslint-disable-next-line no-restricted-globals
       self.postMessage({
         type: 'DIRECTED_CYCLES_RESULT',
         payload: directedResult
@@ -360,6 +322,7 @@ self.addEventListener('message', (event: MessageEvent<MessageData>) => {
       
     case 'DETECT_CYCLES_UNDIRECTED':
       const undirectedResult = detectCyclesUndirected(payload.adjacencyList);
+      // eslint-disable-next-line no-restricted-globals
       self.postMessage({
         type: 'UNDIRECTED_CYCLES_RESULT',
         payload: undirectedResult
@@ -372,6 +335,7 @@ self.addEventListener('message', (event: MessageEvent<MessageData>) => {
         payload.endWord,
         payload.wordList
       );
+      // eslint-disable-next-line no-restricted-globals
       self.postMessage({
         type: 'WORD_LADDER_RESULT',
         payload: wordLadderResult
@@ -379,6 +343,7 @@ self.addEventListener('message', (event: MessageEvent<MessageData>) => {
       break;
       
     default:
+      // eslint-disable-next-line no-restricted-globals
       self.postMessage({
         type: 'ERROR',
         payload: { message: `Unknown message type: ${type}` }

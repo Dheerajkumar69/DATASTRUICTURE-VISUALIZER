@@ -151,6 +151,7 @@ const Select = styled.select`
   padding: 0.5rem;
   border: 1px solid ${props => props.theme.colors.border};
   border-radius: ${props => props.theme.borderRadius};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   background-color: ${props => props.theme.colors.card};
   color: ${props => props.theme.colors.text};
 `;
@@ -395,7 +396,7 @@ const LowestCommonAncestorPage: React.FC = () => {
       i++;
     }
     
-    let lca = path1[i - 1]; // The last common node is the LCA
+    const lca = path1[i - 1]; // The last common node is the LCA
     
     // Mark the LCA node
     treeCopy = deepCopyTree(tree);
