@@ -29,7 +29,6 @@
       "./src/types"
     ],
     "strictNullChecks": false,
-    "suppressImplicitAnyIndexErrors": true,
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"],
