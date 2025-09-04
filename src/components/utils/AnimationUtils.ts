@@ -1,7 +1,17 @@
 import { css, keyframes } from 'styled-components';
 
-export const ANIMATION_DURATION = 300;
-export const ANIMATION_EASING = 'ease-in-out';
+export const ANIMATION_DURATION = {
+  SHORT: 150,
+  MEDIUM: 300,
+  LONG: 600,
+} as const;
+
+export const ANIMATION_EASING = {
+  DEFAULT: 'ease-in-out',
+  LINEAR: 'linear',
+  EASE_OUT: 'ease-out',
+  EASE_IN: 'ease-in',
+} as const;
 
 export const fadeIn = keyframes`
   from { opacity: 0; }
@@ -26,8 +36,8 @@ export const highlight = keyframes`
 `;
 
 export const animatedCss = css`
-  animation-duration: ${ANIMATION_DURATION}ms;
-  animation-timing-function: ${ANIMATION_EASING};
+  animation-duration: ${ANIMATION_DURATION.MEDIUM}ms;
+  animation-timing-function: ${ANIMATION_EASING.DEFAULT};
 `;
 
 export type AnimationStep<T> = {
