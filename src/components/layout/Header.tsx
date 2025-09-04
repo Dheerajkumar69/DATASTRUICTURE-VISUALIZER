@@ -3,9 +3,8 @@ import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 <<<<<<< HEAD
 <<<<<<< HEAD
-import { FiSun, FiMoon, FiGithub, FiSettings } from 'react-icons/fi';
-import { useThemeContext } from '../../themes/ThemeContext';
-import { useAccessibility } from '../../hooks/useAccessibility';
+import { FiSun, FiMoon, FiGithub } from 'react-icons/fi';
+import { useTheme } from '../../themes/ThemeContext';
 =======
 import { FiSun, FiMoon, FiGithub } from 'react-icons/fi';
 import { useTheme } from '../../themes/ThemeContext';
@@ -158,21 +157,7 @@ const IconButton = styled.button`
 `;
 
 const Header: React.FC = () => {
-<<<<<<< HEAD
-<<<<<<< HEAD
-  const { isDarkMode, toggleTheme } = useThemeContext();
-  const { announceRef, announce } = useAccessibility();
-
-  const handleThemeToggle = () => {
-    toggleTheme();
-    announce(`Switched to ${isDarkMode ? 'light' : 'dark'} theme`);
-  };
-=======
   const { isDarkMode, toggleTheme } = useTheme();
->>>>>>> parent of 5badfa4 (version 4.0.0)
-=======
-  const { isDarkMode, toggleTheme } = useTheme();
->>>>>>> parent of 5badfa4 (version 4.0.0)
 
   return (
     <HeaderContainer role="banner">
@@ -184,42 +169,11 @@ const Header: React.FC = () => {
         </LogoText>
       </Logo>
       <HeaderActions>
-<<<<<<< HEAD
-<<<<<<< HEAD
-        <ThemeToggle 
-          onClick={handleThemeToggle} 
-          aria-label={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
-          title={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
-        >
-          {isDarkMode ? (
-            <>
-              <FiSun size={16} aria-hidden="true" /> Light Mode
-            </>
-          ) : (
-            <>
-              <FiMoon size={16} aria-hidden="true" /> Dark Mode
-            </>
-          )}
-        </ThemeToggle>
-        
-        <IconButton
-          as="a" 
-          href="https://github.com/dheerajkumargaur/DSA_Visualizer" 
-          target="_blank" 
-          rel="noopener noreferrer" 
-          aria-label="View source code on GitHub (opens in new tab)"
-          title="View source code on GitHub"
-        >
-          <FiGithub size={20} aria-hidden="true" />
-=======
-=======
->>>>>>> parent of 5badfa4 (version 4.0.0)
         <IconButton onClick={toggleTheme} aria-label={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}>
           {isDarkMode ? <FiSun size={20} /> : <FiMoon size={20} />}
         </IconButton>
-        <IconButton as="a" href="https://github.com" target="_blank" rel="noopener noreferrer" aria-label="GitHub repository">
+        <IconButton as="a" href="https://github.com/dheerajkumargaur/DSA_Visualizer" target="_blank" rel="noopener noreferrer" aria-label="GitHub repository">
           <FiGithub size={20} />
->>>>>>> parent of 5badfa4 (version 4.0.0)
         </IconButton>
       </HeaderActions>
       

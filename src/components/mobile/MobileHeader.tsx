@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import { FaBars, FaTimes, FaHome, FaList, FaCode, FaGithub, FaMoon, FaSun } from 'react-icons/fa';
 import { MobileDrawer, responsive, TouchButton } from './MobileOptimizations';
-import { useThemeContext } from '../../themes/ThemeContext';
+import { useTheme } from '../../themes/ThemeContext';
 
 const HeaderContainer = styled.header`
   position: sticky;
@@ -233,7 +233,7 @@ const navItems = [
 
 export const MobileHeader: React.FC = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const { isDarkMode, toggleTheme } = useThemeContext();
+  const { isDarkMode, toggleTheme } = useTheme();
   const location = useLocation();
 
   // Close drawer when route changes

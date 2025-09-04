@@ -1,6 +1,6 @@
 import React, { lazy, Suspense } from 'react';
 import styled from 'styled-components';
-import { useThemeContext } from '../../themes/ThemeContext';
+import { useTheme } from '../../themes/ThemeContext';
 import { getSyntaxHighlighterStyle, getCustomSyntaxStyle } from '../../utils/syntaxHighlighterThemes';
 
 // Lazy load the SyntaxHighlighter for better performance
@@ -61,7 +61,7 @@ interface CodeBlockProps {
 
 const CodeBlock: React.FC<CodeBlockProps> = ({ code, language }) => {
   const [copied, setCopied] = React.useState(false);
-  const { isDarkMode } = useThemeContext();
+  const { isDarkMode } = useTheme();
   
   const handleCopy = () => {
     navigator.clipboard.writeText(code);
