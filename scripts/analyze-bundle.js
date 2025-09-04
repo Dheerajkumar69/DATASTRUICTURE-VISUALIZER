@@ -1,6 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 const { gzipSize } = require('gzip-size');
+const webpack = require('webpack');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 /**
  * Bundle analysis script that provides detailed insights into bundle size and optimization opportunities
@@ -173,6 +175,13 @@ const checkDependencies = () => {
     execSync('npm install --save-dev gzip-size', { stdio: 'inherit' });
     console.log('gzip-size installed successfully.\n');
   }
+};
+
+// Webpack configuration
+module.exports = {
+  plugins: [
+    new BundleAnalyzerPlugin()
+  ]
 };
 
 // Main execution

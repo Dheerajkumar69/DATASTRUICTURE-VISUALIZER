@@ -154,6 +154,12 @@ export class EnhancedErrorBoundary extends Component<Props, State> {
     
     // Call custom error handler
     this.props.onError?.(error, errorInfo);
+    
+    // Log error to console in development
+    if (process.env.NODE_ENV === 'development') {
+      console.error('Error caught by boundary:', error);
+      console.error('Error info:', errorInfo);
+    }
   }
 
   componentWillUnmount() {
@@ -236,6 +242,10 @@ Additional Information:
     
     const mailtoUrl = `mailto:support@datavisualizer.com?subject=${subject}&body=${body}`;
     window.open(mailtoUrl);
+  };
+
+  private handleReload = () => {
+    window.location.reload();
   };
 
   render() {

@@ -7,7 +7,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "build:craco": "craco build",
-    "test": "jest",
+    "test": "react-scripts test",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "test:ci": "jest --coverage --watchAll=false --ci",
@@ -34,8 +34,8 @@
     "size-limit": "npm run build && node scripts/analyze-bundle.js",
     "clean": "rimraf build dist coverage",
     "type-check": "tsc --noEmit",
-    "lint": "eslint src --ext .tsx,.ts --max-warnings 0",
-    "lint:fix": "eslint src --ext .tsx,.ts --fix",
+    "lint": "eslint . --max-warnings 0",
+    "lint:fix": "eslint . --fix",
     "fix-deps": "node scripts/fix-dependencies.js"
   },
   "dependencies": {
@@ -58,7 +58,7 @@
     "framer-motion": "^10.12.18",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-icons": "^4.12.0",
+    "react-icons": "^5.5.0",
     "react-router-dom": "^6.14.1",
     "react-scripts": "5.0.1",
     "react-syntax-highlighter": "^15.5.0",
@@ -66,8 +66,8 @@
     "sourcemap-codec": "^1.4.8",
     "styled-components": "^6.0.4"
   },
-<<<<<<< HEAD
   "overrides": {
+    "eslint": "^9.0.0",
     "nth-check": "^2.1.1",
     "postcss": "^8.4.31",
     "prismjs": "^1.30.0",
@@ -80,7 +80,15 @@
     "abab": "^2.0.6",
     "rimraf": "^6.0.1",
     "source-map": "^0.7.4",
-    "typescript": "^4.9.5"
+    "typescript": "4.9.5",
+    "@types/react": "^18.0.0",
+    "@types/react-dom": "^18.0.0",
+    "react-scripts": {
+      "typescript": "4.9.5"
+    }
+  },
+  "resolutions": {
+    "styled-components": "^6.0.0"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.10.0",
@@ -90,6 +98,7 @@
     "@testing-library/jest-dom": "^6.6.4",
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^14.6.1",
+    "@types/jest": "^29.5.0",
     "@types/jest-axe": "^3.5.9",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
@@ -117,17 +126,6 @@
     "typescript": "^4.9.5",
     "webpack-bundle-analyzer": "^4.10.2"
   },
-=======
-  "devDependencies": {
-    "@types/react": "^18.2.14",
-    "@types/react-dom": "^18.2.6",
-    "@types/react-syntax-highlighter": "^15.5.13",
-    "typescript": "^4.9.5"
-  },
-<<<<<<< HEAD
->>>>>>> parent of 5badfa4 (version 4.0.0)
-=======
->>>>>>> parent of 5badfa4 (version 4.0.0)
   "browserslist": {
     "production": [
       ">0.2%",

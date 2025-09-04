@@ -3,6 +3,9 @@ const { pathsToModuleNameMapper } = require('ts-jest');
 module.exports = {
   // Test environment
   testEnvironment: 'jsdom',
+  testEnvironmentOptions: {
+    url: 'http://localhost',
+  },
 
   // Setup files
   setupFilesAfterEnv: ['<rootDir>/src/setupTests.ts'],
@@ -30,14 +33,16 @@ module.exports = {
     // Handle absolute imports
     '^@/(.*)$': '<rootDir>/src/$1',
     '^src/(.*)$': '<rootDir>/src/$1',
+    '^@components/(.*)$': '<rootDir>/src/components/$1',
+    '^@pages/(.*)$': '<rootDir>/src/pages/$1',
   },
 
   // Coverage configuration
   collectCoverageFrom: [
-    'src/**/*.{ts,tsx}',
+    'src/**/*.{js,jsx,ts,tsx}',
     '!src/**/*.d.ts',
     '!src/index.tsx',
-    '!src/reportWebVitals.ts',
+    '!src/serviceWorker.ts',
     '!src/setupTests.ts',
     '!src/test-utils/**/*',
     '!src/types/**/*',

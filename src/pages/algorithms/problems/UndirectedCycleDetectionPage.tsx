@@ -141,22 +141,11 @@ const Canvas = styled.canvas`
 const InfoPanel = styled.div`
   padding: 1rem;
   background-color: ${props => props.theme.colors.card};
-<<<<<<< HEAD
-<<<<<<< HEAD
   transition: all 0.3s ease;
   border-radius: ${props => props.theme.borderRadius};
-  border: 1px solid ${({ theme }) => theme.colors.border};
-=======
-=======
->>>>>>> parent of 5badfa4 (version 4.0.0)
-  border-radius: 0.5rem;
   border: 1px solid ${props => props.theme.colors.border};
   margin-bottom: 2rem;
   max-width: 800px;
-<<<<<<< HEAD
->>>>>>> parent of 5badfa4 (version 4.0.0)
-=======
->>>>>>> parent of 5badfa4 (version 4.0.0)
   width: 100%;
 `;
 

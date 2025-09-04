@@ -37,8 +37,14 @@
       "@utils/*": ["src/utils/*"],
       "@hooks/*": ["src/hooks/*"],
       "@types/*": ["src/types/*"],
-      "@themes/*": ["src/themes/*"]
-    }
+      "@themes/*": ["src/themes/*"],
+      "@workers/*": ["src/workers/*"],
+      "@tests/*": ["src/tests/*"]
+    },
+    "incremental": true,
+    "sourceMap": true,
+    "declaration": true,
+    "declarationMap": true
   },
   "include": [
     "src/**/*.ts",
