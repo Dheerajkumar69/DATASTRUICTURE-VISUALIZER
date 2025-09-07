@@ -147,7 +147,7 @@ const PriorityNode = styled(motion.div)<{ isHighlighted?: boolean }>`
   width: 80px;
   height: 50px;
   background-color: ${({ theme, isHighlighted }) => 
-    isHighlighted ? theme.colors.primary : 'white'};
+    isHighlighted ? theme.colors.primary : theme.colors.card};
   color: ${({ theme, isHighlighted }) => 
     isHighlighted ? 'white' : theme.colors.gray800};
   border-radius: ${({ theme }) => theme.borderRadius};
@@ -201,7 +201,7 @@ const QueueArrayItem = styled.div<{ isHighlighted?: boolean }>`
   width: 80px;
   height: 50px;
   background-color: ${({ theme, isHighlighted }) => 
-    isHighlighted ? theme.colors.primary : 'white'};
+    isHighlighted ? theme.colors.primary : theme.colors.card};
   color: ${({ theme, isHighlighted }) => 
     isHighlighted ? 'white' : theme.colors.gray800};
   border-radius: ${({ theme }) => theme.borderRadius};

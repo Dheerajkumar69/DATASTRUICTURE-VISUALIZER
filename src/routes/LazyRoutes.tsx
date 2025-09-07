@@ -57,6 +57,16 @@ export const DFSPage = lazy(() => import('../pages/algorithms/graph/DFSPage'));
 export const UndirectedCycleDetectionPage = lazy(() => import('../pages/algorithms/graph/UndirectedCycleDetectionPage'));
 export const DirectedCycleDetectionPage = lazy(() => import('../pages/algorithms/graph/DirectedCycleDetectionPage'));
 export const EulerianPathPage = lazy(() => import('../pages/algorithms/graph/EulerianPathPage'));
+export const DijkstraPage = lazy(() => import('../pages/algorithms/graph/DijkstraPage'));
+export const BellmanFordPage = lazy(() => import('../pages/algorithms/graph/BellmanFordPage'));
+export const FloydWarshallPage = lazy(() => import('../pages/algorithms/graph/FloydWarshallPage'));
+export const TopologicalSortPage = lazy(() => import('../pages/algorithms/graph/TopologicalSortPage'));
+export const SCCPage = lazy(() => import('../pages/algorithms/graph/SCCPage'));
+export const BridgesArticulationPage = lazy(() => import('../pages/algorithms/graph/BridgesArticulationPage'));
+export const BipartiteCheckPage = lazy(() => import('../pages/algorithms/graph/BipartiteCheckPage'));
+export const UnionFindPage = lazy(() => import('../pages/algorithms/graph/UnionFindPage'));
+export const MaxFlowPage = lazy(() => import('../pages/algorithms/graph/MaxFlowPage'));
+export const DAGPathsPage = lazy(() => import('../pages/algorithms/graph/DAGPathsPage'));
 
 // Lazy load tree algorithm pages
 export const BinarySearchTreePage = lazy(() => import('../pages/algorithms/tree/BinarySearchTreePage'));

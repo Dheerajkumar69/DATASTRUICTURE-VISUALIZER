@@ -1,9 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import { FiSun, FiMoon, FiGithub, FiSettings } from 'react-icons/fi';
+import { FiSun, FiMoon, FiGithub } from 'react-icons/fi';
 import { useThemeContext } from '../../themes/ThemeContext';
-import { useAccessibility } from '../../hooks/useAccessibility';
 
 const HeaderContainer = styled.header`
   display: flex;
@@ -112,11 +111,9 @@ const IconButton = styled.button`
 
 const Header: React.FC = () => {
   const { isDarkMode, toggleTheme } = useThemeContext();
-  const { announceRef, announce } = useAccessibility();
 
   const handleThemeToggle = () => {
     toggleTheme();
-    announce(`Switched to ${isDarkMode ? 'light' : 'dark'} theme`);
   };
 
   return (
@@ -130,6 +127,17 @@ const Header: React.FC = () => {
       </Logo>
       
       <HeaderActions>
+        <IconButton
+          as="a" 
+          href="https://github.com/Dheerajkumar69" 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          aria-label="View source code on GitHub (opens in new tab)"
+          title="View source code on GitHub"
+        >
+          <FiGithub size={20} aria-hidden="true" />
+        </IconButton>
+        
         <ThemeToggle 
           onClick={handleThemeToggle} 
           aria-label={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
@@ -145,21 +153,9 @@ const Header: React.FC = () => {
             </>
           )}
         </ThemeToggle>
-        
-        <IconButton
-          as="a" 
-          href="https://github.com/dheerajkumargaur/DSA_Visualizer" 
-          target="_blank" 
-          rel="noopener noreferrer" 
-          aria-label="View source code on GitHub (opens in new tab)"
-          title="View source code on GitHub"
-        >
-          <FiGithub size={20} aria-hidden="true" />
-        </IconButton>
       </HeaderActions>
       
-      {/* Screen reader announcements */}
-      <div ref={announceRef} aria-live="polite" aria-atomic="true" className="sr-only" />
+      
     </HeaderContainer>
   );
 };

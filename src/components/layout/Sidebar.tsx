@@ -488,6 +488,10 @@ const Sidebar: React.FC = () => {
                   <FiCompass size={14} />
                   A* Search
                 </NestedNavItem>
+                <NestedNavItem to="/algorithms/graph/dijkstra">
+                  <FiSearch size={14} />
+                  Dijkstra's Shortest Path
+                </NestedNavItem>
                 <NestedNavItem to="/algorithms/graph/kruskal">
                   <FiGitMerge size={14} />
                   Kruskal's Algorithm
@@ -495,6 +499,42 @@ const Sidebar: React.FC = () => {
                 <NestedNavItem to="/algorithms/graph/prim">
                   <FiGitCommit size={14} />
                   Prim's Algorithm
+                </NestedNavItem>
+                <NestedNavItem to="/algorithms/graph/bellman-ford">
+                  <FiSearch size={14} />
+                  Bellman–Ford
+                </NestedNavItem>
+                <NestedNavItem to="/algorithms/graph/floyd-warshall">
+                  <FiSearch size={14} />
+                  Floyd–Warshall
+                </NestedNavItem>
+                <NestedNavItem to="/algorithms/graph/topological-sort">
+                  <FiGitBranch size={14} />
+                  Topological Sort
+                </NestedNavItem>
+                <NestedNavItem to="/algorithms/graph/scc">
+                  <FaProjectDiagram size={14} />
+                  Strongly Connected Components
+                </NestedNavItem>
+                <NestedNavItem to="/algorithms/graph/bridges-articulation">
+                  <FaProjectDiagram size={14} />
+                  Bridges & Articulation Points
+                </NestedNavItem>
+                <NestedNavItem to="/algorithms/graph/bipartite-check">
+                  <FiGitBranch size={14} />
+                  Bipartite Check
+                </NestedNavItem>
+                <NestedNavItem to="/algorithms/graph/union-find">
+                  <FiLayers size={14} />
+                  Union–Find
+                </NestedNavItem>
+                <NestedNavItem to="/algorithms/graph/max-flow">
+                  <FiBarChart2 size={14} />
+                  Max Flow (Edmonds–Karp)
+                </NestedNavItem>
+                <NestedNavItem to="/algorithms/graph/dag-paths">
+                  <FiGitBranch size={14} />
+                  DAG Shortest/Longest Paths
                 </NestedNavItem>
               </NestedSectionItems>
               

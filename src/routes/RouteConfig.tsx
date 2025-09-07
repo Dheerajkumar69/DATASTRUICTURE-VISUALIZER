@@ -186,6 +186,61 @@ export const routeConfig = [
     loadingMessage: 'Loading Prim\'s algorithm...'
   },
   {
+    path: '/algorithms/graph/dijkstra',
+    component: LazyRoutes.DijkstraPage,
+    loadingMessage: 'Loading Dijkstra\'s shortest path...'
+  },
+  {
+    path: '/algorithms/graph/bellman-ford',
+    component: LazyRoutes.BellmanFordPage,
+    loadingMessage: 'Loading Bellman–Ford...'
+  },
+  {
+    path: '/algorithms/graph/floyd-warshall',
+    component: LazyRoutes.FloydWarshallPage,
+    loadingMessage: 'Loading Floyd–Warshall...'
+  },
+  {
+    path: '/algorithms/graph/topological-sort',
+    component: LazyRoutes.TopologicalSortPage,
+    loadingMessage: 'Loading Topological Sort...'
+  },
+  {
+    path: '/algorithms/graph/scc',
+    component: LazyRoutes.SCCPage,
+    loadingMessage: 'Loading Strongly Connected Components...'
+  },
+  {
+    path: '/algorithms/graph/bridges-articulation',
+    component: LazyRoutes.BridgesArticulationPage,
+    loadingMessage: 'Loading Bridges & Articulation Points...'
+  },
+  {
+    path: '/algorithms/graph/bipartite-check',
+    component: LazyRoutes.BipartiteCheckPage,
+    loadingMessage: 'Loading Bipartite Check...'
+  },
+  {
+    path: '/algorithms/graph/union-find',
+    component: LazyRoutes.UnionFindPage,
+    loadingMessage: 'Loading Union–Find...'
+  },
+  {
+    path: '/algorithms/graph/max-flow',
+    component: LazyRoutes.MaxFlowPage,
+    loadingMessage: 'Loading Max Flow (Edmonds–Karp)...'
+  },
+  {
+    path: '/algorithms/graph/dag-paths',
+    component: LazyRoutes.DAGPathsPage,
+    loadingMessage: 'Loading DAG Shortest/Longest Paths...'
+  },
+  {
+    path: '/algorithms/graph/dijkstra',
+    component: LazyRoutes.DijkstraPage,
+    loadingMessage: 'Loading Dijkstra\'s shortest path...'
+  },
+  {
     path: '/algorithms/graph/undirected-cycle-detection',
     component: LazyRoutes.UndirectedCycleDetectionPage,
     loadingMessage: 'Loading cycle detection...'

@@ -93,10 +93,10 @@ export const MobileLayout: React.FC<MobileLayoutProps> = ({ children }) => {
             © 2024 DataStructure Visualizer. Built with React, TypeScript, and styled-components.
           </FooterText>
           <FooterLinks>
-            <FooterLink href="https://github.com/yourusername/datastructure-visualizer" target="_blank" rel="noopener noreferrer">
+            <FooterLink href="https://github.com/dheerajkumargaur/DSA_Visualizer" target="_blank" rel="noopener noreferrer">
               GitHub
             </FooterLink>
-            <FooterLink href="mailto:your.email@example.com">
+            <FooterLink href="mailto:dheerajkumargaur00@gmail.com">
               Contact
             </FooterLink>
             <FooterLink href="/privacy">

@@ -181,11 +181,11 @@ const InfoContent = styled.div`
   
   li {
     margin-bottom: 0.25rem;
-    color: black;
+    color: ${({ theme }) => theme.colors.text};
   }
   
   strong {
-    color: black;
+    color: ${({ theme }) => theme.colors.text};
   }
 `;
 
@@ -370,7 +370,7 @@ function search(arr, element) {
           
           {message && (
             <InfoPanel>
-              <InfoContent>{message}</InfoContent>
+              <InfoContent aria-live="polite">{message}</InfoContent>
             </InfoPanel>
           )}
           

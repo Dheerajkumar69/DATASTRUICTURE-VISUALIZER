@@ -99,7 +99,7 @@ const Select = styled.select`
 
 const RunButton = styled(motion.button)`
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  color: ${({ theme }) => theme.colors.card};
   border: none;
   padding: 12px 24px;
   border-radius: 8px;
@@ -237,7 +237,7 @@ const ChartBar = styled(motion.div)<{ height: number; color: string; width: numb
 `;
 
 const ChartLabel = styled.div`
-  color: white;
+  color: ${({ theme }) => theme.colors.card};
   font-size: 0.7rem;
   font-weight: bold;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
@@ -261,14 +261,14 @@ const LoadingOverlay = styled(motion.div)`
 
 const LoadingContent = styled.div`
   text-align: center;
-  color: white;
+  color: ${({ theme }) => theme.colors.card};
   
   .spinner {
     width: 40px;
     height: 40px;
     border: 4px solid rgba(255, 255, 255, 0.3);
     border-radius: 50%;
-    border-top-color: white;
+    border-top-color: ${({ theme }) => theme.colors.card};
     animation: spin 1s ease-in-out infinite;
     margin: 0 auto 16px;
   }

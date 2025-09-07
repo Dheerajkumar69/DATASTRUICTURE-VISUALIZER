@@ -30,7 +30,7 @@ const FocusSkipLink = styled.a`
   top: -40px;
   left: 6px;
   background: ${({ theme }) => theme.colors.primary};
-  color: white;
+  color: ${({ theme }) => theme.colors.card};
   padding: 8px;
   z-index: 9999;
   text-decoration: none;
@@ -283,7 +283,7 @@ const ToggleButton = styled.button`
   top: 20px;
   right: 20px;
   background: ${({ theme }) => theme.colors.primary};
-  color: white;
+  color: ${({ theme }) => theme.colors.card};
   border: none;
   border-radius: 50%;
   width: 50px;

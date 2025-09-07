@@ -78,6 +78,17 @@ const GlobalStyle = createGlobalStyle`
     background: ${({ theme }) => theme.colors.primary};
     color: ${({ theme }) => theme.colors.card};
   }
+
+  /* Accessible focus outlines */
+  a:focus-visible,
+  button:focus-visible,
+  [role="button"]:focus-visible,
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible {
+    outline: 2px solid ${({ theme }) => theme.colors.primary};
+    outline-offset: 2px;
+  }
 `;
 
 export default GlobalStyle; 

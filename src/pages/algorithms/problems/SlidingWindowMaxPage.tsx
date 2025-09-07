@@ -83,7 +83,7 @@ const WindowIndicator = styled.div<{ left: number; windowSize: number }>`
     left: 50%;
     transform: translateX(-50%);
     background: #F59E0B;
-    color: white;
+    color: ${({ theme }) => theme.colors.card};
     padding: 2px 8px;
     border-radius: 4px;
     font-size: 12px;

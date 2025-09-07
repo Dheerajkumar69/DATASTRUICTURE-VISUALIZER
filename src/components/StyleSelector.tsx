@@ -1,4 +1,5 @@
 import React, { useState, useCallback } from 'react';
+import { useTheme } from '../themes/ThemeContext';
 import { VisualizationStyle, visualizationStyles, styleUtils } from '../styles/visualizationStyles';
 
 export interface StyleSelectorProps {
@@ -14,6 +15,7 @@ export const StyleSelector: React.FC<StyleSelectorProps> = ({
   allowCustomization = true,
   className = ''
 }) => {
+  const theme = useTheme();
   const [showCustomizer, setShowCustomizer] = useState(false);
   const [customStyle, setCustomStyle] = useState<VisualizationStyle>(currentStyle);
 
@@ -52,12 +54,15 @@ export const StyleSelector: React.FC<StyleSelectorProps> = ({
   }, [currentStyle.id, onStyleChange]);
 
   return (
-    <div className={`style-selector bg-white rounded-lg shadow-md p-4 ${className}`}>
-      <h3 className="text-lg font-semibold text-gray-800 mb-3">Visualization Style</h3>
+    <div
+      className={`style-selector rounded-lg shadow-md p-4 ${className}`}
+      style={{ backgroundColor: theme.colors.card, color: theme.colors.text, border: `1px solid ${theme.colors.border}` }}
+    >
+      <h3 className="text-lg font-semibold mb-3" style={{ color: theme.colors.text }}>Visualization Style</h3>
       
       {/* Style Presets */}
       <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label className="block text-sm font-medium mb-2" style={{ color: theme.colors.text }}>
           Preset Styles
         </label>
         <div className="grid grid-cols-2 gap-2">
@@ -65,14 +70,15 @@ export const StyleSelector: React.FC<StyleSelectorProps> = ({
             <button
               key={style.id}
               onClick={() => handlePresetChange(style.id)}
-              className={`p-3 border-2 rounded-md transition-colors text-left ${
-                currentStyle.id === style.id
-                  ? 'border-blue-500 bg-blue-50'
-                  : 'border-gray-200 hover:border-gray-300'
-              }`}
+              className={`p-3 border-2 rounded-md transition-colors text-left`}
+              style={{
+                borderColor: currentStyle.id === style.id ? theme.colors.primary : theme.colors.border,
+                backgroundColor: currentStyle.id === style.id ? theme.colors.hover : theme.colors.card,
+                color: theme.colors.text
+              }}
             >
               <div className="font-medium text-sm">{style.name}</div>
-              <div className="text-xs text-gray-600 mt-1">{style.description}</div>
+              <div className="text-xs mt-1" style={{ color: theme.colors.textLight }}>{style.description}</div>
               
               {/* Style Preview */}
               <div className="flex items-center mt-2 space-x-1">
@@ -108,7 +114,8 @@ export const StyleSelector: React.FC<StyleSelectorProps> = ({
         <div className="mb-4">
           <button
             onClick={() => setShowCustomizer(!showCustomizer)}
-            className="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 px-4 py-2 rounded-md transition-colors font-medium"
+            className="w-full px-4 py-2 rounded-md transition-colors font-medium"
+            style={{ backgroundColor: theme.colors.hover, color: theme.colors.text }}
           >
             {showCustomizer ? 'Hide Customization' : 'Customize Style'}
           </button>
@@ -117,15 +124,15 @@ export const StyleSelector: React.FC<StyleSelectorProps> = ({
 
       {/* Style Customizer */}
       {showCustomizer && allowCustomization && (
-        <div className="border-t pt-4">
-          <h4 className="font-medium text-gray-800 mb-3">Custom Style Settings</h4>
+        <div className="border-t pt-4" style={{ borderColor: theme.colors.border }}>
+          <h4 className="font-medium mb-3" style={{ color: theme.colors.text }}>Custom Style Settings</h4>
           
           {/* Node Customization */}
           <div className="mb-4">
-            <h5 className="text-sm font-medium text-gray-700 mb-2">Node Appearance</h5>
+            <h5 className="text-sm font-medium mb-2" style={{ color: theme.colors.text }}>Node Appearance</h5>
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-xs text-gray-600 mb-1">Radius</label>
+                <label className="block text-xs mb-1" style={{ color: theme.colors.textLight }}>Radius</label>
                 <input
                   type="range"
                   min="10"
@@ -142,13 +149,13 @@ export const StyleSelector: React.FC<StyleSelectorProps> = ({
                   })}
                   className="w-full"
                 />
-                <span className="text-xs text-gray-500">
+                <span className="text-xs" style={{ color: theme.colors.textLight }}>
                   {customStyle.nodeStyles.default.radius}px
                 </span>
               </div>
 
               <div>
-                <label className="block text-xs text-gray-600 mb-1">Fill Color</label>
+                <label className="block text-xs mb-1" style={{ color: theme.colors.textLight }}>Fill Color</label>
                 <input
                   type="color"
                   value={customStyle.nodeStyles.default.fillColor}
@@ -161,12 +168,13 @@ export const StyleSelector: React.FC<StyleSelectorProps> = ({
                       }
                     }
                   })}
-                  className="w-full h-8 border border-gray-300 rounded"
+                  className="w-full h-8 border rounded"
+                  style={{ borderColor: theme.colors.border }}
                 />
               </div>
 
               <div>
-                <label className="block text-xs text-gray-600 mb-1">Stroke Width</label>
+                <label className="block text-xs mb-1" style={{ color: theme.colors.textLight }}>Stroke Width</label>
                 <input
                   type="range"
                   min="1"
@@ -183,13 +191,13 @@ export const StyleSelector: React.FC<StyleSelectorProps> = ({
                   })}
                   className="w-full"
                 />
-                <span className="text-xs text-gray-500">
+                <span className="text-xs" style={{ color: theme.colors.textLight }}>
                   {customStyle.nodeStyles.default.strokeWidth}px
                 </span>
               </div>
 
               <div>
-                <label className="block text-xs text-gray-600 mb-1">Stroke Color</label>
+                <label className="block text-xs mb-1" style={{ color: theme.colors.textLight }}>Stroke Color</label>
                 <input
                   type="color"
                   value={customStyle.nodeStyles.default.strokeColor}
@@ -202,7 +210,8 @@ export const StyleSelector: React.FC<StyleSelectorProps> = ({
                       }
                     }
                   })}
-                  className="w-full h-8 border border-gray-300 rounded"
+                  className="w-full h-8 border rounded"
+                  style={{ borderColor: theme.colors.border }}
                 />
               </div>
             </div>
@@ -210,10 +219,10 @@ export const StyleSelector: React.FC<StyleSelectorProps> = ({
 
           {/* Edge Customization */}
           <div className="mb-4">
-            <h5 className="text-sm font-medium text-gray-700 mb-2">Edge Appearance</h5>
+            <h5 className="text-sm font-medium mb-2" style={{ color: theme.colors.text }}>Edge Appearance</h5>
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-xs text-gray-600 mb-1">Width</label>
+                <label className="block text-xs mb-1" style={{ color: theme.colors.textLight }}>Width</label>
                 <input
                   type="range"
                   min="1"
@@ -230,13 +239,13 @@ export const StyleSelector: React.FC<StyleSelectorProps> = ({
                   })}
                   className="w-full"
                 />
-                <span className="text-xs text-gray-500">
+                <span className="text-xs" style={{ color: theme.colors.textLight }}>
                   {customStyle.edgeStyles.default.strokeWidth}px
                 </span>
               </div>
 
               <div>
-                <label className="block text-xs text-gray-600 mb-1">Color</label>
+                <label className="block text-xs mb-1" style={{ color: theme.colors.textLight }}>Color</label>
                 <input
                   type="color"
                   value={customStyle.edgeStyles.default.strokeColor}
@@ -249,12 +258,13 @@ export const StyleSelector: React.FC<StyleSelectorProps> = ({
                       }
                     }
                   })}
-                  className="w-full h-8 border border-gray-300 rounded"
+                  className="w-full h-8 border rounded"
+                  style={{ borderColor: theme.colors.border }}
                 />
               </div>
 
               <div>
-                <label className="block text-xs text-gray-600 mb-1">Arrow Size</label>
+                <label className="block text-xs mb-1" style={{ color: theme.colors.textLight }}>Arrow Size</label>
                 <input
                   type="range"
                   min="4"
@@ -271,7 +281,7 @@ export const StyleSelector: React.FC<StyleSelectorProps> = ({
                   })}
                   className="w-full"
                 />
-                <span className="text-xs text-gray-500">
+                <span className="text-xs" style={{ color: theme.colors.textLight }}>
                   {customStyle.edgeStyles.default.arrowSize}px
                 </span>
               </div>
@@ -280,10 +290,10 @@ export const StyleSelector: React.FC<StyleSelectorProps> = ({
 
           {/* Canvas Customization */}
           <div className="mb-4">
-            <h5 className="text-sm font-medium text-gray-700 mb-2">Canvas Settings</h5>
+            <h5 className="text-sm font-medium mb-2" style={{ color: theme.colors.text }}>Canvas Settings</h5>
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-xs text-gray-600 mb-1">Background</label>
+                <label className="block text-xs mb-1" style={{ color: theme.colors.textLight }}>Background</label>
                 <input
                   type="color"
                   value={customStyle.canvasStyle.backgroundColor}
@@ -293,12 +303,13 @@ export const StyleSelector: React.FC<StyleSelectorProps> = ({
                       backgroundColor: e.target.value
                     }
                   })}
-                  className="w-full h-8 border border-gray-300 rounded"
+                  className="w-full h-8 border rounded"
+                  style={{ borderColor: theme.colors.border }}
                 />
               </div>
 
               <div>
-                <label className="flex items-center text-xs text-gray-600">
+                <label className="flex items-center text-xs" style={{ color: theme.colors.textLight }}>
                   <input
                     type="checkbox"
                     checked={customStyle.canvasStyle.showGrid || false}
@@ -318,10 +329,10 @@ export const StyleSelector: React.FC<StyleSelectorProps> = ({
 
           {/* Animation Settings */}
           <div className="mb-4">
-            <h5 className="text-sm font-medium text-gray-700 mb-2">Animation Settings</h5>
+            <h5 className="text-sm font-medium mb-2" style={{ color: theme.colors.text }}>Animation Settings</h5>
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-xs text-gray-600 mb-1">Duration (ms)</label>
+                <label className="block text-xs mb-1" style={{ color: theme.colors.textLight }}>Duration (ms)</label>
                 <input
                   type="range"
                   min="100"
@@ -336,13 +347,13 @@ export const StyleSelector: React.FC<StyleSelectorProps> = ({
                   })}
                   className="w-full"
                 />
-                <span className="text-xs text-gray-500">
+                <span className="text-xs" style={{ color: theme.colors.textLight }}>
                   {customStyle.animationStyle.duration}ms
                 </span>
               </div>
 
               <div>
-                <label className="block text-xs text-gray-600 mb-1">Easing</label>
+                <label className="block text-xs mb-1" style={{ color: theme.colors.textLight }}>Easing</label>
                 <select
                   value={customStyle.animationStyle.easing}
                   onChange={(e) => handleCustomStyleUpdate({
@@ -351,7 +362,8 @@ export const StyleSelector: React.FC<StyleSelectorProps> = ({
                       easing: e.target.value as any
                     }
                   })}
-                  className="w-full px-2 py-1 text-xs border border-gray-300 rounded"
+                  className="w-full px-2 py-1 text-xs border rounded"
+                  style={{ borderColor: theme.colors.border, backgroundColor: theme.colors.card, color: theme.colors.text }}
                 >
                   <option value="linear">Linear</option>
                   <option value="easeIn">Ease In</option>
@@ -363,7 +375,7 @@ export const StyleSelector: React.FC<StyleSelectorProps> = ({
               </div>
 
               <div>
-                <label className="flex items-center text-xs text-gray-600">
+                <label className="flex items-center text-xs" style={{ color: theme.colors.textLight }}>
                   <input
                     type="checkbox"
                     checked={customStyle.animationStyle.pulseEffect}
@@ -380,7 +392,7 @@ export const StyleSelector: React.FC<StyleSelectorProps> = ({
               </div>
 
               <div>
-                <label className="flex items-center text-xs text-gray-600">
+                <label className="flex items-center text-xs" style={{ color: theme.colors.textLight }}>
                   <input
                     type="checkbox"
                     checked={customStyle.animationStyle.trailEffect}
@@ -402,13 +414,15 @@ export const StyleSelector: React.FC<StyleSelectorProps> = ({
           <div className="flex gap-2">
             <button
               onClick={applyCustomStyle}
-              className="flex-1 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md transition-colors font-medium"
+              className="flex-1 px-4 py-2 rounded-md transition-colors font-medium"
+              style={{ backgroundColor: theme.colors.primary, color: theme.colors.card }}
             >
               Apply Style
             </button>
             <button
               onClick={resetStyle}
-              className="flex-1 bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md transition-colors font-medium"
+              className="flex-1 px-4 py-2 rounded-md transition-colors font-medium"
+              style={{ backgroundColor: theme.colors.gray500 || theme.colors.hover, color: theme.colors.card }}
             >
               Reset
             </button>
@@ -417,11 +431,11 @@ export const StyleSelector: React.FC<StyleSelectorProps> = ({
       )}
 
       {/* Current Style Info */}
-      <div className="mt-4 p-3 bg-gray-50 rounded-md">
-        <div className="text-sm font-medium text-gray-800">{currentStyle.name}</div>
-        <div className="text-xs text-gray-600 mt-1">{currentStyle.description}</div>
+      <div className="mt-4 p-3 rounded-md" style={{ backgroundColor: theme.colors.hover }}>
+        <div className="text-sm font-medium" style={{ color: theme.colors.text }}>{currentStyle.name}</div>
+        <div className="text-xs mt-1" style={{ color: theme.colors.textLight }}>{currentStyle.description}</div>
         <div className="flex items-center mt-2 space-x-2">
-          <span className="text-xs text-gray-500">Preview:</span>
+          <span className="text-xs" style={{ color: theme.colors.textLight }}>Preview:</span>
           <div className="flex items-center space-x-1">
             <div
               className="w-3 h-3 rounded-full border"

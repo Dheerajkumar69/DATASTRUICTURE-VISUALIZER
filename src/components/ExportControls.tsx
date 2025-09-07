@@ -1,4 +1,5 @@
 import React, { useState, useRef, useCallback } from 'react';
+import { useTheme } from '../themes/ThemeContext';
 import { VisualizationExporter, ExportConfig, exportUtils } from '../utils/exportUtils';
 
 export interface ExportControlsProps {
@@ -16,6 +17,7 @@ export const ExportControls: React.FC<ExportControlsProps> = ({
   onExportError,
   className = ''
 }) => {
+  const theme = useTheme();
   const [isRecording, setIsRecording] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const [recordingStats, setRecordingStats] = useState({ frameCount: 0, isRecording: false });
@@ -155,20 +157,24 @@ export const ExportControls: React.FC<ExportControlsProps> = ({
   }, [exportConfig]);
 
   return (
-    <div className={`export-controls bg-white rounded-lg shadow-md p-4 ${className}`}>
+    <div
+      className={`export-controls rounded-lg shadow-md p-4 ${className}`}
+      style={{ backgroundColor: theme.colors.card, color: theme.colors.text, border: `1px solid ${theme.colors.border}` }}
+    >
       <div className="mb-4">
-        <h3 className="text-lg font-semibold text-gray-800 mb-3">Export Visualization</h3>
+        <h3 className="text-lg font-semibold mb-3" style={{ color: theme.colors.text }}>Export Visualization</h3>
         
         {/* Export Configuration */}
         <div className="grid grid-cols-2 gap-4 mb-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium mb-1" style={{ color: theme.colors.text }}>
               Format
             </label>
             <select
               value={exportConfig.format}
               onChange={(e) => updateConfig('format', e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border rounded-md focus:outline-none"
+              style={{ borderColor: theme.colors.border, backgroundColor: theme.colors.card, color: theme.colors.text }}
             >
               {browserSupport.gif && <option value="gif">GIF</option>}
               {browserSupport.webm && <option value="webm">WebM Video</option>}
@@ -179,7 +185,7 @@ export const ExportControls: React.FC<ExportControlsProps> = ({
           </div>
           
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium mb-1" style={{ color: theme.colors.text }}>
               Quality
             </label>
             <input
@@ -191,13 +197,13 @@ export const ExportControls: React.FC<ExportControlsProps> = ({
               onChange={(e) => updateConfig('quality', parseFloat(e.target.value))}
               className="w-full"
             />
-            <span className="text-xs text-gray-500">
+            <span className="text-xs" style={{ color: theme.colors.textLight }}>
               {Math.round((exportConfig.quality || 0.8) * 100)}%
             </span>
           </div>
           
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium mb-1" style={{ color: theme.colors.text }}>
               FPS
             </label>
             <input
@@ -206,28 +212,30 @@ export const ExportControls: React.FC<ExportControlsProps> = ({
               max="60"
               value={exportConfig.fps}
               onChange={(e) => updateConfig('fps', parseInt(e.target.value))}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border rounded-md focus:outline-none"
+              style={{ borderColor: theme.colors.border, backgroundColor: theme.colors.card, color: theme.colors.text }}
             />
           </div>
           
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium mb-1" style={{ color: theme.colors.text }}>
               Background
             </label>
             <input
               type="color"
               value={exportConfig.backgroundColor}
               onChange={(e) => updateConfig('backgroundColor', e.target.value)}
-              className="w-full h-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full h-10 border rounded-md focus:outline-none"
+              style={{ borderColor: theme.colors.border, backgroundColor: theme.colors.card, color: theme.colors.text }}
             />
           </div>
         </div>
 
         {/* Configuration Errors */}
         {configErrors.length > 0 && (
-          <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-md">
-            <h4 className="text-sm font-medium text-red-800 mb-1">Configuration Issues:</h4>
-            <ul className="text-xs text-red-600">
+          <div className="mb-4 p-3 rounded-md" style={{ backgroundColor: theme.colors.hover, border: `1px solid ${theme.colors.border}` }}>
+            <h4 className="text-sm font-medium mb-1" style={{ color: theme.colors.text }}>Configuration Issues:</h4>
+            <ul className="text-xs" style={{ color: theme.colors.textLight }}>
               {configErrors.map((error, index) => (
                 <li key={index}>• {error}</li>
               ))}
@@ -238,26 +246,27 @@ export const ExportControls: React.FC<ExportControlsProps> = ({
 
       {/* Recording Status */}
       {(isRecording || recordingStats.frameCount > 0) && (
-        <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-md">
+        <div className="mb-4 p-3 rounded-md" style={{ backgroundColor: theme.colors.hover, border: `1px solid ${theme.colors.border}` }}>
           <div className="flex items-center justify-between">
-            <span className="text-sm font-medium text-blue-800">
+            <span className="text-sm font-medium" style={{ color: theme.colors.text }}>
               {isRecording ? (
                 <>
-                  <span className="animate-pulse inline-block w-2 h-2 bg-red-500 rounded-full mr-2"></span>
+                  <span className="animate-pulse inline-block w-2 h-2 rounded-full mr-2" style={{ backgroundColor: theme.colors.danger || '#ef4444' }}></span>
                   Recording...
                 </>
               ) : (
                 'Recording Stopped'
               )}
             </span>
-            <span className="text-xs text-blue-600">
+            <span className="text-xs" style={{ color: theme.colors.textLight }}>
               {recordingStats.frameCount} frames
             </span>
           </div>
           {isRecording && (
             <button
               onClick={handleCaptureFrame}
-              className="mt-2 text-xs bg-blue-100 hover:bg-blue-200 text-blue-800 px-2 py-1 rounded"
+              className="mt-2 text-xs px-2 py-1 rounded"
+              style={{ backgroundColor: theme.colors.hover, color: theme.colors.text }}
             >
               Capture Frame
             </button>
@@ -274,7 +283,8 @@ export const ExportControls: React.FC<ExportControlsProps> = ({
               <button
                 onClick={handleStartGifRecording}
                 disabled={isExporting || configErrors.length > 0}
-                className="flex-1 bg-green-500 hover:bg-green-600 disabled:bg-gray-300 text-white px-4 py-2 rounded-md transition-colors font-medium"
+                className="flex-1 px-4 py-2 rounded-md transition-colors font-medium"
+                style={{ backgroundColor: theme.colors.success || '#22c55e', color: theme.colors.card, opacity: (isExporting || configErrors.length > 0) ? 0.6 : 1 }}
               >
                 {isExporting ? 'Starting...' : 'Start GIF Recording'}
               </button>
@@ -282,7 +292,8 @@ export const ExportControls: React.FC<ExportControlsProps> = ({
               <button
                 onClick={handleStopGifRecording}
                 disabled={isExporting}
-                className="flex-1 bg-red-500 hover:bg-red-600 disabled:bg-gray-300 text-white px-4 py-2 rounded-md transition-colors font-medium"
+                className="flex-1 px-4 py-2 rounded-md transition-colors font-medium"
+                style={{ backgroundColor: theme.colors.danger || '#ef4444', color: theme.colors.card, opacity: isExporting ? 0.6 : 1 }}
               >
                 {isExporting ? 'Processing...' : 'Stop & Export GIF'}
               </button>
@@ -297,7 +308,8 @@ export const ExportControls: React.FC<ExportControlsProps> = ({
               <button
                 onClick={handleStartVideoRecording}
                 disabled={isExporting || configErrors.length > 0}
-                className="flex-1 bg-purple-500 hover:bg-purple-600 disabled:bg-gray-300 text-white px-4 py-2 rounded-md transition-colors font-medium"
+                className="flex-1 px-4 py-2 rounded-md transition-colors font-medium"
+                style={{ backgroundColor: theme.colors.accent || '#8b5cf6', color: theme.colors.card, opacity: (isExporting || configErrors.length > 0) ? 0.6 : 1 }}
               >
                 {isExporting ? 'Starting...' : `Start ${exportConfig.format?.toUpperCase()} Recording`}
               </button>
@@ -305,7 +317,8 @@ export const ExportControls: React.FC<ExportControlsProps> = ({
               <button
                 onClick={handleStopVideoRecording}
                 disabled={isExporting}
-                className="flex-1 bg-red-500 hover:bg-red-600 disabled:bg-gray-300 text-white px-4 py-2 rounded-md transition-colors font-medium"
+                className="flex-1 px-4 py-2 rounded-md transition-colors font-medium"
+                style={{ backgroundColor: theme.colors.danger || '#ef4444', color: theme.colors.card, opacity: isExporting ? 0.6 : 1 }}
               >
                 {isExporting ? 'Processing...' : `Stop & Export ${exportConfig.format?.toUpperCase()}`}
               </button>
@@ -318,7 +331,8 @@ export const ExportControls: React.FC<ExportControlsProps> = ({
           <button
             onClick={handleExportImage}
             disabled={isExporting || configErrors.length > 0}
-            className="w-full bg-blue-500 hover:bg-blue-600 disabled:bg-gray-300 text-white px-4 py-2 rounded-md transition-colors font-medium"
+            className="w-full px-4 py-2 rounded-md transition-colors font-medium"
+            style={{ backgroundColor: theme.colors.primary, color: theme.colors.card, opacity: (isExporting || configErrors.length > 0) ? 0.6 : 1 }}
           >
             {isExporting ? 'Exporting...' : `Export ${exportConfig.format?.toUpperCase()} Image`}
           </button>
@@ -331,7 +345,8 @@ export const ExportControls: React.FC<ExportControlsProps> = ({
               exporterRef.current?.clearFrames();
               setRecordingStats({ frameCount: 0, isRecording: false });
             }}
-            className="w-full bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md transition-colors"
+            className="w-full px-4 py-2 rounded-md transition-colors"
+            style={{ backgroundColor: theme.colors.gray500 || theme.colors.hover, color: theme.colors.card }}
           >
             Clear Frames
           </button>
@@ -340,8 +355,8 @@ export const ExportControls: React.FC<ExportControlsProps> = ({
 
       {/* Browser Support Warning */}
       {(!browserSupport.mediaRecorder && !browserSupport.gif) && (
-        <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-md">
-          <p className="text-sm text-yellow-800">
+        <div className="mt-4 p-3 rounded-md" style={{ backgroundColor: theme.colors.hover, border: `1px solid ${theme.colors.border}` }}>
+          <p className="text-sm" style={{ color: theme.colors.text }}>
             ⚠️ Limited export support detected. Only static image export is available in your browser.
           </p>
         </div>

@@ -33,16 +33,16 @@ const PageContainer = styled.div`
   flex-direction: column;
   gap: 2rem;
   padding: 2rem;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  background: ${({ theme }) => theme.colors.background};
   min-height: 100vh;
 `;
 
 const PageHeader = styled(motion.div)`
   text-align: center;
   padding: 2rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, ${({ theme }) => theme.colors.primary} 0%, ${({ theme }) => theme.colors.secondary} 100%);
   border-radius: 20px;
-  color: white;
+  color: ${({ theme }) => theme.colors.card};
   box-shadow: 0 20px 40px rgba(0,0,0,0.1);
 `;
 
@@ -75,7 +75,7 @@ const MainContent = styled.div`
 `;
 
 const VisualizationSection = styled.div`
-  background: white;
+  background: ${({ theme }) => theme.colors.card};
   border-radius: 20px;
   padding: 2rem;
   box-shadow: 0 20px 40px rgba(0,0,0,0.1);
@@ -88,7 +88,7 @@ const SidePanel = styled.div`
 `;
 
 const TutorialPanel = styled(motion.div)`
-  background: white;
+  background: ${({ theme }) => theme.colors.card};
   border-radius: 16px;
   padding: 1.5rem;
   box-shadow: 0 10px 30px rgba(0,0,0,0.1);
@@ -96,7 +96,7 @@ const TutorialPanel = styled(motion.div)`
 `;
 
 const ControlsPanel = styled.div`
-  background: white;
+  background: ${({ theme }) => theme.colors.card};
   border-radius: 16px;
   padding: 1.5rem;
   box-shadow: 0 10px 30px rgba(0,0,0,0.1);
@@ -126,8 +126,8 @@ const Button = styled(motion.button)<{ variant?: 'primary' | 'secondary' | 'dang
     switch (variant) {
       case 'primary':
         return `
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-          color: white;
+          background: linear-gradient(135deg, ${({ theme }) => theme.colors.primary} 0%, ${({ theme }) => theme.colors.secondary} 100%);
+          color: ${({ theme }) => theme.colors.card};
           box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
           
           &:hover {
@@ -137,8 +137,8 @@ const Button = styled(motion.button)<{ variant?: 'primary' | 'secondary' | 'dang
         `;
       case 'secondary':
         return `
-          background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-          color: white;
+          background: linear-gradient(135deg, ${({ theme }) => theme.colors.secondaryLight} 0%, ${({ theme }) => theme.colors.secondary} 100%);
+          color: ${({ theme }) => theme.colors.card};
           box-shadow: 0 4px 15px rgba(79, 172, 254, 0.4);
           
           &:hover {
@@ -149,7 +149,7 @@ const Button = styled(motion.button)<{ variant?: 'primary' | 'secondary' | 'dang
       case 'success':
         return `
           background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-          color: white;
+          color: ${({ theme }) => theme.colors.card};
           box-shadow: 0 4px 15px rgba(17, 153, 142, 0.4);
           
           &:hover {
@@ -160,7 +160,7 @@ const Button = styled(motion.button)<{ variant?: 'primary' | 'secondary' | 'dang
       case 'danger':
         return `
           background: linear-gradient(135deg, #ff5f6d 0%, #ffc371 100%);
-          color: white;
+          color: ${({ theme }) => theme.colors.card};
           box-shadow: 0 4px 15px rgba(255, 95, 109, 0.4);
           
           &:hover {
@@ -170,12 +170,12 @@ const Button = styled(motion.button)<{ variant?: 'primary' | 'secondary' | 'dang
         `;
       default:
         return `
-          background: #f8f9fa;
-          color: #495057;
-          border: 2px solid #e9ecef;
+          background: ${({ theme }) => theme.colors.gray100};
+          color: ${({ theme }) => theme.colors.text};
+          border: 2px solid ${({ theme }) => theme.colors.gray200};
           
           &:hover {
-            background: #e9ecef;
+            background: ${({ theme }) => theme.colors.gray200};
             transform: translateY(-1px);
           }
         `;
@@ -195,7 +195,7 @@ const ArrayContainer = styled.div`
   gap: 8px;
   justify-content: center;
   padding: 2rem;
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  background: linear-gradient(135deg, ${({ theme }) => theme.colors.primaryLight} 0%, ${({ theme }) => theme.colors.secondary} 100%);
   border-radius: 16px;
   min-height: 200px;
   align-items: center;
@@ -212,7 +212,7 @@ const ArrayContainer = styled.div`
     background: linear-gradient(
       90deg,
       transparent,
-      rgba(255,255,255,0.4),
+      rgba(255,255,255,0.25),
       transparent
     );
     animation: ${shimmer} 2s infinite;
@@ -282,7 +282,7 @@ const TutorialStep = styled(motion.div)`
   padding: 1rem;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   border-radius: 12px;
-  color: white;
+  color: ${({ theme }) => theme.colors.card};
   margin-bottom: 1rem;
 `;
 
@@ -310,7 +310,7 @@ const CodeVisualization = styled.div`
 const CodeHeader = styled.div`
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   padding: 1rem;
-  color: white;
+  color: ${({ theme }) => theme.colors.card};
   font-weight: 600;
   display: flex;
   align-items: center;

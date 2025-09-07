@@ -146,7 +146,7 @@ const ChartBar = styled(motion.div)<{ height: number; color: string }>`
 `;
 
 const ChartLabel = styled.div`
-  color: white;
+  color: ${({ theme }) => theme.colors.card};
   font-size: 0.8rem;
   font-weight: bold;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);

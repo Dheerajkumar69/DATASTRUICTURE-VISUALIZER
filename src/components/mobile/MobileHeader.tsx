@@ -57,7 +57,7 @@ const LogoIcon = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
+  color: ${({ theme }) => theme.colors.card};
   font-weight: bold;
   font-size: 16px;
   
@@ -335,7 +335,7 @@ export const MobileHeader: React.FC = () => {
         <NavSection>
           <SectionTitle>External Links</SectionTitle>
           <ExternalLink 
-            href="https://github.com/yourusername/datastructure-visualizer"
+            href="https://github.com/dheerajkumargaur/DSA_Visualizer"
             target="_blank"
             rel="noopener noreferrer"
           >

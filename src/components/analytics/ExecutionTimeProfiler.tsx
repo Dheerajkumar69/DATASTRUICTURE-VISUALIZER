@@ -265,7 +265,7 @@ const TimelineTrack = styled.div<{ depth: number }>`
   background: linear-gradient(135deg, #3b82f6, #1d4ed8);
   border-radius: 3px;
   font-size: 0.75rem;
-  color: white;
+  color: ${({ theme }) => theme.colors.card};
   display: flex;
   align-items: center;
   padding: 0 8px;

@@ -211,7 +211,7 @@ const HeatMapCell = styled(motion.div)<{
 const Tooltip = styled(motion.div)`
   position: absolute;
   background: rgba(0, 0, 0, 0.9);
-  color: white;
+  color: ${({ theme }) => theme.colors.card};
   padding: 12px;
   border-radius: 6px;
   font-size: 0.8rem;

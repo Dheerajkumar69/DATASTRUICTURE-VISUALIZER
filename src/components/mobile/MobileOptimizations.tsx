@@ -58,7 +58,7 @@ const TouchButton = styled.button`
   border: none;
   border-radius: 8px;
   background: ${({ theme }) => theme.colors.primary};
-  color: white;
+  color: ${({ theme }) => theme.colors.card};
   font-size: 16px; /* Prevents zoom on iOS */
   font-weight: 500;
   cursor: pointer;
@@ -306,7 +306,7 @@ const RefreshIndicator = styled.div<{ isVisible: boolean; pullDistance: number }
   transition: opacity 0.2s ease;
   padding: 10px 20px;
   background: ${({ theme }) => theme.colors.primary};
-  color: white;
+  color: ${({ theme }) => theme.colors.card};
   border-radius: 20px;
   font-size: 14px;
   z-index: 10;

@@ -81,7 +81,7 @@ const IntervalBar = styled.div<{
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
+  color: ${({ theme }) => theme.colors.card};
   font-weight: 600;
   font-size: 12px;
   transition: all 0.3s ease;

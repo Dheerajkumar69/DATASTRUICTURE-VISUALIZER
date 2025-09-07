@@ -147,7 +147,7 @@ const HeapNode = styled(motion.div)<{ isHighlighted?: boolean }>`
   width: 50px;
   height: 50px;
   background-color: ${({ theme, isHighlighted }) => 
-    isHighlighted ? theme.colors.primary : 'white'};
+    isHighlighted ? theme.colors.primary : theme.colors.card};
   color: ${({ theme, isHighlighted }) => 
     isHighlighted ? 'white' : theme.colors.gray800};
   border-radius: 50%;
@@ -265,7 +265,7 @@ const HeapArrayItem = styled.div<{ isHighlighted?: boolean }>`
   width: 40px;
   height: 40px;
   background-color: ${({ theme, isHighlighted }) => 
-    isHighlighted ? theme.colors.primary : 'white'};
+    isHighlighted ? theme.colors.primary : theme.colors.card};
   color: ${({ theme, isHighlighted }) => 
     isHighlighted ? 'white' : theme.colors.gray800};
   border-radius: ${({ theme }) => theme.borderRadius};
