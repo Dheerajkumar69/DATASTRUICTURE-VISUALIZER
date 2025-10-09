@@ -3,6 +3,9 @@ const { pathsToModuleNameMapper } = require('ts-jest');
 module.exports = {
   // Test environment
   testEnvironment: 'jsdom',
+  testEnvironmentOptions: {
+    url: 'http://localhost'
+  },
 
   // Setup files
   setupFilesAfterEnv: ['<rootDir>/src/setupTests.ts'],
@@ -12,7 +15,9 @@ module.exports = {
 
   // Transform configuration
   transform: {
-    '^.+\\.(ts|tsx)$': 'ts-jest',
+    '^.+\\.(ts|tsx)$': ['ts-jest', {
+      tsconfig: 'tsconfig.json'
+    }],
     '^.+\\.(js|jsx)$': 'babel-jest',
   },
 
@@ -74,6 +79,13 @@ module.exports = {
 
   // Restore mocks after each test
   restoreMocks: true,
+  
+  // Reset modules between tests to prevent state leaks
+  resetModules: true,
+  
+  // Cache configuration
+  cache: true,
+  cacheDirectory: '<rootDir>/node_modules/.cache/jest',
 
   // Verbose output
   verbose: true,
@@ -95,12 +107,8 @@ module.exports = {
     'jest-watch-typeahead/testname',
   ],
 
-  // Globals for ts-jest
-  globals: {
-    'ts-jest': {
-      tsconfig: 'tsconfig.json',
-    },
-  },
+  // Remove deprecated globals section
+  // Globals for ts-jest moved to transform options above
 
   // Report configuration
   reporters: [

@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, useCallback } from 'react';
 import styled from 'styled-components';
 import { useTheme, Theme } from '../../themes/ThemeContext';
 
@@ -49,9 +49,8 @@ const CanvasContainer = styled.div<{ width: number | string, height: number | st
   width: ${props => typeof props.width === 'number' ? `${props.width}px` : props.width};
   height: ${props => typeof props.height === 'number' ? `${props.height}px` : props.height};
   position: relative;
-  border: 1px solid ${props => props.theme.colors.border};
-  border-radius: ${props => props.theme.borderRadius};
   border: 1px solid ${({ theme }) => theme.colors.border};
+  border-radius: ${({ theme }) => theme.borderRadius};
   overflow: hidden;
 `;
 
@@ -101,9 +100,78 @@ const GraphVisualizer: React.FC<GraphVisualizerProps> = ({
   onEdgeClick
 }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const animationFrameRef = useRef<number | null>(null);
   const theme = useTheme();
   const [hoveredNode, setHoveredNode] = useState<number | null>(null);
   const [hoveredEdge, setHoveredEdge] = useState<{ from: number, to: number } | null>(null);
+  
+  // Performance limits for production
+  const MAX_VERTICES = 100;
+  const MAX_EDGES = 200;
+  
+  // Validate data size for performance
+  const isDataSizeValid = data.vertices.length <= MAX_VERTICES && data.edges.length <= MAX_EDGES;
+  
+  // Error state for invalid data
+  const [error, setError] = useState<string | null>(null);
+  
+  // Validate input data
+  useEffect(() => {
+    if (!isDataSizeValid) {
+      setError(`Graph too large: ${data.vertices.length} vertices (max ${MAX_VERTICES}), ${data.edges.length} edges (max ${MAX_EDGES})`);
+      return;
+    }
+    
+    // Validate vertices have valid coordinates
+    const invalidVertices = data.vertices.filter(v => 
+      typeof v.x !== 'number' || typeof v.y !== 'number' || 
+      isNaN(v.x) || isNaN(v.y) || 
+      !isFinite(v.x) || !isFinite(v.y)
+    );
+    
+    if (invalidVertices.length > 0) {
+      setError(`Invalid vertex coordinates found: ${invalidVertices.map(v => v.name).join(', ')}`);
+      return;
+    }
+    
+    // Validate edges reference existing vertices
+    const vertexIds = new Set(data.vertices.map(v => v.id));
+    const invalidEdges = data.edges.filter(e => 
+      !vertexIds.has(e.from) || !vertexIds.has(e.to)
+    );
+    
+    if (invalidEdges.length > 0) {
+      setError(`Edges reference non-existent vertices: ${invalidEdges.length} invalid edges`);
+      return;
+    }
+    
+    setError(null);
+  }, [data, isDataSizeValid]);
+  
+  // Memory cleanup effect
+  useEffect(() => {
+    return () => {
+      // Cancel any pending animation frames
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
+      
+      // Clear canvas and context
+      const canvas = canvasRef.current;
+      if (canvas) {
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          // Reset canvas state
+          if ('reset' in ctx && typeof ctx.reset === 'function') {
+            (ctx as any).reset();
+          } else {
+            ctx.setTransform(1, 0, 0, 1, 0, 0);
+          }
+        }
+      }
+    };
+  }, []);
   
   // Handle canvas interactions
   const handleCanvasClick = (event: React.MouseEvent<HTMLCanvasElement>) => {
@@ -228,21 +296,31 @@ const GraphVisualizer: React.FC<GraphVisualizerProps> = ({
     return distance <= tolerance;
   };
   
-  // Main rendering function
-  useEffect(() => {
+  // Optimized rendering with requestAnimationFrame
+  const renderCanvas = useCallback(() => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    if (!canvas || error) return;
     
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
     
-    // Set canvas size based on container
-    const rect = canvas.getBoundingClientRect();
-    canvas.width = rect.width;
-    canvas.height = rect.height;
-    
-    // Clear canvas
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    try {
+      // Set canvas size based on container
+      const rect = canvas.getBoundingClientRect();
+      if (canvas.width !== rect.width || canvas.height !== rect.height) {
+        canvas.width = rect.width;
+        canvas.height = rect.height;
+      }
+      
+      // Clear canvas with proper clipping
+      ctx.save();
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      // Skip rendering if no data
+      if (!data.vertices.length) {
+        ctx.restore();
+        return;
+      }
     
     // Calculate edge curves for parallel edges
     const edgeCounts: Record<string, number> = {};
@@ -434,6 +512,9 @@ const GraphVisualizer: React.FC<GraphVisualizerProps> = ({
             ctx.fillText(weightText, textX, textY);
           }
         });
+    
+    // Restore context state after all drawing operations
+    ctx.restore();
     }
     
     // Draw vertices
@@ -477,8 +558,49 @@ const GraphVisualizer: React.FC<GraphVisualizerProps> = ({
         ctx.fillText(`(${vertex.value})`, vertex.x, vertex.y + nodeRadius + 15);
       }
     });
+      // Restore canvas state
+      ctx.restore();
+    } catch (err) {
+      console.error('Error rendering graph:', err);
+      setError('Rendering error occurred');
+    }
+  }, [data, nodeRadius, edgeWidth, arrowSize, showWeights, showDirections, highlightPath, hoveredNode, hoveredEdge, theme, error]);
+  
+  // Main rendering effect with optimized updates
+  useEffect(() => {
+    if (animationFrameRef.current) {
+      cancelAnimationFrame(animationFrameRef.current);
+    }
     
-  }, [data, nodeRadius, edgeWidth, arrowSize, showWeights, showDirections, highlightPath, hoveredNode, hoveredEdge, theme]);
+    animationFrameRef.current = requestAnimationFrame(renderCanvas);
+    
+    return () => {
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
+    };
+  }, [renderCanvas]);
+  
+  // Error display component
+  if (error) {
+    return (
+      <CanvasContainer width={width} height={height}>
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          height: '100%',
+          color: theme.colors.danger,
+          fontSize: '14px',
+          fontWeight: 'bold',
+          textAlign: 'center',
+          padding: '20px'
+        }}>
+          ⚠️ Graph Error: {error}
+        </div>
+      </CanvasContainer>
+    );
+  }
   
   return (
     <CanvasContainer width={width} height={height}>

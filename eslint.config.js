@@ -1,11 +1,11 @@
-import js from '@eslint/js';
-import reactPlugin from 'eslint-plugin-react';
-import reactHooksPlugin from 'eslint-plugin-react-hooks';
-import jsxA11yPlugin from 'eslint-plugin-jsx-a11y';
-import tsPlugin from '@typescript-eslint/eslint-plugin';
-import tsParser from '@typescript-eslint/parser';
+const js = require('@eslint/js');
+const reactPlugin = require('eslint-plugin-react');
+const reactHooksPlugin = require('eslint-plugin-react-hooks');
+const jsxA11yPlugin = require('eslint-plugin-jsx-a11y');
+const tsPlugin = require('@typescript-eslint/eslint-plugin');
+const tsParser = require('@typescript-eslint/parser');
 
-export default [
+module.exports = [
   // Base configuration
   js.configs.recommended,
   
@@ -14,6 +14,11 @@ export default [
     files: ['**/*.{ts,tsx}'],
     languageOptions: {
       parser: tsParser,
+      globals: {
+        ...require('globals').browser,
+        ...require('globals').node,
+        ...require('globals').es2021
+      },
       parserOptions: {
         ecmaVersion: 2024,
         sourceType: 'module',
@@ -37,7 +42,7 @@ export default [
       // TypeScript specific rules
       '@typescript-eslint/no-unused-vars': 'warn',
       '@typescript-eslint/no-redeclare': 'warn',
-      '@typescript-eslint/ban-types': 'warn',
+      // '@typescript-eslint/ban-types': 'warn', // Removed deprecated rule
       
       // React specific rules
       'react-hooks/exhaustive-deps': 'warn',
@@ -57,6 +62,11 @@ export default [
   {
     files: ['**/*.{js,jsx}'],
     languageOptions: {
+      globals: {
+        ...require('globals').browser,
+        ...require('globals').node,
+        ...require('globals').es2021
+      },
       parserOptions: {
         ecmaVersion: 2024,
         sourceType: 'module',
@@ -90,8 +100,32 @@ export default [
   // Test files
   {
     files: ['**/*.test.{ts,tsx,js,jsx}', '**/__tests__/**'],
+    languageOptions: {
+      globals: {
+        ...require('globals').browser,
+        ...require('globals').node,
+        ...require('globals').jest
+      }
+    },
     rules: {
       'no-console': 'off',
+    },
+  },
+
+  // Web Worker files
+  {
+    files: ['**/*.worker.{ts,js}'],
+    languageOptions: {
+      globals: {
+        ...require('globals').worker,
+        self: 'readonly',
+        MessageEvent: 'readonly',
+        Worker: 'readonly'
+      }
+    },
+    rules: {
+      'no-restricted-globals': 'off',
+      'no-case-declarations': 'off',
     },
   },
 ];

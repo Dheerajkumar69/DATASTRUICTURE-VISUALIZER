@@ -100,7 +100,7 @@ export const mockAnimationFrame = () => {
   return { flushAnimationFrames };
 };
 
-// Mock intersection observer for testing
+// Enhanced mock intersection observer for testing
 export const mockIntersectionObserver = () => {
   const mockIntersectionObserver = jest.fn();
   mockIntersectionObserver.mockReturnValue({
@@ -111,3 +111,71 @@ export const mockIntersectionObserver = () => {
   window.IntersectionObserver = mockIntersectionObserver;
   return mockIntersectionObserver;
 };
+
+// Canvas mock utilities
+export const getCanvasMock = () => {
+  return (global as any).createCanvasMock ? (global as any).createCanvasMock() : null;
+};
+
+// Performance testing utilities
+export const measureRenderTime = async (renderFn: () => Promise<void> | void) => {
+  const startTime = performance.now();
+  await renderFn();
+  const endTime = performance.now();
+  return endTime - startTime;
+};
+
+// Mock conflict resolution utilities
+export const resetAllMocks = () => {
+  jest.clearAllMocks();
+  jest.resetAllMocks();
+  
+  // Clear any global mock state
+  if ((global as any).clearJestCache) {
+    (global as any).clearJestCache();
+  }
+  
+  // Flush animation frames
+  if ((global as any).flushAnimationFrames) {
+    (global as any).flushAnimationFrames();
+  }
+};
+
+// Enhanced error boundary for tests with better error handling
+export class TestErrorBoundary extends React.Component<
+  {children: React.ReactNode; onError?: (error: Error) => void},
+  {hasError: boolean; error?: Error}
+> {
+  constructor(props: {children: React.ReactNode; onError?: (error: Error) => void}) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError(error: Error) {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+    console.error('Test Error Boundary caught an error:', error, errorInfo);
+    if (this.props.onError) {
+      this.props.onError(error);
+    }
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return React.createElement('div', { 
+        'data-testid': 'error-boundary',
+        'data-error': this.state.error?.message 
+      }, 'Something went wrong.');
+    }
+    return this.props.children;
+  }
+}
+
+// Wrapper component with error boundary
+export const TestWrapperWithErrorBoundary: React.FC<{children: React.ReactNode}> = ({ children }) => (
+  <TestErrorBoundary>
+    <AllTheProviders>{children}</AllTheProviders>
+  </TestErrorBoundary>
+);

@@ -1,3 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="Data Structure Visualizer Tests" tests="0" failures="0" errors="0" time="9.506">
+<testsuites name="Data Structure Visualizer Tests" tests="4" failures="0" errors="0" time="2.066">
+  <testsuite name="Canvas Mock Verification" errors="0" failures="0" skipped="0" timestamp="2025-10-09T11:00:01" time="1.503" tests="4">
+    <testcase classname="Canvas Mock Verification should have centralized Canvas API mock" name="Canvas Mock Verification should have centralized Canvas API mock" time="0.012">
+    </testcase>
+    <testcase classname="Canvas Mock Verification should not have mock conflicts" name="Canvas Mock Verification should not have mock conflicts" time="0.004">
+    </testcase>
+    <testcase classname="Canvas Mock Verification should have proper animation frame mocking" name="Canvas Mock Verification should have proper animation frame mocking" time="0.002">
+    </testcase>
+    <testcase classname="Canvas Mock Verification should clear mocks properly between tests" name="Canvas Mock Verification should clear mocks properly between tests" time="0.002">
+    </testcase>
+  </testsuite>
 </testsuites>

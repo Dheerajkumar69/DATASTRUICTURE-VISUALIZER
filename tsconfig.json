@@ -29,7 +29,6 @@
       "./src/types"
     ],
     "strictNullChecks": false,
-    "suppressImplicitAnyIndexErrors": true,
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"],
@@ -51,11 +50,6 @@
     "**/*.test.tsx",
     "**/*.spec.ts",
     "**/*.spec.tsx",
-    "src/tests",
-    "src/setupTests.ts",
-    "src/test-utils",
-    "src/test-utils/**/*",
-    "src/**/test-utils/**/*",
     "**/__tests__/**/*",
     "node_modules"
   ]

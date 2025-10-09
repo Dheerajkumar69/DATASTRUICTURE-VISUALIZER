@@ -201,59 +201,96 @@ const ArrayPageTemplate: React.FC<ArrayPageTemplateProps> = ({
   const [animationSteps, setAnimationSteps] = useState<Step[]>([]);
   const [speed, setSpeed] = useState(1000);
   const [stepDescription, setStepDescription] = useState('Click Start to begin visualization');
-  const timerRef = useRef<NodeJS.Timeout>();
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const isAnimatingRef = useRef<boolean>(false);
+  const currentStepRef = useRef<number>(0);
+  
+  // Sync refs with state to prevent race conditions
+  useEffect(() => {
+    currentStepRef.current = currentStep;
+  }, [currentStep]);
+  
+  useEffect(() => {
+    isAnimatingRef.current = isSorting && !isPaused;
+  }, [isSorting, isPaused]);
 
+  // Enhanced start sorting with race condition prevention
   const startSorting = () => {
+    // Clear any existing timers first
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+      timerRef.current = null;
+    }
+    
     if (isPaused) {
       setIsPaused(false);
+      isAnimatingRef.current = true;
       return;
     }
 
     const steps = generateSteps(array);
     setAnimationSteps(steps);
     setCurrentStep(0);
+    currentStepRef.current = 0;
     setIsSorting(true);
     setIsPaused(false);
+    isAnimatingRef.current = true;
   };
 
+  // Enhanced pause sorting
   const pauseSorting = () => {
     setIsPaused(true);
+    isAnimatingRef.current = false;
+    
     if (timerRef.current) {
       clearTimeout(timerRef.current);
+      timerRef.current = null;
     }
   };
 
+  // Safe step forward
   const stepForward = () => {
     if (currentStep < animationSteps.length - 1) {
       setCurrentStep(prev => prev + 1);
+      currentStepRef.current = currentStep + 1;
     }
   };
 
+  // Enhanced reset with complete cleanup
   const reset = () => {
     setIsSorting(false);
     setIsPaused(false);
     setCurrentStep(0);
+    currentStepRef.current = 0;
     setActiveIndices([]);
     setComparingIndices([]);
     setStepDescription('Click Start to begin visualization');
+    isAnimatingRef.current = false;
+    
     if (timerRef.current) {
       clearTimeout(timerRef.current);
+      timerRef.current = null;
     }
   };
 
+  // Enhanced animation effect with safety checks
   useEffect(() => {
-    if (isSorting && !isPaused && currentStep < animationSteps.length) {
+    if (isSorting && !isPaused && currentStep < animationSteps.length && isAnimatingRef.current) {
       const step = animationSteps[currentStep];
+      if (!step) return;
+      
       setArray(step.array);
       setActiveIndices(step.activeIndices);
       setComparingIndices(step.comparingIndices);
       setStepDescription(step.stepDescription);
 
       timerRef.current = setTimeout(() => {
-        if (currentStep < animationSteps.length - 1) {
+        if (isAnimatingRef.current && currentStep < animationSteps.length - 1) {
           setCurrentStep(prev => prev + 1);
+          currentStepRef.current = currentStep + 1;
         } else {
           setIsSorting(false);
+          isAnimatingRef.current = false;
         }
       }, speed);
     }
@@ -261,6 +298,7 @@ const ArrayPageTemplate: React.FC<ArrayPageTemplateProps> = ({
     return () => {
       if (timerRef.current) {
         clearTimeout(timerRef.current);
+        timerRef.current = null;
       }
     };
   }, [isSorting, isPaused, currentStep, animationSteps, speed]);

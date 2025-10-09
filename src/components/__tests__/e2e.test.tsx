@@ -3,7 +3,8 @@ import { render, screen, fireEvent, waitFor, act, within } from '@testing-librar
 import userEvent from '@testing-library/user-event';
 import { BrowserRouter } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
-import { lightTheme, darkTheme } from '../../themes/lightTheme';
+import { lightTheme } from '../../themes/lightTheme';
+import { darkTheme } from '../../themes/darkTheme';
 import { AnimationProvider } from '../utils/AnimationContext';
 import { ToastProvider } from '../ui/ComponentLibrary';
 
@@ -45,41 +46,8 @@ global.ResizeObserver = jest.fn().mockImplementation(() => ({
   disconnect: jest.fn(),
 }));
 
-// Mock Canvas API
-HTMLCanvasElement.prototype.getContext = jest.fn(() => ({
-  fillRect: jest.fn(),
-  clearRect: jest.fn(),
-  getImageData: jest.fn(() => ({
-    data: new Array(4).fill(0)
-  })),
-  putImageData: jest.fn(),
-  createImageData: jest.fn(() => ({
-    data: new Array(4).fill(0)
-  })),
-  setTransform: jest.fn(),
-  drawImage: jest.fn(),
-  save: jest.fn(),
-  fillText: jest.fn(),
-  restore: jest.fn(),
-  beginPath: jest.fn(),
-  moveTo: jest.fn(),
-  lineTo: jest.fn(),
-  closePath: jest.fn(),
-  stroke: jest.fn(),
-  fill: jest.fn(),
-  arc: jest.fn(),
-  rect: jest.fn(),
-  translate: jest.fn(),
-  scale: jest.fn(),
-  rotate: jest.fn(),
-  measureText: jest.fn(() => ({ width: 0 })),
-  font: '',
-  fillStyle: '',
-  strokeStyle: '',
-  lineWidth: 1,
-  textAlign: 'start',
-  textBaseline: 'alphabetic',
-}))) as any;
+// Mock Canvas API - Use centralized mock from setupTests
+// No need to duplicate here as it's handled globally
 
 // Setup window.matchMedia before tests
 beforeAll(() => {

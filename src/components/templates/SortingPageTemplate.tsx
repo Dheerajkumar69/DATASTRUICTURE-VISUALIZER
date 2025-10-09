@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useRef, useEffect, useState, useCallback } from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import { FiPlay, FiPause, FiRefreshCw, FiSkipForward, FiSkipBack, FiClock } from 'react-icons/fi';
@@ -319,18 +319,33 @@ const SortingPageTemplate: React.FC<SortingPageTemplateProps> = ({
   const [stepDescription, setStepDescription] = useState<string>('');
   const [selectedLanguage, setSelectedLanguage] = useState<string>('javascript');
   
+  // Enhanced animation state management with race condition prevention
   const animationRef = useRef<number | null>(null);
   const sortTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const isAnimatingRef = useRef<boolean>(false);
+  const currentStepRef = useRef<number>(0);
+  
+  // Sync refs with state to prevent race conditions
+  useEffect(() => {
+    currentStepRef.current = currentStep;
+  }, [currentStep]);
   
   useEffect(() => {
-    generateRandomArray();
+    isAnimatingRef.current = isSorting && !isPaused;
+  }, [isSorting, isPaused]);
+  
+  // Enhanced cleanup effect
+  useEffect(() => {
     return () => {
       if (sortTimeoutRef.current) {
         clearTimeout(sortTimeoutRef.current);
+        sortTimeoutRef.current = null;
       }
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current);
+        animationRef.current = null;
       }
+      isAnimatingRef.current = false;
     };
   }, []);
   
@@ -343,7 +358,23 @@ const SortingPageTemplate: React.FC<SortingPageTemplateProps> = ({
     resetArrayState(customArray);
   };
 
+  // Safe array state reset with cleanup
   const resetArrayState = (newArray: number[]) => {
+    // Clear all timers and animations first
+    if (sortTimeoutRef.current) {
+      clearTimeout(sortTimeoutRef.current);
+      sortTimeoutRef.current = null;
+    }
+    if (animationRef.current) {
+      cancelAnimationFrame(animationRef.current);
+      animationRef.current = null;
+    }
+    
+    // Reset flags
+    isAnimatingRef.current = false;
+    currentStepRef.current = 0;
+    
+    // Reset state
     setArray(newArray);
     setActiveIndices([]);
     setComparingIndices([]);
@@ -353,20 +384,22 @@ const SortingPageTemplate: React.FC<SortingPageTemplateProps> = ({
     setCurrentStep(0);
     setStepDescription('');
     
-    if (sortTimeoutRef.current) {
-      clearTimeout(sortTimeoutRef.current);
-    }
-    if (animationRef.current) {
-      cancelAnimationFrame(animationRef.current);
-    }
-    
+    // Generate new steps
     const steps = generateSteps([...newArray]);
     setAnimationSteps(steps);
   };
   
+  // Enhanced start sorting with race condition prevention
   const startSorting = () => {
+    // Clear any existing timers first
+    if (sortTimeoutRef.current) {
+      clearTimeout(sortTimeoutRef.current);
+      sortTimeoutRef.current = null;
+    }
+    
     if (isPaused) {
       setIsPaused(false);
+      scheduleNextStep();
       return;
     }
     
@@ -376,114 +409,155 @@ const SortingPageTemplate: React.FC<SortingPageTemplateProps> = ({
     }
     
     setIsSorting(true);
+    setIsPaused(false);
+    isAnimatingRef.current = true;
     
-    const animate = () => {
-      if (currentStep < animationSteps.length) {
-        animateStep(currentStep);
-        const nextStep = currentStep + 1;
-        
-        if (nextStep < animationSteps.length) {
-          sortTimeoutRef.current = setTimeout(() => {
-            setCurrentStep(nextStep);
-          }, speed);
-        } else {
-          setIsSorting(false);
-        }
-      }
-    };
-    
-    animate();
+    scheduleNextStep();
   };
   
-  const animateStep = (step: number) => {
-    if (step < animationSteps.length) {
-      const { type, indices, description } = animationSteps[step];
-      
-      setStepDescription(description);
-      
-      if (type === 'compare') {
-        setComparingIndices(indices);
-        setActiveIndices([]);
-      } else if (type === 'swap') {
-        setActiveIndices(indices);
-        setComparingIndices([]);
-        
-        // Update array with swapped elements
-        if (indices.length === 2) {
-          const newArray = [...array];
-          [newArray[indices[0]], newArray[indices[1]]] = [newArray[indices[1]], newArray[indices[0]]];
-          setArray(newArray);
+  // Centralized animation scheduling with safety checks
+  const scheduleNextStep = useCallback(() => {
+    if (!isAnimatingRef.current || currentStepRef.current >= animationSteps.length) {
+      setIsSorting(false);
+      isAnimatingRef.current = false;
+      return;
+    }
+    
+    // Execute current step
+    const step = animationSteps[currentStepRef.current];
+    if (step) {
+      executeAnimationStep(step);
+    }
+    
+    // Schedule next step
+    const nextStep = currentStepRef.current + 1;
+    if (nextStep < animationSteps.length && isAnimatingRef.current) {
+      sortTimeoutRef.current = setTimeout(() => {
+        if (isAnimatingRef.current) { // Double-check still animating
+          setCurrentStep(nextStep);
+          currentStepRef.current = nextStep;
+          scheduleNextStep();
         }
-      } else if (type === 'sorted') {
-        setActiveIndices([]);
-        setComparingIndices([]);
-        setSortedIndices(prev => [...prev, ...indices]);
+      }, speed);
+    } else {
+      setIsSorting(false);
+      isAnimatingRef.current = false;
+    }
+  }, [animationSteps, speed]);
+  
+  // Safe animation step execution
+  const executeAnimationStep = (step: AnimationStep) => {
+    setStepDescription(step.description);
+    
+    if (step.type === 'compare') {
+      setComparingIndices(step.indices);
+      setActiveIndices([]);
+    } else if (step.type === 'swap') {
+      setActiveIndices(step.indices);
+      setComparingIndices([]);
+      
+      // Update array with swapped elements
+      if (step.indices.length === 2) {
+        setArray(prevArray => {
+          const newArray = [...prevArray];
+          [newArray[step.indices[0]], newArray[step.indices[1]]] = 
+            [newArray[step.indices[1]], newArray[step.indices[0]]];
+          return newArray;
+        });
       }
+    } else if (step.type === 'sorted') {
+      setActiveIndices([]);
+      setComparingIndices([]);
+      setSortedIndices(prev => [...prev, ...step.indices]);
     }
   };
   
+  // Enhanced pause with immediate cleanup
   const pauseAnimation = () => {
     setIsPaused(true);
+    isAnimatingRef.current = false;
+    
     if (sortTimeoutRef.current) {
       clearTimeout(sortTimeoutRef.current);
+      sortTimeoutRef.current = null;
     }
   };
   
+  // Enhanced reset with complete cleanup
   const resetAnimation = () => {
+    isAnimatingRef.current = false;
+    
     if (sortTimeoutRef.current) {
       clearTimeout(sortTimeoutRef.current);
+      sortTimeoutRef.current = null;
     }
     
     resetArrayState([...array]);
   };
   
+  // Safe step forward
   const stepForward = () => {
     if (currentStep < animationSteps.length) {
+      // Clear any running animation
       if (sortTimeoutRef.current) {
         clearTimeout(sortTimeoutRef.current);
+        sortTimeoutRef.current = null;
       }
       
-      animateStep(currentStep);
-      setCurrentStep(currentStep + 1);
+      const step = animationSteps[currentStep];
+      if (step) {
+        executeAnimationStep(step);
+        setCurrentStep(currentStep + 1);
+        currentStepRef.current = currentStep + 1;
+      }
     }
   };
   
   const stepBackward = () => {
     if (currentStep > 0) {
+      // Clear any running animation
       if (sortTimeoutRef.current) {
         clearTimeout(sortTimeoutRef.current);
+        sortTimeoutRef.current = null;
       }
+      isAnimatingRef.current = false;
       
       // Reset to initial state
-      const newArray = [...array];
       setActiveIndices([]);
       setComparingIndices([]);
       setSortedIndices([]);
       
-      const newStep = currentStep - 2 >= 0 ? currentStep - 2 : -1;
+      const newStep = currentStep - 1;
       
-      // Then replay all steps up to the new step
+      // Replay all steps up to the new step
       const tempArray = [...array];
       const newSortedIndices: number[] = [];
       
-      for (let i = 0; i <= newStep; i++) {
+      // Reset array to initial state
+      const initialArray = [...animationSteps[0] ? 
+        (generateSteps(tempArray).length > 0 ? tempArray : array) : array];
+      
+      // Apply all steps up to newStep
+      for (let i = 0; i < newStep; i++) {
         const step = animationSteps[i];
+        if (!step) continue;
         
         if (step.type === 'swap' && step.indices.length === 2) {
           const [j, k] = step.indices;
-          [tempArray[j], tempArray[k]] = [tempArray[k], tempArray[j]];
+          [initialArray[j], initialArray[k]] = [initialArray[k], initialArray[j]];
         } else if (step.type === 'sorted') {
           newSortedIndices.push(...step.indices);
         }
       }
       
-      setArray(tempArray);
+      setArray(initialArray);
       setSortedIndices(newSortedIndices);
-      setCurrentStep(newStep + 1);
+      setCurrentStep(newStep);
+      currentStepRef.current = newStep;
       
-      // Set the description and visual state for the current step
-      const currentAnimation = animationSteps[newStep];
-      if (currentAnimation) {
+      // Set the visual state for the current step
+      if (newStep > 0 && animationSteps[newStep - 1]) {
+        const currentAnimation = animationSteps[newStep - 1];
         setStepDescription(currentAnimation.description);
         
         if (currentAnimation.type === 'compare') {
@@ -497,10 +571,17 @@ const SortingPageTemplate: React.FC<SortingPageTemplateProps> = ({
           setComparingIndices([]);
         }
       } else {
-        setStepDescription('');
+        setStepDescription('Ready to start');
+        setActiveIndices([]);
+        setComparingIndices([]);
       }
     }
   };
+  
+  // Initialize random array on mount
+  useEffect(() => {
+    generateRandomArray();
+  }, []);
   
   const handleSpeedChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSpeed(Number(e.target.value));
