@@ -13,6 +13,16 @@ import {
   Legend
 } from '../../../components/visualization/VisualizationComponents';
 import useVisualizationState from '../../../hooks/useVisualizationState';
+import { findWordLadder, validateWordLadderInput, WordLadderStep } from '../../../utils/wordLadderAlgorithm';
+
+// Configuration constants
+const WORD_LADDER_CONFIG = {
+  maxWordListSize: 5000,
+  maxWordLength: 50,
+  maxComputationSteps: 10000,
+  displayLimitQueue: 10,
+  displayLimitRejected: 10
+};
 
 // Styled components specific to WordLadder
 const InputContainer = styled.div`
@@ -116,6 +126,16 @@ const RejectedWordsContainer = styled.div`
   padding-top: 1.5rem;
 `;
 
+const ErrorMessage = styled.div`
+  background-color: ${props => props.theme.colors.danger};
+  color: white;
+  padding: 1rem;
+  border-radius: ${props => props.theme.borderRadius};
+  margin-bottom: 1rem;
+  border-left: 4px solid ${props => props.theme.colors.danger};
+  font-weight: 500;
+`;
+
 const WordListInput = styled(TextArea)`
   width: 300px;
   height: 100px;
@@ -140,18 +160,9 @@ const QueueItemLevel = styled.span`
   font-weight: bold;
 `;
 
-// Types for visualization
-interface Step {
-  currentWord: string;
-  visited: Set<string>;
-  queue: Array<{word: string, path: string[], level: number}>;
-  description: string;
-  pathFound: boolean;
-  finalPath: string[] | null;
-  rejected: Array<{word: string, reason: string}>;
-}
+// Types for visualization (now imported from utility)
+// Step is imported as WordLadderStep from wordLadderAlgorithm
 
-// Word Ladder Algorithm
 const wordLadderInfo: AlgorithmInfo = {
   name: "Word Ladder",
   description: "Word Ladder is a graph problem where we need to find the shortest transformation sequence from a start word to an end word, such that only one letter can be changed at a time, and each transformed word must exist in a given word list.",
@@ -360,31 +371,19 @@ So the length of the shortest transformation sequence is 5.
 The algorithm uses a breadth-first search (BFS) approach to find the shortest path from beginWord to endWord. For each word, it tries changing each character to every possible letter and checks if the new word exists in the dictionary and hasn't been visited yet.
 `;
 
-// Helper function to find if two words differ by exactly one character
-const differByOne = (word1: string, word2: string): boolean => {
-  if (word1.length !== word2.length) return false;
-  
-  let diffCount = 0;
-  for (let i = 0; i < word1.length; i++) {
-    if (word1[i] !== word2[i]) diffCount++;
-    if (diffCount > 1) return false;
-  }
-  
-  return diffCount === 1;
-};
-
 // Main component
 const WordLadderPage: React.FC = () => {
   // State for inputs
   const [beginWord, setBeginWord] = useState<string>('hit');
   const [endWord, setEndWord] = useState<string>('cog');
   const [wordListInput, setWordListInput] = useState<string>('hot,dot,dog,lot,log,cog');
+  const [error, setError] = useState<string | null>(null);
   
   // Use our custom hook for visualization state
-  const visualization = useVisualizationState<Step>();
+  const visualization = useVisualizationState<WordLadderStep>();
   
-  // Legend data
-  const legendItems = useMemo(() => [
+  // Legend data - static, moved outside component
+  const legendItems = [
     { color: '#4299E1', label: 'Start Word' },  // info color
     { color: '#ED8936', label: 'End Word' },    // warning color
     { color: '#4A5568', label: 'Unvisited Word' }, // background color
@@ -392,247 +391,51 @@ const WordLadderPage: React.FC = () => {
     { color: '#718096', label: 'Visited Word' }, // secondary color
     { color: '#48BB78', label: 'Path Word' },   // success color
     { color: '#E53E3E', label: 'Rejected Word' } // danger color
-  ], []);
+  ];
   
-  // Bi-directional BFS implementation
-  const findWordLadderBidirectional = useCallback(() => {
-    if (!beginWord || !endWord) return;
-    
-    // Parse word list
-    const wordList = wordListInput.split(',').map(w => w.trim());
-    const wordSet = new Set(wordList);
-    
-    // Check if end word is in the dictionary
-    if (!wordSet.has(endWord)) {
-      alert('End word must be in the word list!');
-      return;
-    }
-    
-    const steps: Step[] = [];
-    
-    // Initialize BFS from start side
-    const startQueue: Array<{word: string, path: string[], level: number}> = [];
-    startQueue.push({ word: beginWord, path: [beginWord], level: 1 });
-    
-    // Initialize BFS from end side
-    const endQueue: Array<{word: string, path: string[], level: number}> = [];
-    endQueue.push({ word: endWord, path: [endWord], level: 1 });
-    
-    const startVisited = new Map<string, string[]>();
-    startVisited.set(beginWord, [beginWord]);
-    
-    const endVisited = new Map<string, string[]>();
-    endVisited.set(endWord, [endWord]);
-    
-    const rejected: Array<{word: string, reason: string}> = [];
-    
-    // Initial step
-    steps.push({
-      currentWord: beginWord,
-      visited: new Set([beginWord]),
-      queue: [...startQueue],
-      description: `Starting bidirectional BFS between "${beginWord}" and "${endWord}". This will search from both ends simultaneously.`,
-      pathFound: false,
-      finalPath: null,
-      rejected: []
-    });
-    
-    // Keep track of the shortest path found
-    let shortestPath: string[] | null = null;
-    
-    // While both queues are not empty
-    while (startQueue.length > 0 && endQueue.length > 0) {
-      // Process level by level to ensure shortest path
-      // Expand from start side
-      const startLevel = startQueue[0].level;
-      const startQueueSize = startQueue.length;
+  // Algorithm execution - now uses extracted utility function
+  const handleFindWordLadder = useCallback(() => {
+    // Clear previous error
+    setError(null);
+
+    try {
+      // Parse word list
+      const wordList = wordListInput
+        .split(',')
+        .map(w => w.trim())
+        .filter(w => w.length > 0);
+
+      // Run algorithm (includes validation)
+      const steps = findWordLadder(beginWord, endWord, wordList, WORD_LADDER_CONFIG);
+      visualization.setSteps(steps);
       
-      for (let i = 0; i < startQueueSize; i++) {
-        const { word, path, level } = startQueue.shift()!;
-        
-        // If we've already found a shorter path, skip
-        if (shortestPath !== null && path.length >= shortestPath.length) continue;
-        
-        // Check each possible transformation
-        for (let j = 0; j < word.length; j++) {
-          for (let c = 'a'.charCodeAt(0); c <= 'z'.charCodeAt(0); c++) {
-            const newChar = String.fromCharCode(c);
-            
-            if (word[j] === newChar) continue;
-            
-            const newWord = word.slice(0, j) + newChar + word.slice(j + 1);
-            
-            // Skip if already visited from start side
-            if (startVisited.has(newWord)) continue;
-            
-            // Check if in dictionary
-            if (!wordSet.has(newWord) && newWord !== endWord) {
-              // Record rejected word
-              rejected.push({
-                word: newWord,
-                reason: "Not in dictionary"
-              });
-              continue;
-            }
-            
-            // Create new path
-            const newPath = [...path, newWord];
-            
-            // Check if the word has been visited from the end side
-            if (endVisited.has(newWord)) {
-              // We found a meeting point - construct full path
-              const endPath = endVisited.get(newWord)!;
-              const fullPath = [...newPath.slice(0, -1), ...endPath.reverse()];
-              
-              // Update shortest path if this is shorter
-              if (shortestPath === null || fullPath.length < shortestPath.length) {
-                shortestPath = fullPath;
-              }
-              
-              steps.push({
-                currentWord: newWord,
-                visited: new Set([...Array.from(startVisited.keys()), ...Array.from(endVisited.keys())]),
-                queue: [],
-                description: `Found meeting point at "${newWord}"! Created path with length ${fullPath.length}.`,
-                pathFound: true,
-                finalPath: fullPath,
-                rejected: [...rejected]
-              });
-              
-              // We can exit early if we're at the last level
-              if (i === startQueueSize - 1) {
-                visualization.setSteps(steps);
-                return;
-              }
-            }
-            
-            // Add to queue and visited
-            startQueue.push({ word: newWord, path: newPath, level: level + 1 });
-            startVisited.set(newWord, newPath);
-            
-            // Add step
-            steps.push({
-              currentWord: newWord,
-              visited: new Set([...Array.from(startVisited.keys()), ...Array.from(endVisited.keys())]),
-              queue: [...startQueue, ...endQueue],
-              description: `From start side: Visiting "${newWord}" at level ${level + 1}.`,
-              pathFound: false,
-              finalPath: null,
-              rejected: [...rejected]
-            });
-          }
-        }
-      }
-      
-      // Expand from end side
-      const endLevel = endQueue[0].level;
-      const endQueueSize = endQueue.length;
-      
-      for (let i = 0; i < endQueueSize; i++) {
-        const { word, path, level } = endQueue.shift()!;
-        
-        // If we've already found a shorter path, skip
-        if (shortestPath !== null && path.length >= shortestPath.length) continue;
-        
-        // Check each possible transformation
-        for (let j = 0; j < word.length; j++) {
-          for (let c = 'a'.charCodeAt(0); c <= 'z'.charCodeAt(0); c++) {
-            const newChar = String.fromCharCode(c);
-            
-            if (word[j] === newChar) continue;
-            
-            const newWord = word.slice(0, j) + newChar + word.slice(j + 1);
-            
-            // Skip if already visited from end side
-            if (endVisited.has(newWord)) continue;
-            
-            // Check if in dictionary
-            if (!wordSet.has(newWord) && newWord !== beginWord) {
-              // Record rejected word
-              rejected.push({
-                word: newWord,
-                reason: "Not in dictionary"
-              });
-              continue;
-            }
-            
-            // Create new path (note: path is stored in reverse order for end side)
-            const newPath = [newWord, ...path];
-            
-            // Check if the word has been visited from the start side
-            if (startVisited.has(newWord)) {
-              // We found a meeting point - construct full path
-              const startPath = startVisited.get(newWord)!;
-              const fullPath = [...startPath, ...path.slice(1).reverse()];
-              
-              // Update shortest path if this is shorter
-              if (shortestPath === null || fullPath.length < shortestPath.length) {
-                shortestPath = fullPath;
-              }
-              
-              steps.push({
-                currentWord: newWord,
-                visited: new Set([...Array.from(startVisited.keys()), ...Array.from(endVisited.keys())]),
-                queue: [],
-                description: `Found meeting point at "${newWord}"! Created path with length ${fullPath.length}.`,
-                pathFound: true,
-                finalPath: fullPath,
-                rejected: [...rejected]
-              });
-              
-              // We can exit early if we're at the last level
-              if (i === endQueueSize - 1) {
-                visualization.setSteps(steps);
-                return;
-              }
-            }
-            
-            // Add to queue and visited
-            endQueue.push({ word: newWord, path: newPath, level: level + 1 });
-            endVisited.set(newWord, newPath);
-            
-            // Add step
-            steps.push({
-              currentWord: newWord,
-              visited: new Set([...Array.from(startVisited.keys()), ...Array.from(endVisited.keys())]),
-              queue: [...startQueue, ...endQueue],
-              description: `From end side: Visiting "${newWord}" at level ${level + 1}.`,
-              pathFound: false,
-              finalPath: null,
-              rejected: [...rejected]
-            });
-          }
-        }
-      }
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'An unexpected error occurred';
+      console.error('[WordLadder] Error:', message);
+      setError(message);
     }
-    
-    // If no path is found
-    if (shortestPath === null) {
-      steps.push({
-        currentWord: beginWord,
-        visited: new Set([...Array.from(startVisited.keys()), ...Array.from(endVisited.keys())]),
-        queue: [],
-        description: `No transformation sequence found from "${beginWord}" to "${endWord}".`,
-        pathFound: false,
-        finalPath: null,
-        rejected: [...rejected]
-      });
-    }
-    
-    visualization.setSteps(steps);
   }, [beginWord, endWord, wordListInput, visualization]);
   
   // UI Handlers
-  const handleStart = () => {
+  const handleStart = useCallback(() => {
     if (visualization.steps.length === 0) {
-      findWordLadderBidirectional();
+      handleFindWordLadder();
     } else {
       visualization.startAnimation();
     }
-  };
+  }, [visualization, handleFindWordLadder]);
   
   // Render visualization
   const renderVisualization = () => {
+    // Show error if present
+    if (error) {
+      return (
+        <ErrorMessage role="alert" aria-live="polite">
+          {error}
+        </ErrorMessage>
+      );
+    }
+
     const currentStepData = visualization.currentStepData;
     
     if (!currentStepData) {
@@ -701,8 +504,10 @@ const WordLadderPage: React.FC = () => {
                 </WordNode>
                 <QueueItemLevel>Level: {item.level}</QueueItemLevel>
               </QueueItemContainer>
-            )).slice(0, 10)}
-            {currentStepData.queue.length > 10 && <span>... and {currentStepData.queue.length - 10} more</span>}
+            )).slice(0, WORD_LADDER_CONFIG.displayLimitQueue)}
+            {currentStepData.queue.length > WORD_LADDER_CONFIG.displayLimitQueue && (
+              <span>... and {currentStepData.queue.length - WORD_LADDER_CONFIG.displayLimitQueue} more</span>
+            )}
           </WordPath>
           
           <h4>Visited Words:</h4>
@@ -732,7 +537,7 @@ const WordLadderPage: React.FC = () => {
             <RejectedWordsContainer>
               <h4>Rejected Words:</h4>
               <VisitedWordsContainer>
-                {currentStepData.rejected.slice(-10).map((item, index) => (
+                {currentStepData.rejected.slice(-WORD_LADDER_CONFIG.displayLimitRejected).map((item, index) => (
                   <WordNode 
                     key={index} 
                     state="rejected"
@@ -742,7 +547,9 @@ const WordLadderPage: React.FC = () => {
                     {item.word}
                   </WordNode>
                 ))}
-                {currentStepData.rejected.length > 10 && <span>... and {currentStepData.rejected.length - 10} more</span>}
+                {currentStepData.rejected.length > WORD_LADDER_CONFIG.displayLimitRejected && (
+                  <span>... and {currentStepData.rejected.length - WORD_LADDER_CONFIG.displayLimitRejected} more</span>
+                )}
               </VisitedWordsContainer>
             </RejectedWordsContainer>
           )}
@@ -754,6 +561,12 @@ const WordLadderPage: React.FC = () => {
   // Main visualization component
   const visualizationComponent = (
     <VisualizationContainer>
+      {error && (
+        <ErrorMessage role="alert" aria-live="polite">
+          {error}
+        </ErrorMessage>
+      )}
+      
       <InputContainer>
         <InputGroup>
           <Label htmlFor="begin-word">Begin Word:</Label>

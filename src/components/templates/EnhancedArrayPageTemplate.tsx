@@ -461,6 +461,15 @@ size--;
   
   const animationTimeoutRef = useRef<NodeJS.Timeout>();
 
+  // FIX #5: Cleanup timeout on unmount to prevent memory leaks
+  useEffect(() => {
+    return () => {
+      if (animationTimeoutRef.current) {
+        clearTimeout(animationTimeoutRef.current);
+      }
+    };
+  }, []);
+
   // Tutorial management
   const startTutorial = useCallback(() => {
     setCurrentStep(0);
@@ -483,6 +492,11 @@ size--;
 
   // Array operations
   const insertElement = useCallback((index: number, value: number) => {
+    // FIX #5: Clear any previous pending animation timeout (prevents memory leak)
+    if (animationTimeoutRef.current) {
+      clearTimeout(animationTimeoutRef.current);
+    }
+    
     setTimeComplexity('O(n)');
     setSpaceComplexity('O(1)');
     setOperations(prev => prev + 1);
@@ -495,7 +509,11 @@ size--;
     setHighlightedIndices([index]);
     setMessage(`Inserted ${value} at index ${index}. Elements shifted right.`);
     
-    setTimeout(() => setHighlightedIndices([]), 2000);
+    // FIX #5 (continued): Store timeout ref and track it for cleanup
+    animationTimeoutRef.current = setTimeout(() => {
+      setHighlightedIndices([]);
+      animationTimeoutRef.current = undefined;
+    }, 2000);
   }, [array]);
 
   const deleteElement = useCallback((index: number) => {
@@ -514,6 +532,11 @@ size--;
   }, [array]);
 
   const searchElement = useCallback((value: number) => {
+    // FIX #5: Clear any previous pending animation timeout
+    if (animationTimeoutRef.current) {
+      clearTimeout(animationTimeoutRef.current);
+    }
+    
     setTimeComplexity('O(n)');
     setSpaceComplexity('O(1)');
     setOperations(prev => prev + 1);
@@ -536,17 +559,27 @@ size--;
         foundIndex = index;
         setHighlightedIndices([index]);
         setMessage(`Found ${value} at index ${index}`);
-        setTimeout(() => setHighlightedIndices([]), 2000);
+        // FIX #5: Track timeout for cleanup
+        animationTimeoutRef.current = setTimeout(() => {
+          setHighlightedIndices([]);
+          animationTimeoutRef.current = undefined;
+        }, 2000);
         return;
       }
       
-      setTimeout(() => searchAnimation(index + 1), 300);
+      // FIX #5: Track timeout for cleanup
+      animationTimeoutRef.current = setTimeout(() => searchAnimation(index + 1), 300);
     };
     
     searchAnimation(0);
   }, [array]);
 
   const sortArray = useCallback(() => {
+    // FIX #5: Clear any previous pending animation timeout
+    if (animationTimeoutRef.current) {
+      clearTimeout(animationTimeoutRef.current);
+    }
+    
     setTimeComplexity('O(n²)');
     setSpaceComplexity('O(1)');
     setOperations(prev => prev + array.length);
@@ -581,6 +614,7 @@ size--;
         setComparingIndices([]);
         setHighlightedIndices([]);
         setMessage('Array sorted using Bubble Sort!');
+        animationTimeoutRef.current = undefined;
         return;
       }
       
@@ -590,13 +624,19 @@ size--;
       setHighlightedIndices(step.highlighting);
       
       stepIndex++;
-      setTimeout(animateSort, 500);
+      // FIX #5: Track timeout for cleanup
+      animationTimeoutRef.current = setTimeout(animateSort, 500);
     };
     
     animateSort();
   }, [array]);
 
   const reverseArray = useCallback(() => {
+    // FIX #5: Clear any previous pending animation timeout
+    if (animationTimeoutRef.current) {
+      clearTimeout(animationTimeoutRef.current);
+    }
+    
     setTimeComplexity('O(n)');
     setSpaceComplexity('O(1)');
     setOperations(prev => prev + Math.floor(array.length / 2));
@@ -609,12 +649,14 @@ size--;
       if (left >= right) {
         setHighlightedIndices([]);
         setMessage('Array reversed!');
+        animationTimeoutRef.current = undefined;
         return;
       }
       
       setHighlightedIndices([left, right]);
       
-      setTimeout(() => {
+      // FIX #5: Track timeout for cleanup
+      animationTimeoutRef.current = setTimeout(() => {
         [newArray[left], newArray[right]] = [newArray[right], newArray[left]];
         setArray([...newArray]);
         left++;

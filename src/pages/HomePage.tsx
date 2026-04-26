@@ -1,711 +1,572 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { Link } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
-import { FiArrowRight, FiDatabase, FiBarChart2, FiCode, FiLayers, FiGrid, FiLink, FiGitBranch, FiServer, FiList, FiHash, FiPieChart, FiSearch, FiAlignLeft, FiPlay, FiUsers, FiTrendingUp, FiAward, FiStar, FiZap } from 'react-icons/fi';
+import { motion } from 'framer-motion';
+import {
+  FiArrowRight, FiDatabase, FiBarChart2, FiCode, FiLayers, FiGrid, FiLink,
+  FiGitBranch, FiServer, FiList, FiHash, FiPieChart, FiSearch, FiAlignLeft,
+  FiPlay, FiZap, FiEye, FiCpu, FiSliders
+} from 'react-icons/fi';
 import { MobileGrid, MobileCard, TouchButton, responsive } from '../components/mobile/MobileOptimizations';
 
+// ─── Keyframes ────────────────────────────────────────────────────────────────
+const float = keyframes`
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-8px); }
+`;
+
+const barGrow = keyframes`
+  from { transform: scaleY(0); }
+  to   { transform: scaleY(1); }
+`;
+
+// ─── Global containers ────────────────────────────────────────────────────────
 const HomeContainer = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 3rem;
-  
-  ${responsive.mobile(`
-    gap: 2rem;
-  `)}
+  gap: 4rem;
+  ${responsive.mobile(`gap: 2.5rem;`)}
 `;
 
+// ─── Hero ─────────────────────────────────────────────────────────────────────
 const HeroSection = styled.section`
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
   align-items: center;
-  text-align: center;
-  padding: 2rem 1rem;
-  background: linear-gradient(135deg, ${({ theme }) => theme.colors.primary}, ${({ theme }) => theme.colors.secondary});
-  border-radius: ${({ theme }) => theme.borderRadius};
-  color: ${({ theme }) => theme.colors.card};
-  margin-bottom: 2rem;
-  
-  ${responsive.mobile(`
-    padding: 1.5rem 1rem;
-    margin-bottom: 1.5rem;
-  `)}
+  padding: 3rem 0;
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.lg}) {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  ${responsive.mobile(`padding: 2rem 0;`)}
+`;
+
+const HeroLeft = styled.div``;
+
+const HeroBadge = styled.div`
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: ${({ theme }) => theme.colors.primary}20;
+  color: ${({ theme }) => theme.colors.primary};
+  border: 1px solid ${({ theme }) => theme.colors.primary}40;
+  padding: 0.3rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-bottom: 1.25rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 `;
 
 const HeroTitle = styled.h1`
-  font-size: 2.5rem;
-  font-weight: 700;
-  margin-bottom: 1rem;
-  
-  @media (min-width: ${({ theme }) => theme.breakpoints.md}) {
-    font-size: 3rem;
+  font-size: 3.5rem;
+  font-weight: 800;
+  line-height: 1.1;
+  color: ${({ theme }) => theme.colors.text};
+  margin-bottom: 1.25rem;
+
+  span {
+    background: linear-gradient(135deg, ${({ theme }) => theme.colors.primary}, ${({ theme }) => theme.colors.secondary});
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
-  
-  ${responsive.mobile(`
-    font-size: 2rem;
-    margin-bottom: 0.75rem;
-  `)}
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.md}) { font-size: 2.5rem; }
+  ${responsive.mobile(`font-size: 2rem;`)}
 `;
 
 const HeroSubtitle = styled.p`
-  font-size: 1.25rem;
-  max-width: 800px;
+  font-size: 1.15rem;
+  color: ${({ theme }) => theme.colors.textLight};
+  line-height: 1.7;
+  max-width: 520px;
   margin-bottom: 2rem;
-  
-  ${responsive.mobile(`
-    font-size: 1.1rem;
-    margin-bottom: 1.5rem;
-    padding: 0 0.5rem;
-  `)}
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.lg}) { margin: 0 auto 2rem; }
 `;
 
-const CTAButton = styled(Link)`
+const ButtonRow = styled.div`
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  @media (max-width: ${({ theme }) => theme.breakpoints.lg}) { justify-content: center; }
+`;
+
+const PrimaryButton = styled(Link)`
   display: inline-flex;
   align-items: center;
-  padding: 0.75rem 1.5rem;
-  background-color: ${({ theme }) => theme.colors.card};
-  color: ${({ theme }) => theme.colors.primary};
+  gap: 0.5rem;
+  padding: 0.8rem 1.75rem;
+  background: linear-gradient(135deg, ${({ theme }) => theme.colors.primary}, ${({ theme }) => theme.colors.secondary});
+  color: white;
   font-weight: 600;
-  border-radius: ${({ theme }) => theme.borderRadius};
-  transition: ${({ theme }) => theme.transitions.default};
-  min-height: 44px;
-  touch-action: manipulation;
+  border-radius: 10px;
   text-decoration: none;
-  
-  svg {
-    margin-left: 0.5rem;
-  }
-  
-  &:hover {
-    background-color: ${({ theme }) => theme.colors.hover};
-    transform: translateY(-2px);
-  }
-  
-  ${responsive.mobile(`
-    padding: 1rem 2rem;
-    font-size: 1.1rem;
-  `)}
+  transition: all 0.2s;
+  box-shadow: 0 4px 16px ${({ theme }) => theme.colors.primary}40;
+
+  &:hover { transform: translateY(-2px); box-shadow: 0 8px 24px ${({ theme }) => theme.colors.primary}60; }
 `;
 
-const OutlineCTAButton = styled(CTAButton)`
-  background: transparent;
-  color: ${({ theme }) => theme.colors.card};
-  border: 2px solid ${({ theme }) => theme.colors.card};
+const SecondaryButton = styled(Link)`
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.8rem 1.75rem;
+  background: ${({ theme }) => theme.colors.card};
+  color: ${({ theme }) => theme.colors.text};
+  font-weight: 600;
+  border-radius: 10px;
+  text-decoration: none;
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  transition: all 0.2s;
+
+  &:hover { transform: translateY(-2px); background: ${({ theme }) => theme.colors.hover}; }
 `;
 
-const FeaturesSection = styled.section`
+// ─── Live Mini Sorting Demo (right side of hero) ───────────────────────────────
+const DemoCard = styled(motion.div)`
+  background: ${({ theme }) => theme.colors.card};
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: ${({ theme }) => theme.shadows.lg};
+  animation: ${float} 4s ease-in-out infinite;
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.lg}) { display: none; }
+`;
+
+const DemoTitle = styled.div`
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: ${({ theme }) => theme.colors.textLight};
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+`;
+
+const BarsContainer = styled.div`
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  height: 140px;
+  padding: 0 0.25rem;
+`;
+
+const DemoBar = styled.div<{ height: number; color: string }>`
+  flex: 1;
+  height: ${({ height }) => height}%;
+  background: ${({ color }) => color};
+  border-radius: 4px 4px 0 0;
+  transform-origin: bottom;
+  animation: ${barGrow} 0.6s ease-out forwards;
+  transition: height 0.4s ease;
+`;
+
+const DemoStep = styled.div`
+  margin-top: 1rem;
+  padding: 0.6rem 0.75rem;
+  background: ${({ theme }) => theme.colors.primary}15;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  color: ${({ theme }) => theme.colors.primary};
+  font-weight: 500;
+`;
+
+// ─── Feature Cards ─────────────────────────────────────────────────────────────
+const FeaturesGrid = styled.section`
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 2rem;
-  
-  @media (min-width: ${({ theme }) => theme.breakpoints.md}) {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  
-  @media (min-width: ${({ theme }) => theme.breakpoints.lg}) {
-    grid-template-columns: repeat(3, 1fr);
-  }
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.md}) { grid-template-columns: 1fr 1fr; }
+  ${responsive.mobile(`grid-template-columns: 1fr;`)}
 `;
 
 const FeatureCard = styled(MobileCard)`
+  padding: 1.75rem;
   display: flex;
   flex-direction: column;
-  padding: 1.5rem;
-  color: ${({ theme }) => theme.colors.text};
-  
-  ${responsive.mobile(`
-    padding: 1.25rem;
-  `)}
+  gap: 0.75rem;
+  transition: transform 0.2s, box-shadow 0.2s;
+  &:hover { transform: translateY(-4px); box-shadow: ${({ theme }) => theme.shadows.lg}; }
 `;
 
 const FeatureIcon = styled.div`
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: ${({ theme }) => theme.colors.primary}15;
+  color: ${({ theme }) => theme.colors.primary};
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 48px;
-  height: 48px;
-  background-color: ${({ theme }) => theme.colors.primary};
-  color: ${({ theme }) => theme.colors.card};
-  border-radius: ${({ theme }) => theme.borderRadius};
-  margin-bottom: 1rem;
 `;
 
 const FeatureTitle = styled.h3`
-  font-size: 1.25rem;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
+  font-size: 1.05rem;
+  font-weight: 700;
   color: ${({ theme }) => theme.colors.text};
 `;
 
-const FeatureDescription = styled.p`
+const FeatureDesc = styled.p`
+  font-size: 0.9rem;
   color: ${({ theme }) => theme.colors.textLight};
   line-height: 1.6;
 `;
 
-const DataStructuresSection = styled.section`
-  margin-top: 2rem;
+// ─── Data Structures Grid ──────────────────────────────────────────────────────
+const SectionHeader = styled.div`
+  margin-bottom: 1.5rem;
 `;
 
 const SectionTitle = styled.h2`
   font-size: 1.75rem;
-  font-weight: 600;
-  margin-bottom: 1.5rem;
+  font-weight: 700;
   color: ${({ theme }) => theme.colors.text};
+  margin-bottom: 0.4rem;
 `;
 
-const DataStructureGrid = styled.div`
+const SectionSubtitle = styled.p`
+  font-size: 1rem;
+  color: ${({ theme }) => theme.colors.textLight};
+`;
+
+const DSGrid = styled.div`
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: repeat(4, 1fr);
   gap: 1rem;
-  
-  @media (min-width: ${({ theme }) => theme.breakpoints.sm}) {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  
-  @media (min-width: ${({ theme }) => theme.breakpoints.lg}) {
-    grid-template-columns: repeat(4, 1fr);
-  }
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.lg}) { grid-template-columns: repeat(3, 1fr); }
+  @media (max-width: ${({ theme }) => theme.breakpoints.md}) { grid-template-columns: repeat(2, 1fr); }
+  ${responsive.mobile(`grid-template-columns: 1fr 1fr;`)}
 `;
 
-const DataStructureCard = styled(Link)`
+const DSCard = styled(Link)`
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 1.5rem;
-  background-color: ${({ theme }) => theme.colors.card};
+  gap: 0.6rem;
+  padding: 1.5rem 1rem;
+  background: ${({ theme }) => theme.colors.card};
   border: 1px solid ${({ theme }) => theme.colors.border};
-  border-radius: ${({ theme }) => theme.borderRadius};
-  box-shadow: ${({ theme }) => theme.shadows.sm};
-  transition: ${({ theme }) => theme.transitions.default};
-  position: relative;
-  color: ${({ theme }) => theme.colors.text};
+  border-radius: 12px;
   text-decoration: none;
-  min-height: 44px;
-  touch-action: manipulation;
-  
+  color: ${({ theme }) => theme.colors.text};
+  transition: all 0.2s;
+  text-align: center;
+
   &:hover {
-    background-color: ${({ theme }) => theme.colors.primary};
-    color: ${({ theme }) => theme.colors.card};
+    border-color: ${({ theme }) => theme.colors.primary};
+    background: ${({ theme }) => theme.colors.primary}08;
     transform: translateY(-3px);
-    box-shadow: ${({ theme }) => theme.shadows.lg};
-    
-    h3, p {
-      color: ${({ theme }) => theme.colors.card};
-    }
-    
-    p { color: ${({ theme }) => theme.colors.card} !important; }
+    box-shadow: 0 8px 24px ${({ theme }) => theme.colors.primary}20;
   }
-  
-  ${responsive.mobile(`
-    padding: 1.25rem;
-  `)}
 `;
 
-const ComingSoonBadge = styled.div`
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background-color: ${({ theme }) => theme.colors.secondary};
-  color: ${({ theme }) => theme.colors.card};
-  font-size: 0.7rem;
-  font-weight: 600;
-  padding: 0.25rem 0.5rem;
-  border-radius: ${({ theme }) => theme.borderRadius};
-  z-index: 1;
-`;
-
-const DataStructureIcon = styled.div`
+const DSIcon = styled.div`
+  width: 40px;
+  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 48px;
-  height: 48px;
-  margin-bottom: 1rem;
-  font-size: 1.5rem;
+  border-radius: 10px;
+  background: ${({ theme }) => theme.colors.primary}15;
   color: ${({ theme }) => theme.colors.primary};
 `;
 
-const DataStructureName = styled.h3`
-  font-size: 1.25rem;
+const DSName = styled.h3`
+  font-size: 0.95rem;
   font-weight: 600;
-  margin-bottom: 0.5rem;
-  color: ${({ theme }) => theme.text};
+  color: ${({ theme }) => theme.colors.text};
 `;
 
-const DataStructureDescription = styled.p`
-  color: ${({ theme }) => theme.textLight};
-  text-align: center;
-  font-size: 0.875rem;
+const DSDesc = styled.p`
+  font-size: 0.78rem;
+  color: ${({ theme }) => theme.colors.textLight};
+  line-height: 1.4;
 `;
 
-// Advanced animations
-const float = keyframes`
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-10px); }
-`;
-
-const glow = keyframes`
-  0%, 100% { box-shadow: 0 0 20px rgba(100, 200, 255, 0.3); }
-  50% { box-shadow: 0 0 30px rgba(100, 200, 255, 0.6); }
-`;
-
-const pulse = keyframes`
-  0%, 100% { opacity: 0.8; }
-  50% { opacity: 1; }
-`;
-
-// New Premium Components
-const InteractiveDemo = styled(motion.div)`
-  background: linear-gradient(135deg, ${({ theme }) => theme.colors.primary} 0%, ${({ theme }) => theme.colors.secondary} 100%);
-  border-radius: 16px;
-  padding: 2rem;
-  margin: 2rem 0;
-  color: ${({ theme }) => theme.colors.card};
-  text-align: center;
-  animation: ${glow} 3s ease-in-out infinite;
-`;
-
-const StatsGrid = styled.div`
+// ─── Stats Bar ────────────────────────────────────────────────────────────────
+const StatsBar = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(4, 1fr);
   gap: 1.5rem;
-  margin: 3rem 0;
+  padding: 2.5rem;
+  background: linear-gradient(135deg, ${({ theme }) => theme.colors.primary}, ${({ theme }) => theme.colors.secondary});
+  border-radius: 16px;
+  color: white;
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.md}) { grid-template-columns: repeat(2, 1fr); }
 `;
 
-const StatCard = styled(motion.div)`
-  background: ${({ theme }) => theme.colors.card};
-  padding: 2rem;
-  border-radius: 12px;
+const StatItem = styled.div`
   text-align: center;
-  box-shadow: ${({ theme }) => theme.shadows.md};
-  border: 1px solid ${({ theme }) => theme.colors.border};
-  
-  &:hover {
-    transform: translateY(-5px);
-    box-shadow: ${({ theme }) => theme.shadows.lg};
-  }
 `;
 
-const StatNumber = styled.div`
-  font-size: 2.5rem;
-  font-weight: 700;
-  color: ${({ theme }) => theme.primary};
-  margin-bottom: 0.5rem;
-  animation: ${pulse} 2s ease-in-out infinite;
+const StatNum = styled.div`
+  font-size: 2rem;
+  font-weight: 800;
+  margin-bottom: 0.3rem;
 `;
 
-const StatLabel = styled.div`
-  color: ${({ theme }) => theme.textLight};
+const StatLbl = styled.div`
+  font-size: 0.85rem;
+  opacity: 0.85;
   font-weight: 500;
 `;
 
-const TestimonialsSection = styled.section`
-  margin: 4rem 0;
-`;
-
-const TestimonialGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 2rem;
-`;
-
-const TestimonialCard = styled(motion.div)`
+// ─── CTA Banner ───────────────────────────────────────────────────────────────
+const CTABanner = styled.div`
   background: ${({ theme }) => theme.colors.card};
-  padding: 2rem;
-  border-radius: 16px;
-  box-shadow: ${({ theme }) => theme.shadows.md};
   border: 1px solid ${({ theme }) => theme.colors.border};
-  position: relative;
-  
-  &::before {
-    content: '"';
-    position: absolute;
-    top: -10px;
-    left: 20px;
-    font-size: 4rem;
-    color: ${({ theme }) => theme.primary};
-    opacity: 0.3;
-  }
-`;
-
-const TestimonialText = styled.p`
-  color: ${({ theme }) => theme.text};
-  font-style: italic;
-  margin-bottom: 1rem;
-  line-height: 1.6;
-`;
-
-const TestimonialAuthor = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  
-  .avatar {
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, ${({ theme }) => theme.colors.primary}, ${({ theme }) => theme.colors.secondary});
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: ${({ theme }) => theme.colors.card};
-    font-weight: 600;
-  }
-  
-  .info {
-    .name {
-      font-weight: 600;
-      color: ${({ theme }) => theme.text};
-    }
-    .title {
-      color: ${({ theme }) => theme.textLight};
-      font-size: 0.875rem;
-    }
-  }
-`;
-
-const LiveStatsDisplay = styled(motion.div)`
-  background: linear-gradient(135deg, ${({ theme }) => theme.colors.secondaryLight || '#4facfe'} 0%, ${({ theme }) => theme.colors.secondary} 100%);
   border-radius: 16px;
-  padding: 2rem;
-  margin: 2rem 0;
-  color: ${({ theme }) => theme.colors.card};
+  padding: 3rem;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
 `;
 
+const CTATitle = styled.h2`
+  font-size: 2rem;
+  font-weight: 700;
+  color: ${({ theme }) => theme.colors.text};
+`;
+
+const CTASubtitle = styled.p`
+  font-size: 1.1rem;
+  color: ${({ theme }) => theme.colors.textLight};
+  max-width: 550px;
+`;
+
+// ─── Live sorting demo data ────────────────────────────────────────────────────
+const DEMO_FRAMES = [
+  { bars: [85, 40, 65, 20, 90, 55, 30, 75], step: 'Comparing 85 and 40…', active: [0,1] },
+  { bars: [40, 85, 65, 20, 90, 55, 30, 75], step: 'Swapped! 40 moves left', active: [0,1] },
+  { bars: [40, 65, 85, 20, 90, 55, 30, 75], step: 'Comparing 85 and 65…', active: [1,2] },
+  { bars: [40, 65, 20, 85, 90, 55, 30, 75], step: 'Swapped! 85 → position 3', active: [2,3] },
+  { bars: [40, 65, 20, 85, 55, 90, 30, 75], step: 'Comparing 90 and 55…', active: [4,5] },
+  { bars: [40, 20, 65, 55, 85, 30, 75, 90], step: '90 bubbled to the end ✓', active: [7] },
+  { bars: [20, 40, 55, 65, 30, 75, 85, 90], step: 'Pass 3 complete!', active: [6,7] },
+  { bars: [20, 40, 55, 30, 65, 75, 85, 90], step: 'Almost sorted…', active: [3,4] },
+  { bars: [20, 30, 40, 55, 65, 75, 85, 90], step: '🎉 Array fully sorted!', active: [] },
+];
+
+const BAR_COLORS = (index: number, active: number[], frame: number) => {
+  if (frame === DEMO_FRAMES.length - 1) return '#22c55e'; // green when sorted
+  if (active.includes(index)) return '#f59e0b'; // yellow for comparing
+  return '#6366f1'; // indigo default
+};
+
+// ─── Component ────────────────────────────────────────────────────────────────
 const HomePage: React.FC = () => {
-  const [stats, setStats] = useState({
-    algorithms: 45,
-    dataStructures: 12,
-    users: 10000,
-    visualizations: 50000
-  });
-  
-  const [currentDemo, setCurrentDemo] = useState(0);
-  
+  const [demoFrame, setDemoFrame] = useState(0);
+
   useEffect(() => {
-    // Animate numbers on mount
-    const timer = setTimeout(() => {
-      setStats({
-        algorithms: 45,
-        dataStructures: 12,
-        users: 10247,
-        visualizations: 52891
-      });
-    }, 1000);
-    
-    return () => clearTimeout(timer);
+    const id = setInterval(() => {
+      setDemoFrame(f => (f + 1) % DEMO_FRAMES.length);
+    }, 1200);
+    return () => clearInterval(id);
   }, []);
-  
-  const testimonials = [
-    {
-      text: "This visualizer completely transformed how I understand algorithms. The interactive demos make complex concepts crystal clear!",
-      author: "Sarah Chen",
-      title: "Computer Science Student, MIT",
-      avatar: "SC"
-    },
-    {
-      text: "As a software engineer, this tool helps me explain algorithms to my team. The performance comparisons are incredibly detailed.",
-      author: "Marcus Johnson",
-      title: "Senior Software Engineer, Google",
-      avatar: "MJ"
-    },
-    {
-      text: "I use this in my data structures course. Students love the real-time visualizations and code examples in multiple languages.",
-      author: "Dr. Emily Rodriguez",
-      title: "Professor, Stanford University",
-      avatar: "ER"
-    }
-  ];
-  
+
+  const frame = DEMO_FRAMES[demoFrame];
+
   return (
     <HomeContainer>
+      {/* ── Hero ──────────────────────────────────────────────────────────── */}
       <HeroSection>
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
+        <HeroLeft>
+          <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
+            <HeroBadge><FiZap size={12} /> Interactive Learning</HeroBadge>
+            <HeroTitle>
+              Learn DSA <span>Visually</span>,<br />Not Theoretically
+            </HeroTitle>
+            <HeroSubtitle>
+              Step through algorithms one operation at a time. See which line of code
+              executes, watch the data structure transform, and understand <em>why</em> it works —
+              not just that it does.
+            </HeroSubtitle>
+            <ButtonRow>
+              <PrimaryButton to="/data-structures/array">
+                <FiPlay size={16} /> Start Visualizing
+              </PrimaryButton>
+              <SecondaryButton to="/algorithms/sorting/bubble-sort">
+                <FiEye size={16} /> Watch Bubble Sort
+              </SecondaryButton>
+            </ButtonRow>
+          </motion.div>
+        </HeroLeft>
+
+        {/* Live mini demo */}
+        <DemoCard
+          initial={{ opacity: 0, x: 30 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.7, delay: 0.2 }}
         >
-          <HeroTitle>Data Structure Visualizer</HeroTitle>
-          <HeroSubtitle>
-            The world's most advanced interactive learning platform for data structures and algorithms.
-            Trusted by 10,000+ students and professionals worldwide.
-          </HeroSubtitle>
-          <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-            <CTAButton to="/data-structures/array">
-              <FiPlay /> Start Learning
-            </CTAButton>
-            <CTAButton to="/demo" style={{ background: 'transparent', border: '2px solid white' }}>
-              <FiZap /> Live Demo
-            </CTAButton>
-          </div>
-        </motion.div>
+          <DemoTitle>🎬 Live Demo — Bubble Sort</DemoTitle>
+          <BarsContainer>
+            {frame.bars.map((h, i) => (
+              <DemoBar key={i} height={h} color={BAR_COLORS(i, frame.active, demoFrame)} />
+            ))}
+          </BarsContainer>
+          <DemoStep>{frame.step}</DemoStep>
+        </DemoCard>
       </HeroSection>
-      
-      <InteractiveDemo
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.6, delay: 0.3 }}
-      >
-        <h3 style={{ marginBottom: '1rem', fontSize: '1.5rem' }}>🚀 Try it Live!</h3>
-        <p>Watch algorithms come to life with real-time visualizations</p>
-        <motion.div
-          animate={{ rotate: [0, 5, -5, 0] }}
-          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-          style={{ display: 'inline-block', margin: '1rem', fontSize: '2rem' }}
-        >
-          📊📈📉
-        </motion.div>
-      </InteractiveDemo>
-      
-      <StatsGrid>
-        <StatCard
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-        >
-          <StatNumber>{stats.algorithms}</StatNumber>
-          <StatLabel>Algorithms</StatLabel>
-        </StatCard>
-        
-        <StatCard
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-        >
-          <StatNumber>{stats.dataStructures}</StatNumber>
-          <StatLabel>Data Structures</StatLabel>
-        </StatCard>
-        
-        <StatCard
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.3 }}
-        >
-          <StatNumber>{stats.users.toLocaleString()}</StatNumber>
-          <StatLabel>Happy Users</StatLabel>
-        </StatCard>
-        
-        <StatCard
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-        >
-          <StatNumber>{stats.visualizations.toLocaleString()}</StatNumber>
-          <StatLabel>Visualizations Created</StatLabel>
-        </StatCard>
-      </StatsGrid>
-      
-      <FeaturesSection>
-        <FeatureCard>
-          <FeatureIcon>
-            <FiDatabase size={24} />
-          </FeatureIcon>
-          <FeatureTitle>Multiple Data Structures</FeatureTitle>
-          <FeatureDescription>
-            Visualize arrays, linked lists, stacks, queues, trees, graphs, hash tables, heaps, and more.
-          </FeatureDescription>
-        </FeatureCard>
-        
-        <FeatureCard>
-          <FeatureIcon>
-            <FiBarChart2 size={24} />
-          </FeatureIcon>
-          <FeatureTitle>Algorithm Animations</FeatureTitle>
-          <FeatureDescription>
-            Watch sorting and searching algorithms unfold step by step with detailed animations.
-          </FeatureDescription>
-        </FeatureCard>
-        
-        <FeatureCard>
-          <FeatureIcon>
-            <FiCode size={24} />
-          </FeatureIcon>
-          <FeatureTitle>Code Preview & Explanation</FeatureTitle>
-          <FeatureDescription>
-            Learn by seeing code alongside visual output with detailed explanations.
-          </FeatureDescription>
-        </FeatureCard>
-      </FeaturesSection>
-      
-      <TestimonialsSection>
-        <SectionTitle style={{ textAlign: 'center' }}>What Our Users Say</SectionTitle>
-        <TestimonialGrid>
-          {testimonials.map((testimonial, index) => (
-            <TestimonialCard
-              key={index}
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: index * 0.2 }}
-            >
-              <TestimonialText>{testimonial.text}</TestimonialText>
-              <TestimonialAuthor>
-                <div className="avatar">{testimonial.avatar}</div>
-                <div className="info">
-                  <div className="name">{testimonial.author}</div>
-                  <div className="title">{testimonial.title}</div>
-                </div>
-              </TestimonialAuthor>
-            </TestimonialCard>
+
+      {/* ── Features ──────────────────────────────────────────────────────── */}
+      <section>
+        <SectionHeader>
+          <SectionTitle>Everything you need to master DSA</SectionTitle>
+          <SectionSubtitle>From interactive visualizations to multi-language code examples</SectionSubtitle>
+        </SectionHeader>
+        <FeaturesGrid>
+          <FeatureCard>
+            <FeatureIcon><FiEye size={20} /></FeatureIcon>
+            <FeatureTitle>Step-by-Step Animations</FeatureTitle>
+            <FeatureDesc>
+              Play, pause, step forward and backward through every operation. See exactly
+              what changes at each moment with colour-coded elements.
+            </FeatureDesc>
+          </FeatureCard>
+
+          <FeatureCard>
+            <FeatureIcon><FiCode size={20} /></FeatureIcon>
+            <FeatureTitle>Live Code Highlighting</FeatureTitle>
+            <FeatureDesc>
+              As the algorithm runs, the corresponding line of pseudocode highlights in
+              real time — so you always know <em>what</em> the computer is doing.
+            </FeatureDesc>
+          </FeatureCard>
+
+          <FeatureCard>
+            <FeatureIcon><FiSliders size={20} /></FeatureIcon>
+            <FeatureTitle>Speed & Size Control</FeatureTitle>
+            <FeatureDesc>
+              Adjust animation speed from super-slow (1 step/2s) to blazing fast.
+              Choose array size, enter custom values, or generate random data.
+            </FeatureDesc>
+          </FeatureCard>
+
+          <FeatureCard>
+            <FeatureIcon><FiCpu size={20} /></FeatureIcon>
+            <FeatureTitle>Multi-Language Code</FeatureTitle>
+            <FeatureDesc>
+              View implementations in JavaScript, Python, Java, and C++ side-by-side
+              with full syntax highlighting and complexity analysis.
+            </FeatureDesc>
+          </FeatureCard>
+
+          <FeatureCard>
+            <FeatureIcon><FiGitBranch size={20} /></FeatureIcon>
+            <FeatureTitle>Graph Algorithms</FeatureTitle>
+            <FeatureDesc>
+              Interactive canvas-based graph visualizations for Dijkstra, BFS, DFS
+              with step-by-step shortest path discovery.
+            </FeatureDesc>
+          </FeatureCard>
+
+          <FeatureCard>
+            <FeatureIcon><FiDatabase size={20} /></FeatureIcon>
+            <FeatureTitle>10+ Data Structures</FeatureTitle>
+            <FeatureDesc>
+              Array, Linked List, Stack, Queue, Tree, Graph, Heap, Hash Table, Trie,
+              Priority Queue — all with interactive operations.
+            </FeatureDesc>
+          </FeatureCard>
+        </FeaturesGrid>
+      </section>
+
+      {/* ── Stats ─────────────────────────────────────────────────────────── */}
+      <StatsBar>
+        <StatItem>
+          <StatNum>10+</StatNum>
+          <StatLbl>Data Structures</StatLbl>
+        </StatItem>
+        <StatItem>
+          <StatNum>40+</StatNum>
+          <StatLbl>Algorithms</StatLbl>
+        </StatItem>
+        <StatItem>
+          <StatNum>4</StatNum>
+          <StatLbl>Languages</StatLbl>
+        </StatItem>
+        <StatItem>
+          <StatNum>100%</StatNum>
+          <StatLbl>Free & Open Source</StatLbl>
+        </StatItem>
+      </StatsBar>
+
+      {/* ── Data Structures grid ─────────────────────────────────────────── */}
+      <section>
+        <SectionHeader>
+          <SectionTitle>Explore Data Structures</SectionTitle>
+          <SectionSubtitle>Click any card to start an interactive visualization</SectionSubtitle>
+        </SectionHeader>
+        <DSGrid>
+          {[
+            { to: '/data-structures/array',         icon: <FiLayers size={18}/>,   name: 'Array',          desc: 'Insert, delete, search in O(1)–O(n)' },
+            { to: '/data-structures/linked-list',   icon: <FiLink size={18}/>,     name: 'Linked List',    desc: 'Singly & doubly linked nodes' },
+            { to: '/data-structures/stack',         icon: <FiServer size={18}/>,   name: 'Stack',          desc: 'LIFO push, pop, peek operations' },
+            { to: '/data-structures/queue',         icon: <FiList size={18}/>,     name: 'Queue',          desc: 'FIFO enqueue and dequeue' },
+            { to: '/data-structures/priority-queue',icon: <FiServer size={18}/>,   name: 'Priority Queue', desc: 'Min-heap based priority' },
+            { to: '/data-structures/tree',          icon: <FiGitBranch size={18}/>,name: 'Tree',           desc: 'BST, AVL, traversals' },
+            { to: '/data-structures/graph',         icon: <FiGrid size={18}/>,     name: 'Graph',          desc: 'Adjacency list & matrix' },
+            { to: '/data-structures/hash-table',    icon: <FiHash size={18}/>,     name: 'Hash Table',     desc: 'Hashing & collision resolution' },
+            { to: '/data-structures/heap',          icon: <FiPieChart size={18}/>, name: 'Heap',           desc: 'Min-heap and max-heap' },
+            { to: '/data-structures/trie',          icon: <FiAlignLeft size={18}/>,name: 'Trie',           desc: 'Prefix trees & autocomplete' },
+          ].map(ds => (
+            <DSCard key={ds.to} to={ds.to}>
+              <DSIcon>{ds.icon}</DSIcon>
+              <DSName>{ds.name}</DSName>
+              <DSDesc>{ds.desc}</DSDesc>
+            </DSCard>
           ))}
-        </TestimonialGrid>
-      </TestimonialsSection>
-      
-      <LiveStatsDisplay
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 1, delay: 1.5 }}
-      >
-        <h3 style={{ marginBottom: '1rem', fontSize: '1.5rem' }}>
-          🏆 Join the Learning Revolution
-        </h3>
-        <div style={{ display: 'flex', justifyContent: 'center', gap: '2rem', flexWrap: 'wrap', marginTop: '1rem' }}>
-          <div>
-            <div style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>99%</div>
-            <div style={{ fontSize: '0.9rem' }}>Success Rate</div>
-          </div>
-          <div>
-            <div style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>4.9/5</div>
-            <div style={{ fontSize: '0.9rem' }}>User Rating</div>
-          </div>
-          <div>
-            <div style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>24/7</div>
-            <div style={{ fontSize: '0.9rem' }}>Available</div>
-          </div>
-        </div>
-      </LiveStatsDisplay>
-      
-      <DataStructuresSection>
-        <SectionTitle>Explore Data Structures</SectionTitle>
-        <DataStructureGrid>
-          <DataStructureCard to="/data-structures/array">
-            <DataStructureIcon>
-              <FiLayers size={24} />
-            </DataStructureIcon>
-            <DataStructureName>Array</DataStructureName>
-            <DataStructureDescription>
-              Visualize operations on arrays and understand their time complexity.
-            </DataStructureDescription>
-          </DataStructureCard>
-          
-          <DataStructureCard to="/data-structures/linked-list">
-            <DataStructureIcon>
-              <FiLink size={24} />
-            </DataStructureIcon>
-            <DataStructureName>Linked List</DataStructureName>
-            <DataStructureDescription>
-              Explore singly and doubly linked lists with interactive visualizations.
-            </DataStructureDescription>
-          </DataStructureCard>
-          
-          <DataStructureCard to="/data-structures/stack">
-            <DataStructureIcon>
-              <FiServer size={24} />
-            </DataStructureIcon>
-            <DataStructureName>Stack</DataStructureName>
-            <DataStructureDescription>
-              Learn about LIFO data structure and its applications.
-            </DataStructureDescription>
-          </DataStructureCard>
-          
-          <DataStructureCard to="/data-structures/queue">
-            <DataStructureIcon>
-              <FiList size={24} />
-            </DataStructureIcon>
-            <DataStructureName>Queue</DataStructureName>
-            <DataStructureDescription>
-              Understand FIFO operations and queue implementations.
-            </DataStructureDescription>
-          </DataStructureCard>
-          
-          <DataStructureCard to="/data-structures/priority-queue">
-            <DataStructureIcon>
-              <FiServer size={24} />
-            </DataStructureIcon>
-            <DataStructureName>Priority Queue</DataStructureName>
-            <DataStructureDescription>
-              Explore priority-based queues implemented with binary heaps.
-            </DataStructureDescription>
-          </DataStructureCard>
-          
-          <DataStructureCard to="/data-structures/tree">
-            <DataStructureIcon>
-              <FiGitBranch size={24} />
-            </DataStructureIcon>
-            <DataStructureName>Tree</DataStructureName>
-            <DataStructureDescription>
-              Understand binary trees, BSTs, AVL trees, and tree traversals.
-            </DataStructureDescription>
-          </DataStructureCard>
-          
-          <DataStructureCard to="/data-structures/graph">
-            <DataStructureIcon>
-              <FiGrid size={24} />
-            </DataStructureIcon>
-            <DataStructureName>Graph</DataStructureName>
-            <DataStructureDescription>
-              Visualize graph algorithms like BFS, DFS, and shortest paths.
-            </DataStructureDescription>
-          </DataStructureCard>
-          
-          <DataStructureCard to="/data-structures/hash-table">
-            <DataStructureIcon>
-              <FiHash size={24} />
-            </DataStructureIcon>
-            <DataStructureName>Hash Table</DataStructureName>
-            <DataStructureDescription>
-              Learn about hash functions, collision resolution, and applications.
-            </DataStructureDescription>
-          </DataStructureCard>
-          
-          <DataStructureCard to="/data-structures/heap">
-            <DataStructureIcon>
-              <FiPieChart size={24} />
-            </DataStructureIcon>
-            <DataStructureName>Heap</DataStructureName>
-            <DataStructureDescription>
-              Explore min-heaps, max-heaps, and priority queue implementations.
-            </DataStructureDescription>
-          </DataStructureCard>
-          
-          <DataStructureCard to="/data-structures/trie">
-            <DataStructureIcon>
-              <FiAlignLeft size={24} />
-            </DataStructureIcon>
-            <DataStructureName>Trie</DataStructureName>
-            <DataStructureDescription>
-              Visualize prefix trees for efficient string operations and autocomplete.
-            </DataStructureDescription>
-          </DataStructureCard>
-        </DataStructureGrid>
-      </DataStructuresSection>
-      
-      <DataStructuresSection>
-        <SectionTitle>Explore Algorithms</SectionTitle>
-        <DataStructureGrid>
-          <DataStructureCard to="/algorithms/sorting">
-            <DataStructureIcon>
-              <FiBarChart2 size={24} />
-            </DataStructureIcon>
-            <DataStructureName>Sorting Algorithms</DataStructureName>
-            <DataStructureDescription>
-              Visualize bubble sort, quick sort, merge sort, and more.
-            </DataStructureDescription>
-          </DataStructureCard>
-          
-          <DataStructureCard to="/algorithms/searching">
-            <DataStructureIcon>
-              <FiSearch size={24} />
-            </DataStructureIcon>
-            <DataStructureName>Searching Algorithms</DataStructureName>
-            <DataStructureDescription>
-              Learn about linear search, binary search, and other techniques.
-            </DataStructureDescription>
-          </DataStructureCard>
-        </DataStructureGrid>
-      </DataStructuresSection>
+        </DSGrid>
+      </section>
+
+      {/* ── Algorithms ───────────────────────────────────────────────────── */}
+      <section>
+        <SectionHeader>
+          <SectionTitle>Explore Algorithms</SectionTitle>
+          <SectionSubtitle>Animated step-by-step with live code highlighting</SectionSubtitle>
+        </SectionHeader>
+        <DSGrid>
+          {[
+            { to: '/algorithms/sorting',     icon: <FiBarChart2 size={18}/>, name: 'Sorting',    desc: 'Bubble, Quick, Merge, Heap, Shell…' },
+            { to: '/algorithms/searching',   icon: <FiSearch size={18}/>,    name: 'Searching',  desc: 'Linear, Binary, Exponential search' },
+            { to: '/algorithms/graph/bfs',   icon: <FiGrid size={18}/>,      name: 'BFS',        desc: 'Breadth-first traversal' },
+            { to: '/algorithms/graph/dfs',   icon: <FiGitBranch size={18}/>, name: 'DFS',        desc: 'Depth-first traversal & backtacking' },
+            { to: '/algorithms/graph/dijkstra', icon: <FiZap size={18}/>,   name: "Dijkstra's",  desc: 'Shortest path with priority queue' },
+          ].map(algo => (
+            <DSCard key={algo.to} to={algo.to}>
+              <DSIcon>{algo.icon}</DSIcon>
+              <DSName>{algo.name}</DSName>
+              <DSDesc>{algo.desc}</DSDesc>
+            </DSCard>
+          ))}
+        </DSGrid>
+      </section>
+
+      {/* ── CTA ──────────────────────────────────────────────────────────── */}
+      <CTABanner>
+        <CTATitle>Ready to learn by seeing?</CTATitle>
+        <CTASubtitle>
+          Pick any algorithm or data structure and watch it come alive.
+          No installation, no account — just open and go.
+        </CTASubtitle>
+        <PrimaryButton to="/data-structures/array">
+          <FiArrowRight size={16} /> Get Started — It's Free
+        </PrimaryButton>
+      </CTABanner>
     </HomeContainer>
   );
 };
 
-export default HomePage; 
+export default HomePage;

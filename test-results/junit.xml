@@ -1,13 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="Data Structure Visualizer Tests" tests="4" failures="0" errors="0" time="2.066">
-  <testsuite name="Canvas Mock Verification" errors="0" failures="0" skipped="0" timestamp="2025-10-09T11:00:01" time="1.503" tests="4">
-    <testcase classname="Canvas Mock Verification should have centralized Canvas API mock" name="Canvas Mock Verification should have centralized Canvas API mock" time="0.012">
+<testsuites name="Data Structure Visualizer Tests" tests="10" failures="0" errors="0" time="1.006">
+  <testsuite name="Header Component" errors="0" failures="0" skipped="0" timestamp="2026-03-25T07:25:35" time="0.8" tests="10">
+    <testcase classname="Header Component renders header with correct elements" name="Header Component renders header with correct elements" time="0.065">
     </testcase>
-    <testcase classname="Canvas Mock Verification should not have mock conflicts" name="Canvas Mock Verification should not have mock conflicts" time="0.004">
+    <testcase classname="Header Component logo links to home page" name="Header Component logo links to home page" time="0.04">
     </testcase>
-    <testcase classname="Canvas Mock Verification should have proper animation frame mocking" name="Canvas Mock Verification should have proper animation frame mocking" time="0.002">
+    <testcase classname="Header Component renders theme toggle button" name="Header Component renders theme toggle button" time="0.011">
     </testcase>
-    <testcase classname="Canvas Mock Verification should clear mocks properly between tests" name="Canvas Mock Verification should clear mocks properly between tests" time="0.002">
+    <testcase classname="Header Component theme toggle shows correct text and icon" name="Header Component theme toggle shows correct text and icon" time="0.015">
+    </testcase>
+    <testcase classname="Header Component clicking theme toggle updates accessibility label" name="Header Component clicking theme toggle updates accessibility label" time="0.046">
+    </testcase>
+    <testcase classname="Header Component renders GitHub link with correct attributes" name="Header Component renders GitHub link with correct attributes" time="0.009">
+    </testcase>
+    <testcase classname="Header Component has proper semantic HTML structure" name="Header Component has proper semantic HTML structure" time="0.016">
+    </testcase>
+    <testcase classname="Header Component applies responsive design classes" name="Header Component applies responsive design classes" time="0.007">
+    </testcase>
+    <testcase classname="Header Component keyboard navigation works correctly" name="Header Component keyboard navigation works correctly" time="0.041">
+    </testcase>
+    <testcase classname="Header Component theme toggle is accessible with keyboard" name="Header Component theme toggle is accessible with keyboard" time="0.033">
     </testcase>
   </testsuite>
 </testsuites>

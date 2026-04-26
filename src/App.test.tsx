@@ -36,13 +36,11 @@ describe('App Component', () => {
 
   test('renders sidebar navigation', () => {
     render(<App />);
-    // Check for some expected navigation items
     expect(screen.getByRole('navigation')).toBeInTheDocument();
   });
 
   test('renders footer', () => {
     render(<App />);
-    // The footer should be present
     expect(screen.getByRole('contentinfo')).toBeInTheDocument();
   });
 
@@ -54,18 +52,19 @@ describe('App Component', () => {
 
   test('has github link', () => {
     render(<App />);
-    const githubLink = screen.getByLabelText('GitHub repository');
+    // aria-label is "View source code on GitHub (opens in new tab)"
+    const githubLink = screen.getByLabelText(/view source code on github/i);
     expect(githubLink).toBeInTheDocument();
-    expect(githubLink).toHaveAttribute('href', 'https://github.com/dheerajkumargaur/DSA_Visualizer');
+    expect(githubLink).toHaveAttribute('href', 'https://github.com/Dheerajkumar69');
   });
 
   test('applies proper styling and layout', () => {
     render(<App />);
     // Check that main layout elements are present
-    const main = screen.getByRole('main');
-    expect(main).toBeInTheDocument();
-    
-    // Check that content area is present
+    // getAllByRole because App has role=application + a role=main inside
+    const mains = screen.getAllByRole('main');
+    expect(mains.length).toBeGreaterThan(0);
+
     const header = screen.getByRole('banner');
     expect(header).toBeInTheDocument();
   });

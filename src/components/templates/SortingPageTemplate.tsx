@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import { motion } from 'framer-motion';
-import { FiPlay, FiPause, FiRefreshCw, FiSkipForward, FiSkipBack, FiClock } from 'react-icons/fi';
+import { FiPlay, FiPause, FiRefreshCw, FiSkipForward, FiSkipBack, FiClock, FiCode } from 'react-icons/fi';
 import { FaArrowLeft } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import SyntaxHighlighter from 'react-syntax-highlighter';
@@ -128,20 +128,22 @@ const ControlButton = styled.button<{ active?: boolean }>`
 const SpeedControl = styled.div`
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.75rem;
+  flex: 1;
+  min-width: 180px;
 `;
 
 const SpeedLabel = styled.span`
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   color: ${({ theme }) => theme.colors.gray700};
+  white-space: nowrap;
 `;
 
-const SpeedSelect = styled.select`
-  padding: 0.5rem;
-  border: 1px solid ${({ theme }) => theme.colors.gray300};
-  border-radius: ${({ theme }) => theme.borderRadius};
-  background-color: ${({ theme }) => theme.colors.card};
-  font-size: 0.9rem;
+const SpeedSlider = styled.input`
+  flex: 1;
+  accent-color: ${({ theme }) => theme.colors.primary};
+  cursor: pointer;
+  height: 4px;
 `;
 
 const BarContainer = styled.div`
@@ -195,11 +197,89 @@ const StepDescription = styled.p`
   margin: 0;
 `;
 
-const CodeHighlight = styled.span`
-  font-family: 'Fira Code', monospace;
-  background-color: ${({ theme }) => theme.colors.gray200};
-  padding: 0.1rem 0.3rem;
-  border-radius: 3px;
+// ─── Progress Bar ────────────────────────────────────────────────────────────
+const ProgressWrapper = styled.div`
+  margin: 0.5rem 0 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+`;
+
+const ProgressMeta = styled.div`
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.78rem;
+  color: ${({ theme }) => theme.colors.gray600 || theme.colors.textLight};
+`;
+
+const ProgressTrack = styled.div`
+  width: 100%;
+  height: 6px;
+  background: ${({ theme }) => theme.colors.gray200};
+  border-radius: 999px;
+  overflow: hidden;
+`;
+
+const ProgressFill = styled.div<{ pct: number }>`
+  height: 100%;
+  width: ${({ pct }) => pct}%;
+  background: linear-gradient(to right, ${({ theme }) => theme.colors.primary}, ${({ theme }) => theme.colors.secondary || theme.colors.primary});
+  border-radius: 999px;
+  transition: width 0.2s ease;
+`;
+
+// ─── Pseudocode Panel ────────────────────────────────────────────────────────
+const glowLine = keyframes`
+  0%   { box-shadow: 0 0 0px #f59e0b00; }
+  50%  { box-shadow: 0 0 8px #f59e0b80; }
+  100% { box-shadow: 0 0 4px #f59e0b40; }
+`;
+
+const PseudocodePanel = styled.div`
+  background: #1e1e1e;
+  border-radius: ${({ theme }) => theme.borderRadius};
+  overflow: hidden;
+  font-family: 'Fira Code', 'Cascadia Code', 'Consolas', monospace;
+  font-size: 0.82rem;
+`;
+
+const PseudoHeader = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: #2d2d2d;
+  color: #aaa;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+`;
+
+const PseudoLine = styled.div<{ active: boolean; indent?: number }>`
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.3rem 0.75rem 0.3rem ${({ indent }) => `${0.75 + (indent || 0) * 1.2}rem`};
+  background: ${({ active }) => active ? 'rgba(245, 158, 11, 0.18)' : 'transparent'};
+  border-left: 3px solid ${({ active }) => active ? '#f59e0b' : 'transparent'};
+  color: ${({ active }) => active ? '#fde68a' : '#9ca3af'};
+  transition: all 0.15s ease;
+  animation: ${({ active }) => active ? glowLine : 'none'} 1s ease-in-out infinite;
+  white-space: pre;
+`;
+
+const LineNum = styled.span`
+  color: #4b5563;
+  min-width: 1.5rem;
+  text-align: right;
+  user-select: none;
+  font-size: 0.75rem;
+  padding-top: 0.05rem;
+`;
+
+const LineText = styled.span<{ active: boolean }>`
+  color: ${({ active }) => active ? '#fde68a' : '#d1d5db'};
+  font-size: 0.82rem;
 `;
 
 const ComplexityInfo = styled.div`
@@ -289,12 +369,18 @@ export interface SortingAlgorithmInfo {
   spaceComplexity: string;
   stability: string;
   implementations: CodeImplementation[];
+  /** Optional pseudocode for live line-highlight panel */
+  pseudocode?: { text: string; indent?: number }[];
 }
 
 export interface AnimationStep {
-  type: 'compare' | 'swap' | 'sorted';
+  type: 'compare' | 'swap' | 'sorted' | 'set';
   indices: number[];
   description: string;
+  /** 0-based index of the pseudocode line to highlight (from algorithmInfo.pseudocode) */
+  pseudocodeLine?: number;
+  /** For 'set' steps: map of index → new value */
+  newValues?: number[];
 }
 
 interface SortingPageTemplateProps {
@@ -307,6 +393,7 @@ const SortingPageTemplate: React.FC<SortingPageTemplateProps> = ({
   generateSteps
 }) => {
   const [array, setArray] = useState<number[]>([]);
+  const [visualArray, setVisualArray] = useState<number[]>([]);
   const [activeIndices, setActiveIndices] = useState<number[]>([]);
   const [comparingIndices, setComparingIndices] = useState<number[]>([]);
   const [sortedIndices, setSortedIndices] = useState<number[]>([]);
@@ -314,11 +401,13 @@ const SortingPageTemplate: React.FC<SortingPageTemplateProps> = ({
   const [isPaused, setIsPaused] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
   const [animationSteps, setAnimationSteps] = useState<AnimationStep[]>([]);
-  const [speed, setSpeed] = useState<number>(500); // milliseconds
+  const [speed, setSpeed] = useState<number>(500);
   const [arraySize, setArraySize] = useState<number>(10);
   const [stepDescription, setStepDescription] = useState<string>('');
   const [selectedLanguage, setSelectedLanguage] = useState<string>('javascript');
-  
+  const [highlightedLine, setHighlightedLine] = useState<number | null>(null);
+  const [initialArray, setInitialArray] = useState<number[]>([]);
+
   // Enhanced animation state management with race condition prevention
   const animationRef = useRef<number | null>(null);
   const sortTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -358,24 +447,14 @@ const SortingPageTemplate: React.FC<SortingPageTemplateProps> = ({
     resetArrayState(customArray);
   };
 
-  // Safe array state reset with cleanup
   const resetArrayState = (newArray: number[]) => {
-    // Clear all timers and animations first
-    if (sortTimeoutRef.current) {
-      clearTimeout(sortTimeoutRef.current);
-      sortTimeoutRef.current = null;
-    }
-    if (animationRef.current) {
-      cancelAnimationFrame(animationRef.current);
-      animationRef.current = null;
-    }
-    
-    // Reset flags
+    if (sortTimeoutRef.current) { clearTimeout(sortTimeoutRef.current); sortTimeoutRef.current = null; }
+    if (animationRef.current) { cancelAnimationFrame(animationRef.current); animationRef.current = null; }
     isAnimatingRef.current = false;
     currentStepRef.current = 0;
-    
-    // Reset state
     setArray(newArray);
+    setInitialArray([...newArray]);
+    setVisualArray([...newArray]);
     setActiveIndices([]);
     setComparingIndices([]);
     setSortedIndices([]);
@@ -383,12 +462,11 @@ const SortingPageTemplate: React.FC<SortingPageTemplateProps> = ({
     setIsPaused(false);
     setCurrentStep(0);
     setStepDescription('');
-    
-    // Generate new steps
+    setHighlightedLine(null);
     const steps = generateSteps([...newArray]);
     setAnimationSteps(steps);
   };
-  
+
   // Enhanced start sorting with race condition prevention
   const startSorting = () => {
     // Clear any existing timers first
@@ -445,56 +523,60 @@ const SortingPageTemplate: React.FC<SortingPageTemplateProps> = ({
     }
   }, [animationSteps, speed]);
   
-  // Safe animation step execution
   const executeAnimationStep = (step: AnimationStep) => {
     setStepDescription(step.description);
-    
+    if (step.pseudocodeLine !== undefined) setHighlightedLine(step.pseudocodeLine);
+
     if (step.type === 'compare') {
       setComparingIndices(step.indices);
       setActiveIndices([]);
     } else if (step.type === 'swap') {
       setActiveIndices(step.indices);
       setComparingIndices([]);
-      
-      // Update array with swapped elements
       if (step.indices.length === 2) {
-        setArray(prevArray => {
-          const newArray = [...prevArray];
-          [newArray[step.indices[0]], newArray[step.indices[1]]] = 
-            [newArray[step.indices[1]], newArray[step.indices[0]]];
-          return newArray;
+        setVisualArray(prev => {
+          const next = [...prev];
+          [next[step.indices[0]], next[step.indices[1]]] = [next[step.indices[1]], next[step.indices[0]]];
+          return next;
+        });
+        setArray(prev => {
+          const next = [...prev];
+          [next[step.indices[0]], next[step.indices[1]]] = [next[step.indices[1]], next[step.indices[0]]];
+          return next;
         });
       }
+    } else if (step.type === 'set' && step.newValues) {
+      setVisualArray(prev => {
+        const next = [...prev];
+        step.indices.forEach((idx, i) => { next[idx] = step.newValues![i]; });
+        return next;
+      });
+      setArray(prev => {
+        const next = [...prev];
+        step.indices.forEach((idx, i) => { next[idx] = step.newValues![i]; });
+        return next;
+      });
+      setActiveIndices(step.indices);
+      setComparingIndices([]);
     } else if (step.type === 'sorted') {
       setActiveIndices([]);
       setComparingIndices([]);
       setSortedIndices(prev => [...prev, ...step.indices]);
     }
   };
-  
-  // Enhanced pause with immediate cleanup
+
   const pauseAnimation = () => {
     setIsPaused(true);
     isAnimatingRef.current = false;
-    
-    if (sortTimeoutRef.current) {
-      clearTimeout(sortTimeoutRef.current);
-      sortTimeoutRef.current = null;
-    }
+    if (sortTimeoutRef.current) { clearTimeout(sortTimeoutRef.current); sortTimeoutRef.current = null; }
   };
-  
-  // Enhanced reset with complete cleanup
+
   const resetAnimation = () => {
     isAnimatingRef.current = false;
-    
-    if (sortTimeoutRef.current) {
-      clearTimeout(sortTimeoutRef.current);
-      sortTimeoutRef.current = null;
-    }
-    
-    resetArrayState([...array]);
+    if (sortTimeoutRef.current) { clearTimeout(sortTimeoutRef.current); sortTimeoutRef.current = null; }
+    resetArrayState([...initialArray]);
   };
-  
+
   // Safe step forward
   const stepForward = () => {
     if (currentStep < animationSteps.length) {
@@ -582,11 +664,24 @@ const SortingPageTemplate: React.FC<SortingPageTemplateProps> = ({
   useEffect(() => {
     generateRandomArray();
   }, []);
-  
-  const handleSpeedChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+
+  // Keyboard shortcuts: Space=play/pause, →=step fwd, ←=step back, R=reset
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if ((e.target as HTMLElement).tagName === 'INPUT') return;
+      if (e.code === 'Space')   { e.preventDefault(); isSorting && !isPaused ? pauseAnimation() : startSorting(); }
+      if (e.code === 'ArrowRight') { e.preventDefault(); stepForward(); }
+      if (e.code === 'ArrowLeft')  { e.preventDefault(); stepBackward(); }
+      if (e.code === 'KeyR')       { resetAnimation(); }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [isSorting, isPaused, currentStep, animationSteps]);
+
+  const handleSpeedChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSpeed(Number(e.target.value));
   };
-  
+
   return (
     <PageContainer>
       <StickyHeader>
@@ -618,60 +713,61 @@ const SortingPageTemplate: React.FC<SortingPageTemplateProps> = ({
           
           <ControlsContainer>
             {!isSorting || isPaused ? (
-              <ControlButton 
-                onClick={startSorting} 
-                active={true}
-              >
+              <ControlButton onClick={startSorting} active={true}>
                 <FiPlay size={16} />
                 {isPaused ? 'Resume' : 'Start Sorting'}
               </ControlButton>
             ) : (
-              <ControlButton 
-                onClick={pauseAnimation}
-              >
+              <ControlButton onClick={pauseAnimation}>
                 <FiPause size={16} />
                 Pause
               </ControlButton>
             )}
-            
-            <ControlButton 
-              onClick={resetAnimation} 
-              disabled={(!isSorting && !isPaused) && currentStep === 0}
-            >
+
+            <ControlButton onClick={resetAnimation} disabled={(!isSorting && !isPaused) && currentStep === 0}>
               <FiRefreshCw size={16} />
               Reset
             </ControlButton>
-            
-            <ControlButton 
-              onClick={stepBackward} 
-              disabled={currentStep <= 0 || (isSorting && !isPaused)}
-            >
+
+            <ControlButton onClick={stepBackward} disabled={currentStep <= 0 || (isSorting && !isPaused)}>
               <FiSkipBack size={16} />
               Step Back
             </ControlButton>
-            
-            <ControlButton 
-              onClick={stepForward} 
-              disabled={currentStep >= animationSteps.length || (isSorting && !isPaused)}
-            >
+
+            <ControlButton onClick={stepForward} disabled={currentStep >= animationSteps.length || (isSorting && !isPaused)}>
               <FiSkipForward size={16} />
               Step Forward
             </ControlButton>
-            
+
             <SpeedControl>
-              <FiClock size={16} />
-              <SpeedLabel>Speed:</SpeedLabel>
-              <SpeedSelect value={speed} onChange={handleSpeedChange}>
-                <option value="1000">Slow</option>
-                <option value="500">Medium</option>
-                <option value="200">Fast</option>
-                <option value="50">Very Fast</option>
-              </SpeedSelect>
+              <FiClock size={14} />
+              <SpeedLabel>{Math.round(speed / 10) * 10}ms</SpeedLabel>
+              <SpeedSlider
+                type="range"
+                min={50}
+                max={2000}
+                step={50}
+                value={speed}
+                onChange={handleSpeedChange}
+              />
             </SpeedControl>
           </ControlsContainer>
-          
+
+          {/* Step progress bar */}
+          {animationSteps.length > 0 && (
+            <ProgressWrapper>
+              <ProgressMeta>
+                <span>Step {currentStep} / {animationSteps.length}</span>
+                <span>{Math.round((currentStep / animationSteps.length) * 100)}%</span>
+              </ProgressMeta>
+              <ProgressTrack>
+                <ProgressFill pct={animationSteps.length > 0 ? (currentStep / animationSteps.length) * 100 : 0} />
+              </ProgressTrack>
+            </ProgressWrapper>
+          )}
+
           <BarContainer>
-            {array.map((value, index) => (
+            {visualArray.map((value, index) => (
               <Bar
                 key={index}
                 height={value}
@@ -680,11 +776,11 @@ const SortingPageTemplate: React.FC<SortingPageTemplateProps> = ({
                 isSorted={sortedIndices.includes(index)}
                 initial={{ height: 0 }}
                 animate={{ height: `${value}%` }}
-                transition={{ duration: 0.5 }}
+                transition={{ duration: 0.25 }}
               />
             ))}
           </BarContainer>
-          
+
           {stepDescription && (
             <StepInfo>
               <StepDescription>
@@ -718,11 +814,38 @@ const SortingPageTemplate: React.FC<SortingPageTemplateProps> = ({
         </VisualizationContainer>
         
         <CodeContainer>
-          <h2>Implementation</h2>
-          
+          <h2 style={{ marginBottom: '1rem' }}>Implementation</h2>
+
+          {/* Pseudocode with live line highlighting */}
+          {algorithmInfo.pseudocode && algorithmInfo.pseudocode.length > 0 && (
+            <div style={{ marginBottom: '1.5rem' }}>
+              <div style={{ 
+                display: 'flex', alignItems: 'center', gap: '0.4rem',
+                marginBottom: '0.5rem', fontSize: '0.85rem',
+                fontWeight: 600, color: 'inherit', opacity: 0.7 
+              }}>
+                <FiCode size={14} /> PSEUDOCODE
+                {highlightedLine !== null && (
+                  <span style={{ marginLeft: 'auto', color: '#f59e0b', fontSize: '0.75rem' }}>
+                    ● Line {highlightedLine + 1} executing
+                  </span>
+                )}
+              </div>
+              <PseudocodePanel>
+                <PseudoHeader><FiCode size={12} /> Pseudocode — live execution</PseudoHeader>
+                {algorithmInfo.pseudocode.map((line, i) => (
+                  <PseudoLine key={i} active={highlightedLine === i} indent={line.indent || 0}>
+                    <LineNum>{i + 1}</LineNum>
+                    <LineText active={highlightedLine === i}>{line.text}</LineText>
+                  </PseudoLine>
+                ))}
+              </PseudocodePanel>
+            </div>
+          )}
+
           <TabContainer>
             {algorithmInfo.implementations.map(impl => (
-              <Tab 
+              <Tab
                 key={impl.language}
                 active={selectedLanguage === impl.language}
                 onClick={() => setSelectedLanguage(impl.language)}
@@ -731,8 +854,8 @@ const SortingPageTemplate: React.FC<SortingPageTemplateProps> = ({
               </Tab>
             ))}
           </TabContainer>
-          
-          {algorithmInfo.implementations.map(impl => (
+
+          {algorithmInfo.implementations.map(impl =>
             impl.language === selectedLanguage && (
               <CodeBlock key={impl.language}>
                 <CodeTitle>{impl.title}</CodeTitle>
@@ -743,8 +866,9 @@ const SortingPageTemplate: React.FC<SortingPageTemplateProps> = ({
                 </CodeContent>
               </CodeBlock>
             )
-          ))}
+          )}
         </CodeContainer>
+
       </ContentContainer>
     </PageContainer>
   );

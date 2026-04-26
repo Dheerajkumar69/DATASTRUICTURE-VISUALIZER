@@ -88,6 +88,7 @@ export const FloodFillPage = lazy(() => import('../pages/algorithms/problems/Flo
 export const MazeSolvingPage = lazy(() => import('../pages/algorithms/problems/MazeSolvingPage'));
 export const KnightsTourPage = lazy(() => import('../pages/algorithms/problems/KnightsTourPage'));
 export const WordLadderPage = lazy(() => import('../pages/algorithms/problems/WordLadderPage'));
+export const EditDistancePage = lazy(() => import('../pages/algorithms/problems/EditDistancePage'));
 
 // New algorithm problem pages
 export const AlgorithmProblemsIndexPage = lazy(() => import('../pages/algorithms/AlgorithmProblemsIndexPage'));
@@ -101,4 +102,5 @@ export const LongestCommonSubsequencePage = lazy(() => import('../pages/algorith
 export const LongestPalindromicSubstringPage = lazy(() => import('../pages/algorithms/problems/LongestPalindromicSubstringPage'));
 export const StringMatchingKMPPage = lazy(() => import('../pages/algorithms/problems/StringMatchingKMPPage'));
 export const TrappingRainWaterPage = lazy(() => import('../pages/algorithms/problems/TrappingRainWaterPage'));
-export const SlidingWindowMaximumPage = lazy(() => import('../pages/algorithms/problems/SlidingWindowMaximumPage'));
+// Note: SlidingWindowMaximumPage is an alternative impl; SlidingWindowMaxPage is used in routes.
+// export const SlidingWindowMaximumPage = lazy(() => import('../pages/algorithms/problems/SlidingWindowMaximumPage'));

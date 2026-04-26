@@ -332,6 +332,7 @@ function peek() {
                 placeholder="Value" 
                 value={value} 
                 onChange={handleValueChange}
+                aria-label="Value to push onto stack"
               />
             </InputGroup>
             
@@ -378,7 +379,7 @@ function peek() {
             </StackVisualization>
             
             {message && (
-              <MessageContainer>
+              <MessageContainer aria-live="polite" role="status">
                 {message}
               </MessageContainer>
             )}

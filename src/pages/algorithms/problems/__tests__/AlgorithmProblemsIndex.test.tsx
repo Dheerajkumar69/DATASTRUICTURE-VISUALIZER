@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
-import AlgorithmProblemsIndexPage from '../AlgorithmProblemsIndexPage';
+import AlgorithmProblemsIndexPage from '../../AlgorithmProblemsIndexPage';
 
 const defaultTheme = {
   colors: {
@@ -51,9 +51,10 @@ describe('AlgorithmProblemsIndexPage', () => {
     
     expect(screen.getByText('Problem Statistics')).toBeInTheDocument();
     expect(screen.getByText('Total Problems')).toBeInTheDocument();
-    expect(screen.getByText('Easy')).toBeInTheDocument();
-    expect(screen.getByText('Medium')).toBeInTheDocument();
-    expect(screen.getByText('Hard')).toBeInTheDocument();
+    // Multiple difficulty labels appear (stat section + problem cards)
+    expect(screen.getAllByText('Easy').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('Medium').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('Hard').length).toBeGreaterThan(0);
   });
 
   test('displays problem categories', () => {
@@ -99,10 +100,11 @@ describe('AlgorithmProblemsIndexPage', () => {
   test('problem cards are clickable links', () => {
     renderWithProviders(<AlgorithmProblemsIndexPage />);
     
-    const maximumSubarrayLink = screen.getByRole('link', { name: /maximum subarray/i });
-    expect(maximumSubarrayLink).toHaveAttribute('href', '/algorithms/problems/maximum-subarray');
+    // Multiple links may share similar names (e.g. title + category breadcrumb); use getAllByRole
+    const maximumSubarrayLinks = screen.getAllByRole('link', { name: /maximum subarray/i });
+    expect(maximumSubarrayLinks[0]).toHaveAttribute('href', '/algorithms/problems/maximum-subarray');
     
-    const slidingWindowLink = screen.getByRole('link', { name: /sliding window maximum/i });
-    expect(slidingWindowLink).toHaveAttribute('href', '/algorithms/problems/sliding-window-maximum');
+    const slidingWindowLinks = screen.getAllByRole('link', { name: /sliding window maximum/i });
+    expect(slidingWindowLinks[0]).toHaveAttribute('href', '/algorithms/problems/sliding-window-maximum');
   });
 });

@@ -30,13 +30,14 @@ describe('Header Component', () => {
 
   test('theme toggle shows correct text and icon', () => {
     render(<Header />);
-    
-    const themeToggle = screen.getByLabelText(/switch to (light|dark) mode/i);
-    
-    // Should show either "Light Mode" or "Dark Mode"
-    expect(
-      screen.getByText('Light Mode') || screen.getByText('Dark Mode')
-    ).toBeInTheDocument();
+
+    // Button text is either "Light Mode" or "Dark Mode" depending on initial theme.
+    const toggle = screen.getByRole('button', { name: /switch to (light|dark) mode/i });
+    expect(toggle).toBeInTheDocument();
+    // One of these will be null and the other truthy - as long as one is present we're good
+    const hasLightModeText = screen.queryByText('Light Mode') !== null;
+    const hasDarkModeText = screen.queryByText('Dark Mode') !== null;
+    expect(hasLightModeText || hasDarkModeText).toBe(true);
   });
 
   test('clicking theme toggle updates accessibility label', async () => {
@@ -55,9 +56,10 @@ describe('Header Component', () => {
   test('renders GitHub link with correct attributes', () => {
     render(<Header />);
     
-    const githubLink = screen.getByLabelText('GitHub repository');
+    // The GitHub link aria-label is "View source code on GitHub (opens in new tab)"
+    const githubLink = screen.getByLabelText(/view source code on github/i);
     expect(githubLink).toBeInTheDocument();
-    expect(githubLink).toHaveAttribute('href', 'https://github.com/dheerajkumargaur/DSA_Visualizer');
+    expect(githubLink).toHaveAttribute('href', 'https://github.com/Dheerajkumar69');
     expect(githubLink).toHaveAttribute('target', '_blank');
     expect(githubLink).toHaveAttribute('rel', 'noopener noreferrer');
   });
@@ -85,15 +87,18 @@ describe('Header Component', () => {
     const user = userEvent.setup();
     render(<Header />);
     
-    // Tab through interactive elements
+    // Tab through interactive elements in DOM order:
+    // 1. Logo link
+    // 2. GitHub icon button (rendered before theme toggle)
+    // 3. Theme toggle button
     await user.tab();
     expect(screen.getByRole('link', { name: /data structure visualizer/i })).toHaveFocus();
     
     await user.tab();
-    expect(screen.getByLabelText(/switch to (light|dark) mode/i)).toHaveFocus();
+    expect(screen.getByLabelText(/view source code on github/i)).toHaveFocus();
     
     await user.tab();
-    expect(screen.getByLabelText('GitHub repository')).toHaveFocus();
+    expect(screen.getByLabelText(/switch to (light|dark) mode/i)).toHaveFocus();
   });
 
   test('theme toggle is accessible with keyboard', async () => {
@@ -101,13 +106,17 @@ describe('Header Component', () => {
     render(<Header />);
     
     const themeToggle = screen.getByLabelText(/switch to (light|dark) mode/i);
+
+    // Tab to logo, then GitHub link, then theme toggle
     await user.tab();
-    await user.tab(); // Navigate to theme toggle
+    await user.tab();
+    await user.tab();
     
     expect(themeToggle).toHaveFocus();
     
-    // Should be able to activate with Enter or Space
+    // Should be able to activate with Enter
+    const labelBefore = themeToggle.getAttribute('aria-label');
     await user.keyboard('{Enter}');
-    // Theme should toggle (we can't easily test the actual theme change in this unit test)
+    expect(themeToggle.getAttribute('aria-label')).not.toBe(labelBefore);
   });
 });

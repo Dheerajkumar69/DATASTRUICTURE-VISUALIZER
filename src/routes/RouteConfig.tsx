@@ -176,6 +176,16 @@ export const routeConfig = [
     loadingMessage: 'Loading A* algorithm...'
   },
   {
+    path: '/algorithms/graph/bfs',
+    component: LazyRoutes.BFSPage,
+    loadingMessage: 'Loading Breadth-First Search...'
+  },
+  {
+    path: '/algorithms/graph/dfs',
+    component: LazyRoutes.DFSPage,
+    loadingMessage: 'Loading Depth-First Search...'
+  },
+  {
     path: '/algorithms/graph/kruskal',
     component: LazyRoutes.KruskalPage,
     loadingMessage: 'Loading Kruskal\'s algorithm...'
@@ -234,11 +244,6 @@ export const routeConfig = [
     path: '/algorithms/graph/dag-paths',
     component: LazyRoutes.DAGPathsPage,
     loadingMessage: 'Loading DAG Shortest/Longest Paths...'
-  },
-  {
-    path: '/algorithms/graph/dijkstra',
-    component: LazyRoutes.DijkstraPage,
-    loadingMessage: 'Loading Dijkstra\'s shortest path...'
   },
   {
     path: '/algorithms/graph/undirected-cycle-detection',
@@ -382,6 +387,11 @@ export const routeConfig = [
     path: '/algorithms/problems/word-ladder',
     component: LazyRoutes.WordLadderPage,
     loadingMessage: 'Loading word ladder...'
+  },
+  {
+    path: '/algorithms/problems/edit-distance',
+    component: LazyRoutes.EditDistancePage,
+    loadingMessage: 'Loading edit distance...'
   },
 ];
 

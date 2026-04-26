@@ -101,6 +101,8 @@ const GraphVisualizer: React.FC<GraphVisualizerProps> = ({
 }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const animationFrameRef = useRef<number | null>(null);
+  // FIX #4: Pre-build vertex map for O(1) lookups instead of O(n) array.find()
+  const vertexMapRef = useRef(new Map<number, Vertex>());
   const theme = useTheme();
   const [hoveredNode, setHoveredNode] = useState<number | null>(null);
   const [hoveredEdge, setHoveredEdge] = useState<{ from: number, to: number } | null>(null);
@@ -114,6 +116,15 @@ const GraphVisualizer: React.FC<GraphVisualizerProps> = ({
   
   // Error state for invalid data
   const [error, setError] = useState<string | null>(null);
+  
+  // FIX #4 (continued): Update vertex map when vertices change
+  useEffect(() => {
+    const vertexMap = new Map<number, Vertex>();
+    for (const vertex of data.vertices) {
+      vertexMap.set(vertex.id, vertex);
+    }
+    vertexMapRef.current = vertexMap;
+  }, [data.vertices]);
   
   // Validate input data
   useEffect(() => {
@@ -244,11 +255,13 @@ const GraphVisualizer: React.FC<GraphVisualizerProps> = ({
       setHoveredNode(null);
     }
     
-    // Check for hovered edge
+    // Check for hovered edge - FIX #4: Use vertex map for O(1) lookup instead of O(n)
     let foundHoveredEdge = false;
+    const vertexMap = vertexMapRef.current;
+    
     for (const edge of data.edges) {
-      const fromVertex = data.vertices.find(v => v.id === edge.from);
-      const toVertex = data.vertices.find(v => v.id === edge.to);
+      const fromVertex = vertexMap.get(edge.from);  // O(1) instead of O(n)
+      const toVertex = vertexMap.get(edge.to);      // O(1) instead of O(n)
       
       if (fromVertex && toVertex) {
         const isClose = isPointCloseToLine(

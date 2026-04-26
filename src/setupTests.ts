@@ -4,20 +4,27 @@
 // learn more: https://github.com/testing-library/jest-dom
 import '@testing-library/jest-dom';
 import React from 'react';
+import { jest } from '@jest/globals';
 
 // Mock ResizeObserver
-global.ResizeObserver = jest.fn().mockImplementation(() => ({
-  observe: jest.fn(),
-  unobserve: jest.fn(),
-  disconnect: jest.fn(),
-}));
+class MockResizeObserver {
+  observe = jest.fn();
+  unobserve = jest.fn();
+  disconnect = jest.fn();
+}
+global.ResizeObserver = MockResizeObserver as unknown as typeof ResizeObserver;
 
 // Mock IntersectionObserver
-global.IntersectionObserver = jest.fn().mockImplementation(() => ({
-  observe: jest.fn(),
-  unobserve: jest.fn(),
-  disconnect: jest.fn(),
-}));
+class MockIntersectionObserver {
+  observe = jest.fn();
+  unobserve = jest.fn();
+  disconnect = jest.fn();
+  takeRecords = jest.fn();
+  root = null;
+  rootMargin = '';
+  thresholds = [];
+}
+global.IntersectionObserver = MockIntersectionObserver as unknown as typeof IntersectionObserver;
 
 // Mock window.matchMedia
 Object.defineProperty(window, 'matchMedia', {
@@ -85,14 +92,14 @@ const createCanvasMock = () => ({
     a: 1, b: 0, c: 0, d: 1, e: 0, f: 0
   })),
   resetTransform: jest.fn(),
-  isPointInPath: jest.fn(() => false),
-  isPointInStroke: jest.fn(() => false),
+  isPointInPath: () => false,
+  isPointInStroke: () => false,
   // Canvas properties
   canvas: {
     width: 800,
     height: 600,
-    toDataURL: jest.fn(() => 'data:image/png;base64,'),
-    toBlob: jest.fn((callback) => callback && callback(new Blob())),
+    toDataURL: () => 'data:image/png;base64,',
+    toBlob: (callback: any) => callback && callback(new Blob()),
     getBoundingClientRect: jest.fn(() => ({
       top: 0, left: 0, right: 800, bottom: 600, width: 800, height: 600
     }))
@@ -146,7 +153,7 @@ const createCanvasMock = () => ({
 });
 
 // Mock HTMLCanvasElement getContext method
-HTMLCanvasElement.prototype.getContext = jest.fn((contextType: string) => {
+const mockGetContext = jest.fn((contextType: string) => {
   if (contextType === '2d') {
     return createCanvasMock();
   }
@@ -195,11 +202,21 @@ HTMLCanvasElement.prototype.getContext = jest.fn((contextType: string) => {
 }) as any;
 
 // Enhanced Canvas element mocking
-HTMLCanvasElement.prototype.toDataURL = jest.fn(() => 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==');
-HTMLCanvasElement.prototype.toBlob = jest.fn((callback) => {
+const mockToDataURL = () => 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==';
+const mockToBlob = (callback: any) => {
   if (callback) {
     setTimeout(() => callback(new Blob(['fake-canvas-blob'], { type: 'image/png' })), 0);
   }
+};
+
+Object.defineProperty(HTMLCanvasElement.prototype, 'toDataURL', {
+  value: mockToDataURL,
+  writable: true
+});
+
+Object.defineProperty(HTMLCanvasElement.prototype, 'toBlob', {
+  value: mockToBlob,
+  writable: true
 });
 
 // Make canvas mock available globally for tests that need to access it
@@ -209,7 +226,7 @@ HTMLCanvasElement.prototype.toBlob = jest.fn((callback) => {
 let animationFrameId = 1;
 const animationFrameCallbacks = new Map<number, FrameRequestCallback>();
 
-global.requestAnimationFrame = jest.fn((callback: FrameRequestCallback) => {
+const mockRequestAnimationFrame = jest.fn((callback: FrameRequestCallback) => {
   const id = animationFrameId++;
   animationFrameCallbacks.set(id, callback);
   // Simulate 60fps timing
@@ -223,9 +240,12 @@ global.requestAnimationFrame = jest.fn((callback: FrameRequestCallback) => {
   return id;
 });
 
-global.cancelAnimationFrame = jest.fn((id: number) => {
+const mockCancelAnimationFrame = jest.fn((id: number) => {
   animationFrameCallbacks.delete(id);
 });
+
+global.requestAnimationFrame = mockRequestAnimationFrame;
+global.cancelAnimationFrame = mockCancelAnimationFrame;
 
 // Utility function to flush all pending animation frames (for tests)
 (global as any).flushAnimationFrames = () => {
@@ -241,7 +261,8 @@ if (!global.performance) {
 
 const mockPerformanceNow = (() => {
   let time = 0;
-  return jest.fn(() => (time += 16.67)); // Simulate 60fps
+  const mockFn = jest.fn(() => (time += 16.67)); // Simulate 60fps
+  return mockFn;
 })();
 
 global.performance.now = mockPerformanceNow;

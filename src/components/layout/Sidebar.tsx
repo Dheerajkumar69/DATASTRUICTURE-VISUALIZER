@@ -253,11 +253,6 @@ const Sidebar: React.FC = () => {
   const [problemsAlgorithmsOpen, setProblemsAlgorithmsOpen] = useState(true);
   const [mathAlgorithmsOpen, setMathAlgorithmsOpen] = useState(false);
   const [arrayAlgorithmsOpen, setArrayAlgorithmsOpen] = useState(false);
-  const [isSortingOpen, setIsSortingOpen] = useState(false);
-  const [isDataStructuresOpen, setIsDataStructuresOpen] = useState(false); 
-  const [isTreeAlgorithmsOpen, setIsTreeAlgorithmsOpen] = useState(false);
-  const [isArrayAlgorithmsOpen, setIsArrayAlgorithmsOpen] = useState(false);
-  const [isMathAlgorithmsOpen, setIsMathAlgorithmsOpen] = useState(false);
   
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
@@ -283,6 +278,7 @@ const Sidebar: React.FC = () => {
   return (
     <>
       <SidebarContainer 
+        id="navigation-sidebar"
         isOpen={isOpen}
         role="navigation"
         aria-label="Main navigation"
@@ -329,40 +325,40 @@ const Sidebar: React.FC = () => {
                 <FiList size={16} aria-hidden="true" />
                 Array
               </NavItem>
-              <NavItem to="/data-structures/linked-list">
-                <FiLink size={16} />
+              <NavItem to="/data-structures/linked-list" aria-label="Navigate to Linked List data structure">
+                <FiLink size={16} aria-hidden="true" />
                 Linked List
               </NavItem>
-              <NavItem to="/data-structures/stack">
-                <FiLayers size={16} />
+              <NavItem to="/data-structures/stack" aria-label="Navigate to Stack data structure">
+                <FiLayers size={16} aria-hidden="true" />
                 Stack
               </NavItem>
-              <NavItem to="/data-structures/queue">
-                <FiList size={16} />
+              <NavItem to="/data-structures/queue" aria-label="Navigate to Queue data structure">
+                <FiList size={16} aria-hidden="true" />
                 Queue
               </NavItem>
-              <NavItem to="/data-structures/priority-queue">
-                <FiServer size={16} />
+              <NavItem to="/data-structures/priority-queue" aria-label="Navigate to Priority Queue data structure">
+                <FiServer size={16} aria-hidden="true" />
                 Priority Queue
               </NavItem>
-              <NavItem to="/data-structures/tree">
-                <FiGitBranch size={16} />
+              <NavItem to="/data-structures/tree" aria-label="Navigate to Tree data structure">
+                <FiGitBranch size={16} aria-hidden="true" />
                 Tree
               </NavItem>
-              <NavItem to="/data-structures/graph">
-                <FiGrid size={16} />
+              <NavItem to="/data-structures/graph" aria-label="Navigate to Graph data structure">
+                <FiGrid size={16} aria-hidden="true" />
                 Graph
               </NavItem>
-              <NavItem to="/data-structures/hash-table">
-                <FiHash size={16} />
+              <NavItem to="/data-structures/hash-table" aria-label="Navigate to Hash Table data structure">
+                <FiHash size={16} aria-hidden="true" />
                 Hash Table
               </NavItem>
-              <NavItem to="/data-structures/heap">
-                <FiBarChart2 size={16} />
+              <NavItem to="/data-structures/heap" aria-label="Navigate to Heap data structure">
+                <FiBarChart2 size={16} aria-hidden="true" />
                 Heap
               </NavItem>
-              <NavItem to="/data-structures/trie">
-                <FiAlignLeft size={16} />
+              <NavItem to="/data-structures/trie" aria-label="Navigate to Trie data structure">
+                <FiAlignLeft size={16} aria-hidden="true" />
                 Trie
               </NavItem>
             </SectionItems>
@@ -380,8 +376,8 @@ const Sidebar: React.FC = () => {
               {algorithmsOpen ? <FiChevronDown size={18} /> : <FiChevronRight size={18} />}
             </SectionHeader>
             <SectionItems isOpen={algorithmsOpen}>
-              <NavItem to="/algorithms">
-                <FiHome size={16} />
+              <NavItem to="/algorithms" aria-label="Navigate to All Algorithms overview">
+                <FiHome size={16} aria-hidden="true" />
                 All Algorithms
               </NavItem>
               
@@ -484,56 +480,64 @@ const Sidebar: React.FC = () => {
                 {graphAlgorithmsOpen ? <FiChevronDown size={16} /> : <FiChevronRight size={16} />}
               </SubSectionHeader>
               <NestedSectionItems isOpen={graphAlgorithmsOpen}>
-                <NestedNavItem to="/algorithms/graph/astar">
-                  <FiCompass size={14} />
+                <NestedNavItem to="/algorithms/graph/bfs" aria-label="Navigate to Breadth-First Search">
+                  <FiSearch size={14} aria-hidden="true" />
+                  BFS (Breadth-First Search)
+                </NestedNavItem>
+                <NestedNavItem to="/algorithms/graph/dfs" aria-label="Navigate to Depth-First Search">
+                  <FiGitBranch size={14} aria-hidden="true" />
+                  DFS (Depth-First Search)
+                </NestedNavItem>
+                <NestedNavItem to="/algorithms/graph/astar" aria-label="Navigate to A-Star Search">
+                  <FiCompass size={14} aria-hidden="true" />
                   A* Search
                 </NestedNavItem>
-                <NestedNavItem to="/algorithms/graph/dijkstra">
-                  <FiSearch size={14} />
+                <NestedNavItem to="/algorithms/graph/dijkstra" aria-label="Navigate to Dijkstra shortest path">
+                  <FiSearch size={14} aria-hidden="true" />
                   Dijkstra's Shortest Path
                 </NestedNavItem>
-                <NestedNavItem to="/algorithms/graph/kruskal">
-                  <FiGitMerge size={14} />
+                <NestedNavItem to="/algorithms/graph/kruskal" aria-label="Navigate to Kruskal algorithm">
+                  <FiGitMerge size={14} aria-hidden="true" />
                   Kruskal's Algorithm
                 </NestedNavItem>
-                <NestedNavItem to="/algorithms/graph/prim">
-                  <FiGitCommit size={14} />
+                <NestedNavItem to="/algorithms/graph/prim" aria-label="Navigate to Prim algorithm">
+                  <FiGitCommit size={14} aria-hidden="true" />
                   Prim's Algorithm
                 </NestedNavItem>
-                <NestedNavItem to="/algorithms/graph/bellman-ford">
-                  <FiSearch size={14} />
+                <NestedNavItem to="/algorithms/graph/bellman-ford" aria-label="Navigate to Bellman-Ford">
+                  <FiSearch size={14} aria-hidden="true" />
                   Bellman–Ford
                 </NestedNavItem>
-                <NestedNavItem to="/algorithms/graph/floyd-warshall">
-                  <FiSearch size={14} />
+                <NestedNavItem to="/algorithms/graph/floyd-warshall" aria-label="Navigate to Floyd-Warshall">
+                  <FiSearch size={14} aria-hidden="true" />
                   Floyd–Warshall
                 </NestedNavItem>
-                <NestedNavItem to="/algorithms/graph/topological-sort">
-                  <FiGitBranch size={14} />
+                <NestedNavItem to="/algorithms/graph/topological-sort" aria-label="Navigate to Topological Sort">
+                  <FiGitBranch size={14} aria-hidden="true" />
                   Topological Sort
                 </NestedNavItem>
-                <NestedNavItem to="/algorithms/graph/scc">
-                  <FaProjectDiagram size={14} />
+                <NestedNavItem to="/algorithms/graph/scc" aria-label="Navigate to Strongly Connected Components">
+                  <FaProjectDiagram size={14} aria-hidden="true" />
                   Strongly Connected Components
                 </NestedNavItem>
-                <NestedNavItem to="/algorithms/graph/bridges-articulation">
-                  <FaProjectDiagram size={14} />
-                  Bridges & Articulation Points
+                <NestedNavItem to="/algorithms/graph/bridges-articulation" aria-label="Navigate to Bridges and Articulation Points">
+                  <FaProjectDiagram size={14} aria-hidden="true" />
+                  Bridges &amp; Articulation Points
                 </NestedNavItem>
-                <NestedNavItem to="/algorithms/graph/bipartite-check">
-                  <FiGitBranch size={14} />
+                <NestedNavItem to="/algorithms/graph/bipartite-check" aria-label="Navigate to Bipartite Check">
+                  <FiGitBranch size={14} aria-hidden="true" />
                   Bipartite Check
                 </NestedNavItem>
-                <NestedNavItem to="/algorithms/graph/union-find">
-                  <FiLayers size={14} />
+                <NestedNavItem to="/algorithms/graph/union-find" aria-label="Navigate to Union-Find">
+                  <FiLayers size={14} aria-hidden="true" />
                   Union–Find
                 </NestedNavItem>
-                <NestedNavItem to="/algorithms/graph/max-flow">
-                  <FiBarChart2 size={14} />
+                <NestedNavItem to="/algorithms/graph/max-flow" aria-label="Navigate to Max Flow">
+                  <FiBarChart2 size={14} aria-hidden="true" />
                   Max Flow (Edmonds–Karp)
                 </NestedNavItem>
-                <NestedNavItem to="/algorithms/graph/dag-paths">
-                  <FiGitBranch size={14} />
+                <NestedNavItem to="/algorithms/graph/dag-paths" aria-label="Navigate to DAG Paths">
+                  <FiGitBranch size={14} aria-hidden="true" />
                   DAG Shortest/Longest Paths
                 </NestedNavItem>
               </NestedSectionItems>
